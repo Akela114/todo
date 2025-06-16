@@ -1,5 +1,10 @@
 import { QUERY_KEYS } from "@/shared/query/query-keys";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+  type UseMutationOptions,
+} from "@tanstack/react-query";
 import {
   createInboxEntry,
   deleteInboxEntry,
@@ -24,12 +29,23 @@ export const useCreateInboxEntry = () => {
   });
 };
 
-export const useModifyInboxEntry = () => {
+export const useModifyInboxEntry = (
+  opts: Omit<
+    UseMutationOptions<
+      Awaited<ReturnType<typeof modifyInboxEntry>>,
+      unknown,
+      Parameters<typeof modifyInboxEntry>[0]
+    >,
+    "mutationFn"
+  > = {}
+) => {
   const queryClient = useQueryClient();
 
   return useMutation({
+    ...opts,
     mutationFn: modifyInboxEntry,
-    onSettled: () => {
+    onSettled: (...args) => {
+      opts.onSettled?.(...args);
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.todos] });
     },
   });

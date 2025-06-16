@@ -9,10 +9,16 @@ import { useForm } from "react-hook-form";
 
 interface ModifyInboxEntryFormProps {
   data: InboxEntry;
+  onSuccess?: () => void;
 }
 
-export const ModifyInboxEntryForm = ({ data }: ModifyInboxEntryFormProps) => {
-  const { mutate: modifyEntry } = useModifyInboxEntry();
+export const ModifyInboxEntryForm = ({
+  data,
+  onSuccess,
+}: ModifyInboxEntryFormProps) => {
+  const { mutate: modifyEntry, isPending } = useModifyInboxEntry({
+    onSuccess,
+  });
 
   const { handleSubmit, register } = useForm({
     defaultValues: {
@@ -36,7 +42,11 @@ export const ModifyInboxEntryForm = ({ data }: ModifyInboxEntryFormProps) => {
         label="Сообщение"
         placeholder="Введите сообщение..."
       />
-      <button type="submit" className="btn btn-primary self-end">
+      <button
+        type="submit"
+        className="btn btn-primary self-end"
+        disabled={isPending}
+      >
         Изменить запись
       </button>
     </form>
