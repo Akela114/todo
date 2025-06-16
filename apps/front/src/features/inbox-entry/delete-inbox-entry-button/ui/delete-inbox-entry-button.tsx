@@ -9,13 +9,14 @@ interface DeleteInboxEntryButtonProps {
 export const DeleteInboxEntryButton = ({
   data,
 }: DeleteInboxEntryButtonProps) => {
-  const { mutate: deleteTodo } = useDeleteInboxEntry();
+  const { mutate: deleteTodo, status } = useDeleteInboxEntry();
 
   return (
     <button
       type="button"
       className="btn btn-soft btn-square btn-sm"
       onClick={() => deleteTodo({ urlParams: data.id })}
+      disabled={["pending", "success"].includes(status)}
     >
       <Cross2Icon />
     </button>
