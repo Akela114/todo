@@ -1,0 +1,6 @@
+@import "tailwindcss";
+@plugin "daisyui";
+
+@utility card {
+  @apply bg-base-100;
+}

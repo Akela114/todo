@@ -1,0 +1,10 @@
+{
+	"scripts": {
+		"dev": "turbo dev"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^1.9.4",
+		"turbo": "^2.5.4"
+	},
+	"packageManager": "pnpm@10.11.0"
+}
