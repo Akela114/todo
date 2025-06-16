@@ -9,7 +9,12 @@ interface LoginFormProps {
 }
 
 export const LoginForm = ({ onSuccess }: LoginFormProps) => {
-  const { mutateAsync: login } = useLogin({
+  const {
+    mutateAsync: login,
+    error,
+    isPending,
+    reset: resetSubmit,
+  } = useLogin({
     onSuccess,
   });
 
@@ -25,6 +30,7 @@ export const LoginForm = ({ onSuccess }: LoginFormProps) => {
         });
         reset();
       })}
+      onChange={resetSubmit}
       className="flex flex-col gap-5"
     >
       <div className="flex flex-col gap-3">
@@ -41,9 +47,16 @@ export const LoginForm = ({ onSuccess }: LoginFormProps) => {
           inputValidation={getInputValidation(formState, "password")}
         />
       </div>
-      <button type="submit" className="btn btn-primary">
-        Войти
-      </button>
+      <div className="flex flex-col gap-2">
+        <button
+          type="submit"
+          className={"btn btn-primary"}
+          disabled={isPending || !!error}
+        >
+          Войти
+        </button>
+        {error && <div className="text-error text-xs">{error.message}</div>}
+      </div>
     </form>
   );
 };

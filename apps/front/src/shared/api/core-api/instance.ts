@@ -1,5 +1,5 @@
 import ky from "ky";
-import { router } from "../router/router";
+import { router } from "../../router/router";
 
 export const coreApi = ky.extend({
   prefixUrl: "/api",

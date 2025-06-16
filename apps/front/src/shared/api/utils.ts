@@ -1,4 +1,4 @@
-import type { KyInstance } from "ky";
+import { HTTPError, type KyInstance } from "ky";
 import type { z } from "zod";
 
 export const createFetcherWrapper =
@@ -6,11 +6,11 @@ export const createFetcherWrapper =
     UrlParams = undefined,
     SearchParams extends Record<string, string> | undefined = undefined,
     Body = undefined,
-    Response = unknown,
+    Response = unknown
   >(
     ky: KyInstance,
     urlFactory: (urlParams: UrlParams) => string,
-    method: "get" | "post" | "put" | "delete",
+    method: "get" | "post" | "put" | "delete"
   ) =>
   async (
     ...[options]: UrlParams | SearchParams | Body extends undefined
@@ -26,14 +26,14 @@ export const createFetcherWrapper =
               : {
                   searchParams: SearchParams;
                 }) &
-            (Body extends undefined ? EmptyObject : { body: Body }),
+            (Body extends undefined ? EmptyObject : { body: Body })
         ]
   ) => {
     const response = await ky[method]<Response>(
       urlFactory(
         options && "urlParams" in options
           ? options.urlParams
-          : (undefined as UrlParams),
+          : (undefined as UrlParams)
       ),
       {
         searchParams:
@@ -41,7 +41,7 @@ export const createFetcherWrapper =
             ? options.searchParams
             : undefined,
         json: options && "body" in options ? options.body : undefined,
-      },
+      }
     );
 
     return response.json();
@@ -49,7 +49,7 @@ export const createFetcherWrapper =
 
 export const withValidation = <Args extends unknown[], Result>(
   callback: (...args: Args) => Promise<unknown>,
-  responseSchema: z.ZodType<Result>,
+  responseSchema: z.ZodType<Result>
 ) => {
   return async (...args: Args) => {
     const result = await callback(...args);
@@ -57,9 +57,29 @@ export const withValidation = <Args extends unknown[], Result>(
   };
 };
 
+export const withHttpErrorParsing = <Args extends unknown[], Result, Error>(
+  callback: (...args: Args) => Promise<Result>,
+  errorSchema: z.ZodType<Error>,
+  defaultError: Error
+) => {
+  return async (...args: Args) => {
+    try {
+      const result = await callback(...args);
+      return result;
+    } catch (err) {
+      if (err instanceof HTTPError) {
+        const errResponse = await err.response.json();
+        const { success, data } = errorSchema.safeParse(errResponse);
+        throw success ? data : defaultError;
+      }
+      throw err;
+    }
+  };
+};
+
 export const withOnSuccessHook = <Args extends unknown[], Result>(
   callback: (...args: Args) => Promise<Result>,
-  onSuccess: (result: Result) => void,
+  onSuccess: (result: Result) => void
 ) => {
   return async (...args: Args) => {
     const result = await callback(...args);

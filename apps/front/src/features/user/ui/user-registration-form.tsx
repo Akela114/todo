@@ -11,7 +11,12 @@ interface UserRegistrationFormProps {
 export const UserRegistrationForm = ({
   onSuccess,
 }: UserRegistrationFormProps) => {
-  const { mutateAsync: createUser } = useCreateUser({
+  const {
+    mutateAsync: createUser,
+    error,
+    isPending,
+    reset: resetSubmit,
+  } = useCreateUser({
     onSuccess,
   });
 
@@ -28,6 +33,7 @@ export const UserRegistrationForm = ({
         reset();
       })}
       className="flex flex-col gap-5"
+      onChange={resetSubmit}
     >
       <div className="flex flex-col gap-3">
         <Input
@@ -49,9 +55,16 @@ export const UserRegistrationForm = ({
           inputValidation={getInputValidation(formState, "password")}
         />
       </div>
-      <button type="submit" className="btn btn-primary">
-        Зарегистрироваться
-      </button>
+      <div className="flex flex-col gap-2">
+        <button
+          type="submit"
+          className="btn btn-primary"
+          disabled={isPending || !!error}
+        >
+          Зарегистрироваться
+        </button>
+        {error && <div className="text-error text-xs">{error.message}</div>}
+      </div>
     </form>
   );
 };
