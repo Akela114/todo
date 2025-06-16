@@ -15,7 +15,7 @@ interface CreateInboxEntryFormProps {
 export const CreateInboxEntryForm = ({
   beforeSubmit,
 }: CreateInboxEntryFormProps) => {
-  const { mutateAsync: createEntry } = useCreateInboxEntry();
+  const { mutateAsync: createEntry, isPending } = useCreateInboxEntry();
 
   const { handleSubmit, register, reset } = useForm({
     resolver: zodResolver(createOrModifyInboxEntrySchema),
@@ -37,7 +37,11 @@ export const CreateInboxEntryForm = ({
         label="Сообщение"
         placeholder="Введите сообщение..."
       />
-      <button type="submit" className="btn btn-primary self-end">
+      <button
+        type="submit"
+        className="btn btn-primary self-end"
+        disabled={isPending}
+      >
         Создать запись
       </button>
     </form>
