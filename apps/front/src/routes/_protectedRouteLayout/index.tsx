@@ -8,7 +8,7 @@ export const Route = createFileRoute("/_protectedRouteLayout/")({
 
 function MainPage() {
   return (
-    <InboxEntriesList className="max-w-5xl mx-auto">
+    <InboxEntriesList>
       <CreateInboxEntryButton />
     </InboxEntriesList>
   );

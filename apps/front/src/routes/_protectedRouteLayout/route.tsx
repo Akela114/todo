@@ -27,13 +27,14 @@ function ProtectedRouteLayout() {
   const navigate = useNavigate();
 
   return (
-    <div>
+    <div className="flex-1 flex flex-col">
       <Header
+        innerClassName="w-full max-w-5xl mx-auto"
         actions={
           <LogoutButton onSuccess={() => navigate({ to: "/auth/login" })} />
         }
       />
-      <main className="flex-1 px-2 py-6">
+      <main className="flex-1 px-2 py-6 w-full max-w-5xl self-center">
         <Outlet />
       </main>
     </div>
