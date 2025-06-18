@@ -11,7 +11,7 @@ export const inboxEntrySelectSchema = z.object({
 
 export const inboxEntryCreateOrUpdateSchema = z.object({
   title: z.string(),
-}) satisfies z.ZodType<Omit<InferInsertModel<typeof inboxEntry>, "userId">>;
+}) satisfies z.ZodType<Pick<InferInsertModel<typeof inboxEntry>, "title">>;
 
 export type InboxEntrySelect = z.infer<typeof inboxEntrySelectSchema>;
 export type InboxEntryCreateOrUpdate = z.infer<

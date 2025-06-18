@@ -1,7 +1,6 @@
 import { SWAGGER_TAGS } from "@/lib/constants/swagger-tags.js";
 import { basicResponseSchema } from "@/schemas/common-schemas.js";
 import { userCreateSchema, userSelectSchema } from "@/schemas/user-schemas.js";
-import { createUserService } from "@/services/user-service.js";
 import type { FastifyInstance } from "fastify";
 import type { ZodTypeProvider } from "fastify-type-provider-zod";
 
@@ -17,8 +16,10 @@ export default async (instance: FastifyInstance) => {
         400: basicResponseSchema,
       },
     },
-    handler: async (request) => {
-      return createUserService(request.body);
+    handler: async (request, reply) => {
+      const user = await instance.userService.createUserService(request.body);
+
+      return reply.status(201).send(user);
     },
   });
 };

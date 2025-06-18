@@ -5,13 +5,6 @@ import {
   inboxEntryCreateOrUpdateSchema,
   inboxEntrySelectSchema,
 } from "@/schemas/inbox-entry-schemas.js";
-import {
-  createUserInboxEntry,
-  deleteUserInboxEntry,
-  getUserInboxEntries,
-  getUserInboxEntryById,
-  updateUserInboxEntry,
-} from "@/repository/inbox-entry-repository.js";
 
 export default async (instance: FastifyInstance) => {
   instance.withTypeProvider<ZodTypeProvider>().route({
@@ -24,8 +17,8 @@ export default async (instance: FastifyInstance) => {
         200: inboxEntrySelectSchema.array(),
       },
     },
-    handler: async (request) => {
-      return getUserInboxEntries(request.user.id);
+    handler: (request) => {
+      return instance.inboxEntryRepository.getUserInboxEntries(request.user.id);
     },
   });
 
@@ -40,8 +33,11 @@ export default async (instance: FastifyInstance) => {
         200: inboxEntrySelectSchema,
       },
     },
-    handler: async (request) => {
-      return getUserInboxEntryById(request.params.id, request.user.id);
+    handler: (request) => {
+      return instance.inboxEntryRepository.getUserInboxEntryById(
+        request.params.id,
+        request.user.id
+      );
     },
   });
 
@@ -56,10 +52,13 @@ export default async (instance: FastifyInstance) => {
         201: inboxEntrySelectSchema,
       },
     },
-    handler: async (request) => {
-      return createUserInboxEntry(request.user.id, {
-        title: request.body.title,
-      });
+    handler: (request) => {
+      return instance.inboxEntryRepository.createUserInboxEntry(
+        request.user.id,
+        {
+          title: request.body.title,
+        }
+      );
     },
   });
 
@@ -75,10 +74,14 @@ export default async (instance: FastifyInstance) => {
         200: inboxEntrySelectSchema,
       },
     },
-    handler: async (request) => {
-      return updateUserInboxEntry(request.params.id, request.user.id, {
-        title: request.body.title,
-      });
+    handler: (request) => {
+      return instance.inboxEntryRepository.updateUserInboxEntry(
+        request.params.id,
+        request.user.id,
+        {
+          title: request.body.title,
+        }
+      );
     },
   });
 
@@ -93,8 +96,11 @@ export default async (instance: FastifyInstance) => {
         200: inboxEntrySelectSchema,
       },
     },
-    handler: async (request) => {
-      return deleteUserInboxEntry(request.params.id, request.user.id);
+    handler: (request) => {
+      return instance.inboxEntryRepository.deleteUserInboxEntry(
+        request.params.id,
+        request.user.id
+      );
     },
   });
 };

@@ -1,76 +1,83 @@
-import { dbClient } from "@/db/client.js";
 import { inboxEntry } from "@/db/schema.js";
 import { ValidationError } from "@/lib/errors/bad-request-error.js";
-import { and, eq, type InferInsertModel } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
+import type { FastifyInstance } from "fastify";
 
-export const getUserInboxEntries = (userId: number) => {
-  return dbClient
-    .select()
-    .from(inboxEntry)
-    .where(eq(inboxEntry.userId, userId));
-};
-
-export const getUserInboxEntryById = async (id: number, userId: number) => {
-  const result = await dbClient
-    .select()
-    .from(inboxEntry)
-    .where(and(eq(inboxEntry.id, id), eq(inboxEntry.userId, userId)));
-
-  const entry = result[0];
-
-  if (!entry) {
-    throw new ValidationError("Entry not found");
+export default (instance: FastifyInstance) => {
+  function getUserInboxEntries(userId: number) {
+    return instance.db
+      .select()
+      .from(inboxEntry)
+      .where(eq(inboxEntry.userId, userId));
   }
 
-  return entry;
-};
+  async function getUserInboxEntryById(id: number, userId: number) {
+    const result = await instance.db
+      .select()
+      .from(inboxEntry)
+      .where(and(eq(inboxEntry.id, id), eq(inboxEntry.userId, userId)));
 
-export const createUserInboxEntry = async (
-  userId: number,
-  data: { title: string }
-) => {
-  const result = await dbClient
-    .insert(inboxEntry)
-    .values({
-      ...data,
-      userId,
-    })
-    .returning();
+    const entry = result[0];
 
-  return result[0];
-};
+    if (!entry) {
+      throw new ValidationError("Entry not found");
+    }
 
-export const updateUserInboxEntry = async (
-  id: number,
-  userId: number,
-  data: { title: string }
-) => {
-  const result = await dbClient
-    .update(inboxEntry)
-    .set(data)
-    .where(and(eq(inboxEntry.id, id), eq(inboxEntry.userId, userId)))
-    .returning();
-
-  const entry = result[0];
-
-  if (!entry) {
-    throw new ValidationError("Entry not found");
+    return entry;
   }
 
-  return entry;
-};
+  async function createUserInboxEntry(userId: number, data: { title: string }) {
+    const result = await instance.db
+      .insert(inboxEntry)
+      .values({
+        ...data,
+        userId,
+      })
+      .returning();
 
-export const deleteUserInboxEntry = async (id: number, userId: number) => {
-  const result = await dbClient
-    .delete(inboxEntry)
-    .where(and(eq(inboxEntry.id, id), eq(inboxEntry.userId, userId)))
-    .returning();
-
-  const entry = result[0];
-
-  if (!entry) {
-    throw new ValidationError("Entry not found");
+    return result[0];
   }
 
-  return entry;
+  async function updateUserInboxEntry(
+    id: number,
+    userId: number,
+    data: { title: string }
+  ) {
+    const result = await instance.db
+      .update(inboxEntry)
+      .set(data)
+      .where(and(eq(inboxEntry.id, id), eq(inboxEntry.userId, userId)))
+      .returning();
+
+    const entry = result[0];
+
+    if (!entry) {
+      throw new ValidationError("Entry not found");
+    }
+
+    return entry;
+  }
+
+  async function deleteUserInboxEntry(id: number, userId: number) {
+    const result = await instance.db
+      .delete(inboxEntry)
+      .where(and(eq(inboxEntry.id, id), eq(inboxEntry.userId, userId)))
+      .returning();
+
+    const entry = result[0];
+
+    if (!entry) {
+      throw new ValidationError("Entry not found");
+    }
+
+    return entry;
+  }
+
+  return {
+    getUserInboxEntries,
+    getUserInboxEntryById,
+    createUserInboxEntry,
+    updateUserInboxEntry,
+    deleteUserInboxEntry,
+  };
 };

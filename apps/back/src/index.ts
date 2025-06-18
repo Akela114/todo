@@ -12,6 +12,8 @@ import {
 } from "fastify-type-provider-zod";
 import routes from "./routes/index.js";
 import { ValidationError } from "./lib/errors/bad-request-error.js";
+import services from "./services/index.js";
+import repository from "./repository/index.js";
 
 const fastify = Fastify({
   logger: true,
@@ -42,6 +44,8 @@ fastify.setErrorHandler((error, _request, reply) => {
   });
 });
 
+fastify.register(repository);
+fastify.register(services);
 fastify.register(routes, { prefix: "/api" });
 
 const startFastify = async () => {

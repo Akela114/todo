@@ -16,7 +16,7 @@ export const userCreateSchema = z.object({
   email: z.string().email(),
   password: z.string().min(8).regex(REGEXES.password),
 }) satisfies z.ZodType<
-  Omit<InferInsertModel<typeof user>, "passwordSalt" | "passwordHash">
+  Pick<InferInsertModel<typeof user>, "username" | "email">
 >;
 
 export type UserSelect = z.infer<typeof userSelectSchema>;

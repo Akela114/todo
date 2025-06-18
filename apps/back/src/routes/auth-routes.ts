@@ -4,7 +4,6 @@ import { z } from "zod";
 import { SWAGGER_TAGS } from "@/lib/constants/swagger-tags.js";
 import { basicResponseSchema } from "@/schemas/common-schemas.js";
 import { authTokensSchema } from "@/schemas/auth-schemas.js";
-import { getAuthenticatedUser } from "@/services/auth-service.js";
 
 export default async (instance: FastifyInstance) => {
   instance.withTypeProvider<ZodTypeProvider>().route({
@@ -37,7 +36,7 @@ export default async (instance: FastifyInstance) => {
       },
     },
     handler: async (request, reply) => {
-      const user = await getAuthenticatedUser(
+      const user = await instance.authService.getAuthenticatedUser(
         request.body.username,
         request.body.password
       );

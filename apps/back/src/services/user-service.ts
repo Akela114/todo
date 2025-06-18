@@ -1,51 +1,54 @@
-import {
-  createUser,
-  getUserByEmail,
-  getUserByUsername,
-} from "@/repository/user-repository.js";
 import { generateSalt, getHash } from "@/lib/utils/hash-utils.js";
 import { ValidationError } from "@/lib/errors/bad-request-error.js";
+import type { FastifyInstance } from "fastify";
 
-const checkIfUserExistsService = async ({
-  email,
-  username,
-}: {
-  email: string;
-  username: string;
-}) => {
-  const [userWithEmail, userWithUsername] = await Promise.all([
-    getUserByEmail(email),
-    getUserByUsername(username),
-  ]);
-
-  return Boolean(userWithEmail || userWithUsername);
-};
-
-export const createUserService = async ({
-  username,
-  email,
-  password,
-}: {
-  username: string;
-  email: string;
-  password: string;
-}) => {
-  const isUserExists = await checkIfUserExistsService({
+export default (instance: FastifyInstance) => {
+  async function checkIfUserExistsService({
     email,
     username,
-  });
+  }: {
+    email: string;
+    username: string;
+  }) {
+    const [userWithEmail, userWithUsername] = await Promise.all([
+      instance.userRepository.getUserByEmail(email),
+      instance.userRepository.getUserByUsername(username),
+    ]);
 
-  if (isUserExists) {
-    throw new ValidationError("User already exists");
+    return Boolean(userWithEmail || userWithUsername);
   }
 
-  const passwordSalt = generateSalt();
-  const passwordHash = await getHash(password, passwordSalt);
-
-  return createUser({
+  async function createUserService({
     username,
     email,
-    passwordSalt,
-    passwordHash,
-  });
+    password,
+  }: {
+    username: string;
+    email: string;
+    password: string;
+  }) {
+    const isUserExists = await instance.userService.checkIfUserExistsService({
+      email,
+      username,
+    });
+
+    if (isUserExists) {
+      throw new ValidationError("User already exists");
+    }
+
+    const passwordSalt = generateSalt();
+    const passwordHash = await getHash(password, passwordSalt);
+
+    return instance.userRepository.createUser({
+      username,
+      email,
+      passwordSalt,
+      passwordHash,
+    });
+  }
+
+  return {
+    createUserService,
+    checkIfUserExistsService,
+  };
 };
