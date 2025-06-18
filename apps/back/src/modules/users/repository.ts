@@ -1,6 +1,6 @@
-import { user } from "@/db/schema.js";
 import { eq, type InferInsertModel } from "drizzle-orm";
 import type { FastifyInstance } from "fastify";
+import { user } from "./tables.js";
 
 export default (instance: FastifyInstance) => {
   async function getUserByEmail(email: string) {

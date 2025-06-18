@@ -1,9 +1,8 @@
 import type { ZodTypeProvider } from "fastify-type-provider-zod";
 import type { FastifyInstance } from "fastify";
-import { z } from "zod";
 import { SWAGGER_TAGS } from "@/lib/constants/swagger-tags.js";
-import { basicResponseSchema } from "@/schemas/common-schemas.js";
-import { authTokensSchema } from "@/schemas/auth-schemas.js";
+import { basicResponseSchema } from "@/lib/common-schemas.js";
+import { authTokensSchema, loginSchema } from "./schemas.js";
 
 export default async (instance: FastifyInstance) => {
   instance.withTypeProvider<ZodTypeProvider>().route({
@@ -26,10 +25,7 @@ export default async (instance: FastifyInstance) => {
     url: "/",
     schema: {
       tags: [SWAGGER_TAGS.users.name, SWAGGER_TAGS.auth.name],
-      body: z.object({
-        username: z.string(),
-        password: z.string(),
-      }),
+      body: loginSchema,
       response: {
         200: authTokensSchema,
         400: basicResponseSchema,

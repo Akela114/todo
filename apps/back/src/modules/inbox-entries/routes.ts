@@ -4,7 +4,7 @@ import { SWAGGER_TAGS } from "@/lib/constants/swagger-tags.js";
 import {
   inboxEntryCreateOrUpdateSchema,
   inboxEntrySelectSchema,
-} from "@/schemas/inbox-entry-schemas.js";
+} from "./schemas.js";
 
 export default async (instance: FastifyInstance) => {
   instance.withTypeProvider<ZodTypeProvider>().route({

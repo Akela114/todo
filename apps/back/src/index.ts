@@ -10,10 +10,8 @@ import {
   serializerCompiler,
   validatorCompiler,
 } from "fastify-type-provider-zod";
-import routes from "./routes/index.js";
 import { ValidationError } from "./lib/errors/bad-request-error.js";
-import services from "./services/index.js";
-import repository from "./repository/index.js";
+import modules from "./modules/index.js";
 
 const fastify = Fastify({
   logger: true,
@@ -23,11 +21,8 @@ fastify.setValidatorCompiler(validatorCompiler);
 fastify.setSerializerCompiler(serializerCompiler);
 
 fastify.register(cookiePlugin);
-
 fastify.register(swaggerPlugin);
-
 fastify.register(databaseClientPlugin);
-
 fastify.register(jwtPlugin);
 
 fastify.setErrorHandler((error, _request, reply) => {
@@ -44,9 +39,9 @@ fastify.setErrorHandler((error, _request, reply) => {
   });
 });
 
-fastify.register(repository);
-fastify.register(services);
-fastify.register(routes, { prefix: "/api" });
+fastify.register(modules, {
+  prefix: "/api",
+});
 
 const startFastify = async () => {
   try {

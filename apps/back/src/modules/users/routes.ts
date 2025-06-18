@@ -1,8 +1,8 @@
 import { SWAGGER_TAGS } from "@/lib/constants/swagger-tags.js";
-import { basicResponseSchema } from "@/schemas/common-schemas.js";
-import { userCreateSchema, userSelectSchema } from "@/schemas/user-schemas.js";
+import { basicResponseSchema } from "@/lib/common-schemas.js";
 import type { FastifyInstance } from "fastify";
 import type { ZodTypeProvider } from "fastify-type-provider-zod";
+import { userCreateSchema, userSelectSchema } from "./schemas.js";
 
 export default async (instance: FastifyInstance) => {
   instance.withTypeProvider<ZodTypeProvider>().route({

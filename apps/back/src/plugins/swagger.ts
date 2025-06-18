@@ -1,4 +1,4 @@
-import { SWAGGER_TAGS } from "@/lib/constants/swagger-tags";
+import { SWAGGER_TAGS } from "@/lib/constants/swagger-tags.js";
 import fastifySwagger from "@fastify/swagger";
 import fastifySwaggerUi from "@fastify/swagger-ui";
 import fp from "fastify-plugin";

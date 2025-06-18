@@ -5,7 +5,7 @@ import { valueToArray } from "@/lib/utils/value-to-array.js";
 import {
   type BasicResponse,
   basicResponseSchema,
-} from "@/schemas/common-schemas.js";
+} from "@/lib/common-schemas.js";
 
 declare module "fastify" {
   interface FastifyInstance {

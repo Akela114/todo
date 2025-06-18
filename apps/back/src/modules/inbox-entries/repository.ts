@@ -1,7 +1,7 @@
-import { inboxEntry } from "@/db/schema.js";
 import { ValidationError } from "@/lib/errors/bad-request-error.js";
 import { and, eq } from "drizzle-orm";
 import type { FastifyInstance } from "fastify";
+import { inboxEntry } from "./tables.js";
 
 export default (instance: FastifyInstance) => {
   function getUserInboxEntries(userId: number) {
