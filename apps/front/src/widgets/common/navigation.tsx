@@ -1,24 +1,8 @@
-import type { FileRoutesByTo } from "@/routeTree.gen";
+import { ROUTE_LABELS } from "@/shared/router/route-labels";
 import { Link } from "@tanstack/react-router";
 
-const LINKS: Partial<
-  Record<
-    keyof FileRoutesByTo,
-    {
-      label: string;
-    }
-  >
-> = {
-  "/inbox": {
-    label: "Входящие",
-  },
-  "/tasks": {
-    label: "Задачи",
-  },
-};
-
 export const Navigation = () => {
-  const links = Object.entries(LINKS).map(([to, { label }]) => (
+  const links = Object.entries(ROUTE_LABELS).map(([to, { label }]) => (
     <li key={to}>
       <Link to={to} activeProps={{ className: "menu-active" }}>
         {label}
