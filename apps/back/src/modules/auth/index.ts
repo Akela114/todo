@@ -1,14 +1,16 @@
 import type { FastifyInstance } from "fastify";
 import routes from "./routes.js";
-import service from "./service.js";
+import { AuthService } from "./service.js";
 
 declare module "fastify" {
   interface FastifyInstance {
-    authService: ReturnType<typeof service>;
+    authService: AuthService;
   }
 }
 
 export default async (instance: FastifyInstance) => {
-  instance.decorate("authService", service(instance));
+  const service = new AuthService(instance);
+
+  instance.decorate("authService", service);
   instance.register(routes, { prefix: "/auth" });
 };

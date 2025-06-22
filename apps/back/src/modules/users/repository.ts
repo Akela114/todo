@@ -1,32 +1,26 @@
-import { eq, type InferInsertModel } from "drizzle-orm";
-import type { FastifyInstance } from "fastify";
-import { user } from "./tables.js";
+import { eq } from "drizzle-orm";
+import { user } from "@/db/schema.js";
+import { BaseRepository } from "@/lib/base-classes/base-repository.js";
+import type { NodePgDatabase } from "drizzle-orm/node-postgres";
 
-export default (instance: FastifyInstance) => {
-  async function getUserByEmail(email: string) {
-    const result = await instance.db
+export class UsersRepository extends BaseRepository<typeof user, "id"> {
+  constructor(protected client: NodePgDatabase<Record<string, unknown>>) {
+    super(client, user, "id");
+  }
+
+  async getOneByEmail(email: string) {
+    const result = await this.client
       .select()
-      .from(user)
-      .where(eq(user.email, email));
+      .from(this.table)
+      .where(eq(this.table.email, email));
     return result[0];
   }
 
-  async function getUserByUsername(username: string) {
-    const result = await instance.db
+  async getOneByUsername(username: string) {
+    const result = await this.client
       .select()
-      .from(user)
-      .where(eq(user.username, username));
+      .from(this.table)
+      .where(eq(this.table.username, username));
     return result[0];
   }
-
-  async function createUser(data: InferInsertModel<typeof user>) {
-    const result = await instance.db.insert(user).values(data).returning();
-    return result[0];
-  }
-
-  return {
-    getUserByEmail,
-    getUserByUsername,
-    createUser,
-  };
-};
+}

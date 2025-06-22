@@ -11,4 +11,8 @@ export const SWAGGER_TAGS = {
     name: "auth",
     description: "Authentication related endpoints",
   },
+  tasks: {
+    name: "tasks",
+    description: "Tasks related endpoints",
+  },
 };

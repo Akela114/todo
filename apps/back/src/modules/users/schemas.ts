@@ -1,7 +1,7 @@
-import type { user } from "@/db/schema.js";
 import { REGEXES } from "@/lib/constants/regexes.js";
 import type { InferInsertModel, InferSelectModel } from "drizzle-orm";
 import { z } from "zod";
+import type { user } from "@/db/schema.js";
 
 export const userSelectSchema = z.object({
   id: z.coerce.number(),
@@ -18,6 +18,3 @@ export const userCreateSchema = z.object({
 }) satisfies z.ZodType<
   Pick<InferInsertModel<typeof user>, "username" | "email">
 >;
-
-export type UserSelect = z.infer<typeof userSelectSchema>;
-export type UserCreate = z.infer<typeof userCreateSchema>;

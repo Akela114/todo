@@ -1,24 +1,25 @@
 import { generateSalt, getHash } from "@/lib/utils/hash-utils.js";
 import { ValidationError } from "@/lib/errors/bad-request-error.js";
-import type { FastifyInstance } from "fastify";
+import { BaseService } from "@/lib/base-classes/base-service.js";
+import type { user } from "@/db/schema.js";
+import type { UsersRepository } from "./repository.js";
 
-export default (instance: FastifyInstance) => {
-  async function checkIfUserExistsService({
-    email,
-    username,
-  }: {
-    email: string;
-    username: string;
-  }) {
-    const [userWithEmail, userWithUsername] = await Promise.all([
-      instance.userRepository.getUserByEmail(email),
-      instance.userRepository.getUserByUsername(username),
-    ]);
-
-    return Boolean(userWithEmail || userWithUsername);
+export class UsersService extends BaseService<typeof user, "id"> {
+  constructor(protected repository: UsersRepository) {
+    super(repository, "User");
   }
 
-  async function createUserService({
+  async getOneByEmail(...args: Parameters<UsersRepository["getOneByEmail"]>) {
+    return this.repository.getOneByEmail(...args);
+  }
+
+  async getOneByUsername(
+    ...args: Parameters<UsersRepository["getOneByUsername"]>
+  ) {
+    return this.repository.getOneByUsername(...args);
+  }
+
+  async createWithPasswordGeneration({
     username,
     email,
     password,
@@ -27,19 +28,19 @@ export default (instance: FastifyInstance) => {
     email: string;
     password: string;
   }) {
-    const isUserExists = await instance.userService.checkIfUserExistsService({
+    const isUserExists = await this.checkIfExistsWithEmailOrUsername({
       email,
       username,
     });
 
     if (isUserExists) {
-      throw new ValidationError("User already exists");
+      throw new ValidationError(`${this.entityName} already exists`);
     }
 
     const passwordSalt = generateSalt();
     const passwordHash = await getHash(password, passwordSalt);
 
-    return instance.userRepository.createUser({
+    return this.create({
       username,
       email,
       passwordSalt,
@@ -47,8 +48,18 @@ export default (instance: FastifyInstance) => {
     });
   }
 
-  return {
-    createUserService,
-    checkIfUserExistsService,
-  };
-};
+  private async checkIfExistsWithEmailOrUsername({
+    email,
+    username,
+  }: {
+    email: string;
+    username: string;
+  }) {
+    const [userWithEmail, userWithUsername] = await Promise.all([
+      this.getOneByEmail(email),
+      this.getOneByUsername(username),
+    ]);
+
+    return Boolean(userWithEmail || userWithUsername);
+  }
+}

@@ -1,19 +1,19 @@
 import type { FastifyInstance } from "fastify";
 import routes from "./routes.js";
-import repository from "./repository.js";
-import service from "./service.js";
 import fastifyPlugin from "fastify-plugin";
-export * as userTables from "./tables.js";
+import { UsersService } from "./service.js";
+import { UsersRepository } from "./repository.js";
 
 declare module "fastify" {
   interface FastifyInstance {
-    userRepository: ReturnType<typeof repository>;
-    userService: ReturnType<typeof service>;
+    usersService: UsersService;
   }
 }
 
 export default fastifyPlugin(async (instance: FastifyInstance) => {
-  instance.decorate("userRepository", repository(instance));
-  instance.decorate("userService", service(instance));
+  const repository = new UsersRepository(instance.db);
+  const service = new UsersService(repository);
+
+  instance.decorate("usersService", service);
   instance.register(routes, { prefix: "/users" });
 });

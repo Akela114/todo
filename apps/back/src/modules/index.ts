@@ -1,16 +1,14 @@
 import type { FastifyInstance } from "fastify";
-import auth from "./auth/index.js";
-import inboxEntries, { inboxEntryTables } from "./inbox-entries/index.js";
-import users, { userTables } from "./users/index.js";
 import fastifyPlugin from "fastify-plugin";
 
-export const tables = {
-  ...inboxEntryTables,
-  ...userTables,
-};
+import auth from "./auth/index.js";
+import inboxEntries from "./inbox-entries/index.js";
+import users from "./users/index.js";
+import tasks from "./tasks/index.js";
 
 export default (instance: FastifyInstance) => {
   instance.register(fastifyPlugin(auth));
   instance.register(fastifyPlugin(inboxEntries));
   instance.register(fastifyPlugin(users));
+  instance.register(fastifyPlugin(tasks));
 };

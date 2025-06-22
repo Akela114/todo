@@ -12,6 +12,7 @@ import {
 } from "fastify-type-provider-zod";
 import { ValidationError } from "./lib/errors/bad-request-error.js";
 import modules from "./modules/index.js";
+import { NotFoundError } from "./lib/errors/not-found-error.js";
 
 const fastify = Fastify({
   logger: true,
@@ -26,9 +27,18 @@ fastify.register(databaseClientPlugin);
 fastify.register(jwtPlugin);
 
 fastify.setErrorHandler((error, _request, reply) => {
+  console.error(error);
+
   if (error instanceof ValidationError) {
     return reply.status(400).send({
       statusCode: 400,
+      message: error.message,
+    });
+  }
+
+  if (error instanceof NotFoundError) {
+    return reply.status(404).send({
+      statusCode: 404,
       message: error.message,
     });
   }

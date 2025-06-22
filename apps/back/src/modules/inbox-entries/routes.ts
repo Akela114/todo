@@ -5,6 +5,7 @@ import {
   inboxEntryCreateOrUpdateSchema,
   inboxEntrySelectSchema,
 } from "./schemas.js";
+import { taskCreateSchema, taskSelectSchema } from "../tasks/schemas.js";
 
 export default async (instance: FastifyInstance) => {
   instance.withTypeProvider<ZodTypeProvider>().route({
@@ -18,26 +19,9 @@ export default async (instance: FastifyInstance) => {
       },
     },
     handler: (request) => {
-      return instance.inboxEntryRepository.getUserInboxEntries(request.user.id);
-    },
-  });
-
-  instance.withTypeProvider<ZodTypeProvider>().route({
-    withAuth: true,
-    method: "GET",
-    url: "/:id",
-    schema: {
-      tags: [SWAGGER_TAGS.inboxEntries.name],
-      params: inboxEntrySelectSchema.pick({ id: true }),
-      response: {
-        200: inboxEntrySelectSchema,
-      },
-    },
-    handler: (request) => {
-      return instance.inboxEntryRepository.getUserInboxEntryById(
-        request.params.id,
-        request.user.id
-      );
+      return instance.inboxEntryService.getAll({
+        userId: request.user.id,
+      });
     },
   });
 
@@ -52,13 +36,13 @@ export default async (instance: FastifyInstance) => {
         201: inboxEntrySelectSchema,
       },
     },
-    handler: (request) => {
-      return instance.inboxEntryRepository.createUserInboxEntry(
-        request.user.id,
-        {
-          title: request.body.title,
-        }
-      );
+    handler: async (request, reply) => {
+      const inboxEntry = await instance.inboxEntryService.create({
+        title: request.body.title,
+        userId: request.user.id,
+      });
+
+      return reply.status(201).send(inboxEntry);
     },
   });
 
@@ -75,9 +59,11 @@ export default async (instance: FastifyInstance) => {
       },
     },
     handler: (request) => {
-      return instance.inboxEntryRepository.updateUserInboxEntry(
+      return instance.inboxEntryService.update(
         request.params.id,
-        request.user.id,
+        {
+          userId: request.user.id,
+        },
         {
           title: request.body.title,
         }
@@ -97,10 +83,32 @@ export default async (instance: FastifyInstance) => {
       },
     },
     handler: (request) => {
-      return instance.inboxEntryRepository.deleteUserInboxEntry(
-        request.params.id,
-        request.user.id
-      );
+      return instance.inboxEntryService.delete(request.params.id, {
+        userId: request.user.id,
+      });
+    },
+  });
+
+  instance.withTypeProvider<ZodTypeProvider>().route({
+    withAuth: true,
+    method: "POST",
+    url: "/:id/tasks",
+    schema: {
+      tags: [SWAGGER_TAGS.inboxEntries.name, SWAGGER_TAGS.tasks.name],
+      params: inboxEntrySelectSchema.pick({ id: true }),
+      body: taskCreateSchema,
+      response: {
+        201: taskSelectSchema,
+      },
+    },
+    handler: async (request, reply) => {
+      const task = await instance.inboxEntryService.convertInboxEntryToTask({
+        id: request.params.id,
+        userId: request.user.id,
+        title: request.body.title,
+      });
+
+      return reply.status(201).send(task);
     },
   });
 };

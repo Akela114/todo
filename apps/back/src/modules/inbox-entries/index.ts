@@ -1,15 +1,18 @@
 import type { FastifyInstance } from "fastify";
 import routes from "./routes.js";
-import repository from "./repository.js";
-export * as inboxEntryTables from "./tables.js";
+import { InboxEntriesRepository } from "./repository.js";
+import { InboxEntriesService } from "./service.js";
 
 declare module "fastify" {
   interface FastifyInstance {
-    inboxEntryRepository: ReturnType<typeof repository>;
+    inboxEntryService: InboxEntriesService;
   }
 }
 
 export default async (instance: FastifyInstance) => {
-  instance.decorate("inboxEntryRepository", repository(instance));
+  const repository = new InboxEntriesRepository(instance.db);
+  const service = new InboxEntriesService(instance, repository);
+
+  instance.decorate("inboxEntryService", service);
   instance.register(routes, { prefix: "/inbox-entries" });
 };

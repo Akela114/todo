@@ -17,7 +17,9 @@ export default async (instance: FastifyInstance) => {
       },
     },
     handler: async (request, reply) => {
-      const user = await instance.userService.createUserService(request.body);
+      const user = await instance.usersService.createWithPasswordGeneration(
+        request.body
+      );
 
       return reply.status(201).send(user);
     },

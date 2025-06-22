@@ -2,9 +2,12 @@ import { getHash } from "@/lib/utils/hash-utils.js";
 import { ValidationError } from "@/lib/errors/bad-request-error.js";
 import type { FastifyInstance } from "fastify";
 
-export default (instance: FastifyInstance) => {
-  async function getAuthenticatedUser(username: string, password: string) {
-    const user = await instance.userRepository.getUserByUsername(username);
+export class AuthService {
+  constructor(private instance: FastifyInstance) {}
+
+  async getAuthenticatedUser(username: string, password: string) {
+    console.log(this.instance);
+    const user = await this.instance.usersService.getOneByUsername(username);
 
     if (!user) {
       throw new ValidationError("Invalid credentials");
@@ -18,8 +21,4 @@ export default (instance: FastifyInstance) => {
 
     return user;
   }
-
-  return {
-    getAuthenticatedUser,
-  };
-};
+}
