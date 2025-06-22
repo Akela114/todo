@@ -27,8 +27,6 @@ fastify.register(databaseClientPlugin);
 fastify.register(jwtPlugin);
 
 fastify.setErrorHandler((error, _request, reply) => {
-  console.error(error);
-
   if (error instanceof ValidationError) {
     return reply.status(400).send({
       statusCode: 400,
