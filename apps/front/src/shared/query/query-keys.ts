@@ -1,4 +1,5 @@
 export const QUERY_KEYS = {
-  todos: "todos",
+  inboxEntries: "inboxEntries",
+  tasks: "tasks",
   authCheck: "authCheck",
 };

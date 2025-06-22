@@ -1,0 +1,30 @@
+import { Modal } from "@/shared/ui/dialog";
+import { MagicWandIcon } from "@radix-ui/react-icons";
+import { CreateTaskFromInboxEntryForm } from "./create-task-from-inbox-entry-form";
+import type { InboxEntry } from "@/entities/inbox-entry";
+
+interface CreateTaskFromInboxEntryButtonProps {
+  data: InboxEntry;
+}
+
+export const CreateTaskFromInboxEntryButton = ({
+  data,
+}: CreateTaskFromInboxEntryButtonProps) => {
+  return (
+    <Modal
+      title="Преобразовать в задачу"
+      renderModalButton={(openModal) => (
+        <button
+          type="button"
+          className="btn btn-primary btn-sm max-md:btn-square"
+          onClick={openModal}
+        >
+          <MagicWandIcon />
+          <span className="hidden md:inline">Преобразовать в задачу</span>
+        </button>
+      )}
+    >
+      <CreateTaskFromInboxEntryForm inboxEntry={data} />
+    </Modal>
+  );
+};

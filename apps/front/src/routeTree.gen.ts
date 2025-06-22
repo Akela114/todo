@@ -11,7 +11,8 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ProtectedRouteLayoutRouteRouteImport } from './routes/_protectedRouteLayout/route'
 import { Route as AuthLayoutRouteRouteImport } from './routes/_authLayout/route'
-import { Route as ProtectedRouteLayoutIndexRouteImport } from './routes/_protectedRouteLayout/index'
+import { Route as ProtectedRouteLayoutTasksRouteImport } from './routes/_protectedRouteLayout/tasks'
+import { Route as ProtectedRouteLayoutInboxRouteImport } from './routes/_protectedRouteLayout/inbox'
 import { Route as AuthLayoutAuthRegistrationRouteImport } from './routes/_authLayout/auth/registration'
 import { Route as AuthLayoutAuthLoginRouteImport } from './routes/_authLayout/auth/login'
 
@@ -24,10 +25,16 @@ const AuthLayoutRouteRoute = AuthLayoutRouteRouteImport.update({
   id: '/_authLayout',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ProtectedRouteLayoutIndexRoute =
-  ProtectedRouteLayoutIndexRouteImport.update({
-    id: '/',
-    path: '/',
+const ProtectedRouteLayoutTasksRoute =
+  ProtectedRouteLayoutTasksRouteImport.update({
+    id: '/tasks',
+    path: '/tasks',
+    getParentRoute: () => ProtectedRouteLayoutRouteRoute,
+  } as any)
+const ProtectedRouteLayoutInboxRoute =
+  ProtectedRouteLayoutInboxRouteImport.update({
+    id: '/inbox',
+    path: '/inbox',
     getParentRoute: () => ProtectedRouteLayoutRouteRoute,
   } as any)
 const AuthLayoutAuthRegistrationRoute =
@@ -44,13 +51,15 @@ const AuthLayoutAuthLoginRoute = AuthLayoutAuthLoginRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '': typeof ProtectedRouteLayoutRouteRouteWithChildren
-  '/': typeof ProtectedRouteLayoutIndexRoute
+  '/inbox': typeof ProtectedRouteLayoutInboxRoute
+  '/tasks': typeof ProtectedRouteLayoutTasksRoute
   '/auth/login': typeof AuthLayoutAuthLoginRoute
   '/auth/registration': typeof AuthLayoutAuthRegistrationRoute
 }
 export interface FileRoutesByTo {
-  '': typeof AuthLayoutRouteRouteWithChildren
-  '/': typeof ProtectedRouteLayoutIndexRoute
+  '': typeof ProtectedRouteLayoutRouteRouteWithChildren
+  '/inbox': typeof ProtectedRouteLayoutInboxRoute
+  '/tasks': typeof ProtectedRouteLayoutTasksRoute
   '/auth/login': typeof AuthLayoutAuthLoginRoute
   '/auth/registration': typeof AuthLayoutAuthRegistrationRoute
 }
@@ -58,20 +67,22 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_authLayout': typeof AuthLayoutRouteRouteWithChildren
   '/_protectedRouteLayout': typeof ProtectedRouteLayoutRouteRouteWithChildren
-  '/_protectedRouteLayout/': typeof ProtectedRouteLayoutIndexRoute
+  '/_protectedRouteLayout/inbox': typeof ProtectedRouteLayoutInboxRoute
+  '/_protectedRouteLayout/tasks': typeof ProtectedRouteLayoutTasksRoute
   '/_authLayout/auth/login': typeof AuthLayoutAuthLoginRoute
   '/_authLayout/auth/registration': typeof AuthLayoutAuthRegistrationRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '' | '/' | '/auth/login' | '/auth/registration'
+  fullPaths: '' | '/inbox' | '/tasks' | '/auth/login' | '/auth/registration'
   fileRoutesByTo: FileRoutesByTo
-  to: '' | '/' | '/auth/login' | '/auth/registration'
+  to: '' | '/inbox' | '/tasks' | '/auth/login' | '/auth/registration'
   id:
     | '__root__'
     | '/_authLayout'
     | '/_protectedRouteLayout'
-    | '/_protectedRouteLayout/'
+    | '/_protectedRouteLayout/inbox'
+    | '/_protectedRouteLayout/tasks'
     | '/_authLayout/auth/login'
     | '/_authLayout/auth/registration'
   fileRoutesById: FileRoutesById
@@ -97,11 +108,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProtectedRouteLayoutRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_protectedRouteLayout/': {
-      id: '/_protectedRouteLayout/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof ProtectedRouteLayoutIndexRouteImport
+    '/_protectedRouteLayout/inbox': {
+      id: '/_protectedRouteLayout/inbox'
+      path: '/inbox'
+      fullPath: '/inbox'
+      preLoaderRoute: typeof ProtectedRouteLayoutInboxRouteImport
+      parentRoute: typeof ProtectedRouteLayoutRouteRoute
+    }
+    '/_protectedRouteLayout/tasks': {
+      id: '/_protectedRouteLayout/tasks'
+      path: '/tasks'
+      fullPath: '/tasks'
+      preLoaderRoute: typeof ProtectedRouteLayoutTasksRouteImport
       parentRoute: typeof ProtectedRouteLayoutRouteRoute
     }
     '/_authLayout/auth/login': {
@@ -136,12 +154,14 @@ const AuthLayoutRouteRouteWithChildren = AuthLayoutRouteRoute._addFileChildren(
 )
 
 interface ProtectedRouteLayoutRouteRouteChildren {
-  ProtectedRouteLayoutIndexRoute: typeof ProtectedRouteLayoutIndexRoute
+  ProtectedRouteLayoutInboxRoute: typeof ProtectedRouteLayoutInboxRoute
+  ProtectedRouteLayoutTasksRoute: typeof ProtectedRouteLayoutTasksRoute
 }
 
 const ProtectedRouteLayoutRouteRouteChildren: ProtectedRouteLayoutRouteRouteChildren =
   {
-    ProtectedRouteLayoutIndexRoute: ProtectedRouteLayoutIndexRoute,
+    ProtectedRouteLayoutInboxRoute: ProtectedRouteLayoutInboxRoute,
+    ProtectedRouteLayoutTasksRoute: ProtectedRouteLayoutTasksRoute,
   }
 
 const ProtectedRouteLayoutRouteRouteWithChildren =

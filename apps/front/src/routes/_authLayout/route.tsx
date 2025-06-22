@@ -1,4 +1,6 @@
 import { checkAuth } from "@/entities/auth";
+import { queryClient } from "@/shared/query/query-client";
+import { QUERY_KEYS } from "@/shared/query/query-keys";
 import { LoadingScreen } from "@/shared/ui/loading-wrapper";
 import { Outlet, createFileRoute, redirect } from "@tanstack/react-router";
 
@@ -8,11 +10,15 @@ export const Route = createFileRoute("/_authLayout")({
   pendingMinMs: 300,
   beforeLoad: async () => {
     try {
-      await checkAuth();
+      await queryClient.fetchQuery({
+        queryKey: [QUERY_KEYS.authCheck],
+        queryFn: checkAuth,
+        staleTime: Number.POSITIVE_INFINITY,
+      });
     } catch {
       return;
     }
-    throw redirect({ to: "/" });
+    throw redirect({ to: "/inbox" });
   },
 });
 

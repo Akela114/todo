@@ -3,6 +3,7 @@ import {
   ModifyInboxEntryButton,
   DeleteInboxEntryButton,
 } from "@/features/inbox-entry";
+import { CreateTaskFromInboxEntryButton } from "@/features/task/create-task-from-inbox-entry";
 import type { ReactNode } from "@tanstack/react-router";
 import { twMerge } from "tailwind-merge";
 
@@ -19,6 +20,7 @@ export const InboxEntriesList = ({
 
   const entryElements = entries?.map((entry) => (
     <InboxEntryCard data={entry} className="list-row" key={entry.id}>
+      <CreateTaskFromInboxEntryButton data={entry} />
       <ModifyInboxEntryButton data={entry} />
       <DeleteInboxEntryButton data={entry} />
     </InboxEntryCard>

@@ -14,7 +14,7 @@ import {
 
 export const useInboxEntries = () =>
   useQuery({
-    queryKey: [QUERY_KEYS.todos],
+    queryKey: [QUERY_KEYS.inboxEntries],
     queryFn: () => getInboxEntries(),
   });
 
@@ -24,7 +24,7 @@ export const useCreateInboxEntry = () => {
   return useMutation({
     mutationFn: createInboxEntry,
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.todos] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.inboxEntries] });
     },
   });
 };
@@ -46,7 +46,7 @@ export const useModifyInboxEntry = (
     mutationFn: modifyInboxEntry,
     onSettled: (...args) => {
       opts.onSettled?.(...args);
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.todos] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.inboxEntries] });
     },
   });
 };
@@ -57,7 +57,7 @@ export const useDeleteInboxEntry = () => {
   return useMutation({
     mutationFn: deleteInboxEntry,
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.todos] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.inboxEntries] });
     },
   });
 };

@@ -12,7 +12,7 @@ function LoginPage() {
     <div className="w-md flex flex-col gap-5 items-center">
       <div className="card card-lg card-body gap-5 w-md">
         <div className="card-title">Вход</div>
-        <LoginForm onSuccess={() => navigate({ to: "/" })} />
+        <LoginForm onSuccess={() => navigate({ to: "/inbox" })} />
       </div>
       <Link to="/auth/registration" className="link">
         Зарегистрироваться
