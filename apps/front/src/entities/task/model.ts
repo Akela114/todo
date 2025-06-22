@@ -12,9 +12,15 @@ export const createTaskFromInboxEntrySchema = taskSchema.pick({
   title: true,
 });
 
-export const modifyTaskSchema = taskSchema.pick({
-  title: true,
-});
+export const modifyTaskSchema = taskSchema
+  .pick({
+    title: true,
+    done: true,
+  })
+  .partial({
+    title: true,
+    done: true,
+  });
 
 export type Task = z.infer<typeof taskSchema>;
 export type CreateTaskFromInboxEntry = z.infer<

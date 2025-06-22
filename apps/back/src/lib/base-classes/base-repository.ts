@@ -1,4 +1,4 @@
-import { and, eq } from "drizzle-orm";
+import { and, asc, desc, eq } from "drizzle-orm";
 import type { NodePgDatabase } from "drizzle-orm/node-postgres";
 import type {
   PgColumn,
@@ -23,24 +23,38 @@ export class BaseRepository<
 
   getAll(
     columnsToCheckAlwaysValues: Record<K, unknown>,
+    orders?: {
+      column: keyof T & keyof T["$inferSelect"];
+      direction: "asc" | "desc";
+    }[],
     transaction?: PgTransaction<PgQueryResultHKT, Record<string, unknown>>
   ) {
     const client = transaction ?? this.client;
 
-    return (
-      client
-        .select()
-        // TODO: https://github.com/drizzle-team/drizzle-orm/discussions/4318
-        // @ts-ignore drizzle-bug
-        .from(this.table)
-        .where(
-          and(
-            ...this.columnsToCheckAlwaysNames.map((name) =>
-              eq(this.table[name], columnsToCheckAlwaysValues[name])
-            )
+    const query = client
+      .select()
+      // TODO: https://github.com/drizzle-team/drizzle-orm/discussions/4318
+      // @ts-ignore drizzle-bug
+      .from(this.table)
+      .where(
+        and(
+          ...this.columnsToCheckAlwaysNames.map((name) =>
+            eq(this.table[name], columnsToCheckAlwaysValues[name])
           )
         )
-    );
+      );
+
+    if (orders?.length) {
+      query.orderBy(
+        ...orders.map(({ column, direction }) => {
+          return direction === "asc"
+            ? asc(this.table[column])
+            : desc(this.table[column]);
+        })
+      );
+    }
+
+    return query;
   }
 
   async getOne(

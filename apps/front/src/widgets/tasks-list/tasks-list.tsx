@@ -1,4 +1,4 @@
-import { TaskCard, useTasks } from "@/entities/task";
+import { TaskCard, useModifyTask, useTasks } from "@/entities/task";
 import { DeleteTaskButton, ModifyTaskButton } from "@/features/task";
 import type { ReactNode } from "@tanstack/react-router";
 import { twMerge } from "tailwind-merge";
@@ -10,9 +10,17 @@ interface TasksListProps {
 
 export const TasksList = ({ className, children }: TasksListProps) => {
   const { data: tasks } = useTasks();
+  const { mutate: modifyTask } = useModifyTask();
 
   const taskElements = tasks?.map((task) => (
-    <TaskCard data={task} className="list-row" key={task.id}>
+    <TaskCard
+      data={task}
+      className="list-row"
+      key={task.id}
+      onStatusChange={(isDone) =>
+        modifyTask({ body: { done: isDone }, urlParams: task.id })
+      }
+    >
       <ModifyTaskButton data={task} />
       <DeleteTaskButton data={task} />
     </TaskCard>

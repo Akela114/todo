@@ -15,9 +15,21 @@ export default async (instance: FastifyInstance) => {
       },
     },
     handler: (request) => {
-      return instance.tasksService.getAll({
-        userId: request.user.id,
-      });
+      return instance.tasksService.getAll(
+        {
+          userId: request.user.id,
+        },
+        [
+          {
+            column: "done",
+            direction: "asc",
+          },
+          {
+            column: "updatedAt",
+            direction: "desc",
+          },
+        ]
+      );
     },
   });
 
@@ -41,6 +53,7 @@ export default async (instance: FastifyInstance) => {
         },
         {
           title: request.body.title,
+          done: request.body.done,
         }
       );
     },
