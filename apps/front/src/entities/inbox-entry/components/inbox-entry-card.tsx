@@ -1,21 +1,17 @@
 import { format } from "date-fns";
 import type { ReactNode } from "react";
-import { twMerge } from "tailwind-merge";
 import type { InboxEntry } from "../model";
+import { SimpleListItem } from "@/shared/ui/simple-list";
+import { TextSkeleton } from "@/shared/ui/text-skeleton";
 
 interface InboxEntryCardProps {
   data: InboxEntry;
   children?: ReactNode;
-  className?: string;
 }
 
-export const InboxEntryCard = ({
-  data,
-  className,
-  children,
-}: InboxEntryCardProps) => {
+export const InboxEntryCard = ({ data, children }: InboxEntryCardProps) => {
   return (
-    <div className={twMerge("flex items-center p-4", className)}>
+    <SimpleListItem className="flex items-center p-4">
       <div className="flex-1">
         <div className="text-xs">
           {format(data.updatedAt, "yyyy-MM-dd HH:mm")}
@@ -23,6 +19,17 @@ export const InboxEntryCard = ({
         <div className="text-lg font-semibold">{data.title}</div>
       </div>
       {children && <div className="card-actions justify-end">{children}</div>}
-    </div>
+    </SimpleListItem>
+  );
+};
+
+export const InboxEntryCardSkeleton = () => {
+  return (
+    <SimpleListItem className="flex items-center p-4">
+      <div className="flex-1">
+        <TextSkeleton size="xs" />
+        <TextSkeleton size="lg" />
+      </div>
+    </SimpleListItem>
   );
 };

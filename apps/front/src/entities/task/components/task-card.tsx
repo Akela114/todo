@@ -2,22 +2,18 @@ import { format } from "date-fns";
 import type { ReactNode } from "react";
 import { twMerge } from "tailwind-merge";
 import type { Task } from "../model";
+import { SimpleListItem } from "@/shared/ui/simple-list";
+import { TextSkeleton } from "@/shared/ui/text-skeleton";
 
 interface TaskCardProps {
   data: Task;
   onStatusChange?: (isDone: boolean) => void;
   children?: ReactNode;
-  className?: string;
 }
 
-export const TaskCard = ({
-  data,
-  className,
-  children,
-  onStatusChange,
-}: TaskCardProps) => {
+export const TaskCard = ({ data, children, onStatusChange }: TaskCardProps) => {
   return (
-    <div className={twMerge("flex items-center p-4", className)}>
+    <SimpleListItem className="flex items-center p-4">
       <div className="flex-1 flex items-center gap-4">
         <input
           type="checkbox"
@@ -35,6 +31,20 @@ export const TaskCard = ({
         </div>
       </div>
       {children && <div className="card-actions justify-end">{children}</div>}
-    </div>
+    </SimpleListItem>
+  );
+};
+
+export const TaskCardSkeleton = () => {
+  return (
+    <SimpleListItem className="flex items-center p-4">
+      <div className="flex-1 flex items-center gap-4">
+        <div className="skeleton h-6 w-6" />
+        <div className="flex-1">
+          <TextSkeleton size="xs" />
+          <TextSkeleton size="lg" />
+        </div>
+      </div>
+    </SimpleListItem>
   );
 };
