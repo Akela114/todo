@@ -11,6 +11,8 @@ import {
   getInboxEntries,
   modifyInboxEntry,
 } from "./fetchers";
+import type { InboxEntry } from "../model";
+import { useOptimisticMutation } from "@/shared/query/query-helpers";
 
 export const useInboxEntries = () =>
   useQuery({
@@ -39,25 +41,38 @@ export const useModifyInboxEntry = (
     "mutationFn"
   > = {}
 ) => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    ...opts,
-    mutationFn: modifyInboxEntry,
-    onSettled: (...args) => {
-      opts.onSettled?.(...args);
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.inboxEntries] });
+  return useOptimisticMutation(
+    {
+      ...opts,
+      mutationFn: modifyInboxEntry,
     },
-  });
+    [QUERY_KEYS.inboxEntries],
+    (variables, prevData?: InboxEntry[]) => {
+      if (prevData) {
+        const newInboxEntries = prevData.map((inboxEntry) => {
+          if (inboxEntry.id === variables.urlParams) {
+            return { ...inboxEntry, ...variables.body } satisfies InboxEntry;
+          }
+          return inboxEntry;
+        });
+        return newInboxEntries;
+      }
+      return prevData;
+    }
+  );
 };
 
 export const useDeleteInboxEntry = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: deleteInboxEntry,
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.inboxEntries] });
-    },
-  });
+  return useOptimisticMutation(
+    { mutationFn: deleteInboxEntry },
+    [QUERY_KEYS.inboxEntries],
+    (variables, prevData?: InboxEntry[]) => {
+      if (prevData) {
+        return prevData.filter(
+          (inboxEntry) => inboxEntry.id !== variables.urlParams
+        );
+      }
+      return prevData;
+    }
+  );
 };

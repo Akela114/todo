@@ -11,6 +11,8 @@ import {
   getTasks,
   modifyTask,
 } from "./fetchers";
+import { useOptimisticMutation } from "@/shared/query/query-helpers";
+import type { Task } from "../model";
 
 export const useTasks = () =>
   useQuery({
@@ -44,25 +46,36 @@ export const useModifyTask = (
     "mutationFn"
   > = {}
 ) => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    ...opts,
-    mutationFn: modifyTask,
-    onSettled: (...args) => {
-      opts.onSettled?.(...args);
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.tasks] });
+  return useOptimisticMutation(
+    {
+      ...opts,
+      mutationFn: modifyTask,
     },
-  });
+    [QUERY_KEYS.tasks],
+    (variables, prevData?: Task[]) => {
+      if (prevData) {
+        const newTasks = prevData.map((task) => {
+          if (task.id === variables.urlParams) {
+            return { ...task, ...variables.body } satisfies Task;
+          }
+          return task;
+        });
+        return newTasks;
+      }
+      return prevData;
+    }
+  );
 };
 
 export const useDeleteTask = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: deleteTask,
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.tasks] });
-    },
-  });
+  return useOptimisticMutation(
+    { mutationFn: deleteTask },
+    [QUERY_KEYS.tasks],
+    (variables, prevData?: Task[]) => {
+      if (prevData) {
+        return prevData.filter((task) => task.id !== variables.urlParams);
+      }
+      return prevData;
+    }
+  );
 };
