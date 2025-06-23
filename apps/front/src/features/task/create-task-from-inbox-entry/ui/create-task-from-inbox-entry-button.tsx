@@ -1,7 +1,7 @@
 import { Modal } from "@/shared/ui/dialog";
 import { MagicWandIcon } from "@radix-ui/react-icons";
 import { CreateTaskFromInboxEntryForm } from "./create-task-from-inbox-entry-form";
-import type { InboxEntry } from "@/entities/inbox-entry";
+import type { InboxEntry } from "@packages/schemas/inbox-entry";
 
 interface CreateTaskFromInboxEntryButtonProps {
   data: InboxEntry;

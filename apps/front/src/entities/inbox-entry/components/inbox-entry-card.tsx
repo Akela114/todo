@@ -1,6 +1,6 @@
 import { format } from "date-fns";
 import type { ReactNode } from "react";
-import type { InboxEntry } from "../model";
+import type { InboxEntry } from "@packages/schemas/inbox-entry";
 import { SimpleListItem } from "@/shared/ui/simple-list";
 import { TextSkeleton } from "@/shared/ui/text-skeleton";
 

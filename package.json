@@ -1,6 +1,7 @@
 {
 	"scripts": {
-		"dev": "turbo dev"
+		"dev": "turbo dev",
+		"build": "turbo build"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^1.9.4",

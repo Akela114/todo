@@ -4,7 +4,7 @@ import {
   type CreateTaskFromInboxEntry,
   type ModifyTask,
   taskSchema,
-} from "../model";
+} from "@packages/schemas/task";
 
 export const getTasks = withValidation(
   createFetcherWrapper(coreApiWithAuth, () => "tasks", "get"),

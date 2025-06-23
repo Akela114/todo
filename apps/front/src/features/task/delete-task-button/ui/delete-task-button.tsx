@@ -1,4 +1,4 @@
-import type { InboxEntry } from "@/entities/inbox-entry";
+import type { InboxEntry } from "@packages/schemas/inbox-entry";
 import { useDeleteTask } from "@/entities/task";
 import { Cross2Icon } from "@radix-ui/react-icons";
 

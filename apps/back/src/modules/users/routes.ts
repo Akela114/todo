@@ -1,8 +1,8 @@
 import { SWAGGER_TAGS } from "@/lib/constants/swagger-tags.js";
-import { basicResponseSchema } from "@/lib/common-schemas.js";
 import type { FastifyInstance } from "fastify";
 import type { ZodTypeProvider } from "fastify-type-provider-zod";
-import { userCreateSchema, userSelectSchema } from "./schemas.js";
+import { userSchema, createUserSchema } from "@packages/schemas/user";
+import { coreApiBasicResponseSchema } from "@packages/schemas/common";
 
 export default async (instance: FastifyInstance) => {
   instance.withTypeProvider<ZodTypeProvider>().route({
@@ -10,10 +10,10 @@ export default async (instance: FastifyInstance) => {
     url: "/",
     schema: {
       tags: [SWAGGER_TAGS.users.name],
-      body: userCreateSchema,
+      body: createUserSchema,
       response: {
-        201: userSelectSchema,
-        400: basicResponseSchema,
+        201: userSchema,
+        400: coreApiBasicResponseSchema,
       },
     },
     handler: async (request, reply) => {

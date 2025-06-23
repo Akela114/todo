@@ -1,8 +1,9 @@
-import { loginSchema, useLogin } from "@/entities/auth";
+import { useLogin } from "@/entities/auth";
 import { getInputValidation } from "@/shared/lib/form-utilts";
 import { Input, PasswordInput } from "@/shared/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { loginSchema } from "@packages/schemas/auth";
 
 interface LoginFormProps {
   onSuccess?: () => void;

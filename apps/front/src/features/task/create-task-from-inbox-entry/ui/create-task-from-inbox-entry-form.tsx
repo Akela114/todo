@@ -1,16 +1,16 @@
-import type { InboxEntry } from "@/entities/inbox-entry";
-import {
-  type CreateOrModifyInboxEntry,
-  createOrModifyInboxEntrySchema,
-} from "@/entities/inbox-entry";
+import type { InboxEntry } from "@packages/schemas/inbox-entry";
 import { useCreateTaskFromInboxEntry } from "@/entities/task";
 import { Input } from "@/shared/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import {
+  createTaskFromInboxEntrySchema,
+  type CreateTaskFromInboxEntry,
+} from "@packages/schemas/task";
 
 interface CreateTaskFromInboxEntryFormProps {
   inboxEntry: InboxEntry;
-  beforeSubmit?: (data: CreateOrModifyInboxEntry) => void;
+  beforeSubmit?: (data: CreateTaskFromInboxEntry) => void;
   afterSubmit?: () => void;
 }
 
@@ -24,7 +24,7 @@ export const CreateTaskFromInboxEntryForm = ({
     defaultValues: {
       title: inboxEntry.title,
     },
-    resolver: zodResolver(createOrModifyInboxEntrySchema),
+    resolver: zodResolver(createTaskFromInboxEntrySchema),
   });
 
   return (

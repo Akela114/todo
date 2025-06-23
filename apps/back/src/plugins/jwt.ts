@@ -3,9 +3,9 @@ import fastifyJwt, { type VerifyPayloadType } from "@fastify/jwt";
 import type { RouteOptions } from "fastify";
 import { valueToArray } from "@/lib/utils/value-to-array.js";
 import {
-  type BasicResponse,
-  basicResponseSchema,
-} from "@/lib/common-schemas.js";
+  type CoreApiBasicResponse,
+  coreApiBasicResponseSchema,
+} from "@packages/schemas/common";
 
 declare module "fastify" {
   interface FastifyInstance {
@@ -72,7 +72,7 @@ export default fp((instance, _options, done) => {
       return reply.status(401).send({
         statusCode: 401,
         message: "Unauthorized",
-      } satisfies BasicResponse);
+      } satisfies CoreApiBasicResponse);
     }
   });
 
@@ -83,7 +83,7 @@ export default fp((instance, _options, done) => {
       return reply.status(401).send({
         statusCode: 401,
         message: "Unauthorized",
-      } satisfies BasicResponse);
+      } satisfies CoreApiBasicResponse);
     }
   });
 
@@ -97,7 +97,7 @@ export default fp((instance, _options, done) => {
         ...routeOptions.schema,
         response: {
           ...(routeOptions.schema?.response ?? {}),
-          401: basicResponseSchema,
+          401: coreApiBasicResponseSchema,
         },
         security: [
           ...valueToArray(routeOptions.schema?.security),
@@ -117,7 +117,7 @@ export default fp((instance, _options, done) => {
         ...routeOptions.schema,
         response: {
           ...(routeOptions.schema?.response ?? {}),
-          401: basicResponseSchema,
+          401: coreApiBasicResponseSchema,
         },
         security: [...valueToArray(routeOptions.schema?.security)],
       };

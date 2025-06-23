@@ -4,9 +4,9 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import { login, logout } from "./fetchers/base-fetchers";
-import type { CoreApiBasicResponse } from "@/shared/api/core-api/schemas";
 import { QUERY_KEYS } from "@/shared/query/query-keys";
 import { queryClient } from "@/shared/query/query-client";
+import type { CoreApiBasicResponse } from "@packages/schemas/common";
 
 export const useLogin = (
   opts: Omit<

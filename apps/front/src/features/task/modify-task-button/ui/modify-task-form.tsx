@@ -1,7 +1,8 @@
-import { modifyTaskSchema, useModifyTask, type Task } from "@/entities/task";
+import { modifyTaskSchema, type Task } from "@packages/schemas/task";
 import { Input } from "@/shared/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { useModifyTask } from "@/entities/task";
 
 interface ModifyTaskFormProps {
   data: Task;

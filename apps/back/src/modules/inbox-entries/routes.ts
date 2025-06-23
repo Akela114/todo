@@ -2,10 +2,13 @@ import type { ZodTypeProvider } from "fastify-type-provider-zod";
 import type { FastifyInstance } from "fastify";
 import { SWAGGER_TAGS } from "@/lib/constants/swagger-tags.js";
 import {
-  inboxEntryCreateOrUpdateSchema,
-  inboxEntrySelectSchema,
-} from "./schemas.js";
-import { taskCreateSchema, taskSelectSchema } from "../tasks/schemas.js";
+  createOrModifyInboxEntrySchema,
+  inboxEntrySchema,
+} from "@packages/schemas/inbox-entry";
+import {
+  taskSchema,
+  createTaskFromInboxEntrySchema,
+} from "@packages/schemas/task";
 
 export default async (instance: FastifyInstance) => {
   instance.withTypeProvider<ZodTypeProvider>().route({
@@ -15,7 +18,7 @@ export default async (instance: FastifyInstance) => {
     schema: {
       tags: [SWAGGER_TAGS.inboxEntries.name],
       response: {
-        200: inboxEntrySelectSchema.array(),
+        200: inboxEntrySchema.array(),
       },
     },
     handler: (request) => {
@@ -31,9 +34,9 @@ export default async (instance: FastifyInstance) => {
     url: "/",
     schema: {
       tags: [SWAGGER_TAGS.inboxEntries.name],
-      body: inboxEntryCreateOrUpdateSchema,
+      body: createOrModifyInboxEntrySchema,
       response: {
-        201: inboxEntrySelectSchema,
+        201: inboxEntrySchema,
       },
     },
     handler: async (request, reply) => {
@@ -52,10 +55,10 @@ export default async (instance: FastifyInstance) => {
     url: "/:id",
     schema: {
       tags: [SWAGGER_TAGS.inboxEntries.name],
-      params: inboxEntrySelectSchema.pick({ id: true }),
-      body: inboxEntryCreateOrUpdateSchema,
+      params: inboxEntrySchema.pick({ id: true }),
+      body: createOrModifyInboxEntrySchema,
       response: {
-        200: inboxEntrySelectSchema,
+        200: inboxEntrySchema,
       },
     },
     handler: (request) => {
@@ -77,9 +80,9 @@ export default async (instance: FastifyInstance) => {
     url: "/:id",
     schema: {
       tags: [SWAGGER_TAGS.inboxEntries.name],
-      params: inboxEntrySelectSchema.pick({ id: true }),
+      params: inboxEntrySchema.pick({ id: true }),
       response: {
-        200: inboxEntrySelectSchema,
+        200: inboxEntrySchema,
       },
     },
     handler: (request) => {
@@ -95,10 +98,10 @@ export default async (instance: FastifyInstance) => {
     url: "/:id/tasks",
     schema: {
       tags: [SWAGGER_TAGS.inboxEntries.name, SWAGGER_TAGS.tasks.name],
-      params: inboxEntrySelectSchema.pick({ id: true }),
-      body: taskCreateSchema,
+      params: inboxEntrySchema.pick({ id: true }),
+      body: createTaskFromInboxEntrySchema,
       response: {
-        201: taskSelectSchema,
+        201: taskSchema,
       },
     },
     handler: async (request, reply) => {

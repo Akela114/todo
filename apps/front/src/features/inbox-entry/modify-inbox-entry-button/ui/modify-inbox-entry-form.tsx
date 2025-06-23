@@ -2,7 +2,7 @@ import { useModifyInboxEntry } from "@/entities/inbox-entry";
 import {
   type InboxEntry,
   createOrModifyInboxEntrySchema,
-} from "@/entities/inbox-entry/model";
+} from "@packages/schemas/inbox-entry";
 import { Input } from "@/shared/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";

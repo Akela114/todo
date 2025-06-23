@@ -1,5 +1,5 @@
 import { useDeleteInboxEntry } from "@/entities/inbox-entry";
-import type { InboxEntry } from "@/entities/inbox-entry";
+import type { InboxEntry } from "@packages/schemas/inbox-entry";
 import { Cross2Icon } from "@radix-ui/react-icons";
 
 interface DeleteInboxEntryButtonProps {

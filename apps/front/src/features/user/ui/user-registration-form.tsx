@@ -1,8 +1,9 @@
-import { createUserSchema, useCreateUser } from "@/entities/user";
+import { createUserSchema } from "@packages/schemas/user";
 import { getInputValidation } from "@/shared/lib/form-utilts";
 import { Input, PasswordInput } from "@/shared/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { useCreateUser } from "@/entities/user";
 
 interface UserRegistrationFormProps {
   onSuccess?: () => void;

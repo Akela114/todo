@@ -1,7 +1,7 @@
 import { format } from "date-fns";
 import type { ReactNode } from "react";
 import { twMerge } from "tailwind-merge";
-import type { Task } from "../model";
+import type { Task } from "@packages/schemas/task";
 import { SimpleListItem } from "@/shared/ui/simple-list";
 import { TextSkeleton } from "@/shared/ui/text-skeleton";
 

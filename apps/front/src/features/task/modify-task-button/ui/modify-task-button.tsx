@@ -1,4 +1,4 @@
-import type { Task } from "@/entities/task";
+import type { Task } from "@packages/schemas/task";
 import { Modal } from "@/shared/ui/dialog";
 import { Pencil1Icon } from "@radix-ui/react-icons";
 import { useRef, type ComponentRef } from "react";

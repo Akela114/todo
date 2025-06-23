@@ -1,4 +1,4 @@
-import type { InboxEntry } from "@/entities/inbox-entry/model";
+import type { InboxEntry } from "@packages/schemas/inbox-entry";
 import { Modal } from "@/shared/ui/dialog";
 import { Pencil1Icon } from "@radix-ui/react-icons";
 import { ModifyInboxEntryForm } from "./modify-inbox-entry-form";

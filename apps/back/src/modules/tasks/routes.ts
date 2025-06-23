@@ -1,7 +1,7 @@
 import type { ZodTypeProvider } from "fastify-type-provider-zod";
 import type { FastifyInstance } from "fastify";
 import { SWAGGER_TAGS } from "@/lib/constants/swagger-tags.js";
-import { taskSelectSchema, taskUpdateSchema } from "../tasks/schemas.js";
+import { taskSchema, modifyTaskSchema } from "@packages/schemas/task";
 
 export default async (instance: FastifyInstance) => {
   instance.withTypeProvider<ZodTypeProvider>().route({
@@ -11,7 +11,7 @@ export default async (instance: FastifyInstance) => {
     schema: {
       tags: [SWAGGER_TAGS.tasks.name],
       response: {
-        200: taskSelectSchema.array(),
+        200: taskSchema.array(),
       },
     },
     handler: (request) => {
@@ -39,10 +39,10 @@ export default async (instance: FastifyInstance) => {
     url: "/:id",
     schema: {
       tags: [SWAGGER_TAGS.tasks.name],
-      params: taskSelectSchema.pick({ id: true }),
-      body: taskUpdateSchema,
+      params: taskSchema.pick({ id: true }),
+      body: modifyTaskSchema,
       response: {
-        200: taskSelectSchema,
+        200: taskSchema,
       },
     },
     handler: (request) => {
@@ -65,9 +65,9 @@ export default async (instance: FastifyInstance) => {
     url: "/:id",
     schema: {
       tags: [SWAGGER_TAGS.tasks.name],
-      params: taskSelectSchema.pick({ id: true }),
+      params: taskSchema.pick({ id: true }),
       response: {
-        200: taskSelectSchema,
+        200: taskSchema,
       },
     },
     handler: (request) => {

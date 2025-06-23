@@ -11,7 +11,7 @@ import {
   getInboxEntries,
   modifyInboxEntry,
 } from "./fetchers";
-import type { InboxEntry } from "../model";
+import type { InboxEntry } from "@packages/schemas/inbox-entry";
 import { useOptimisticMutation } from "@/shared/query/query-helpers";
 
 export const useInboxEntries = () =>

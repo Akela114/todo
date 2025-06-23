@@ -50,14 +50,12 @@ const AuthLayoutAuthLoginRoute = AuthLayoutAuthLoginRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
-  '': typeof ProtectedRouteLayoutRouteRouteWithChildren
   '/inbox': typeof ProtectedRouteLayoutInboxRoute
   '/tasks': typeof ProtectedRouteLayoutTasksRoute
   '/auth/login': typeof AuthLayoutAuthLoginRoute
   '/auth/registration': typeof AuthLayoutAuthRegistrationRoute
 }
 export interface FileRoutesByTo {
-  '': typeof ProtectedRouteLayoutRouteRouteWithChildren
   '/inbox': typeof ProtectedRouteLayoutInboxRoute
   '/tasks': typeof ProtectedRouteLayoutTasksRoute
   '/auth/login': typeof AuthLayoutAuthLoginRoute
@@ -74,9 +72,9 @@ export interface FileRoutesById {
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '' | '/inbox' | '/tasks' | '/auth/login' | '/auth/registration'
+  fullPaths: '/inbox' | '/tasks' | '/auth/login' | '/auth/registration'
   fileRoutesByTo: FileRoutesByTo
-  to: '' | '/inbox' | '/tasks' | '/auth/login' | '/auth/registration'
+  to: '/inbox' | '/tasks' | '/auth/login' | '/auth/registration'
   id:
     | '__root__'
     | '/_authLayout'
@@ -94,13 +92,6 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/_authLayout': {
-      id: '/_authLayout'
-      path: ''
-      fullPath: ''
-      preLoaderRoute: typeof AuthLayoutRouteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/_protectedRouteLayout': {
       id: '/_protectedRouteLayout'
       path: ''
@@ -108,12 +99,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProtectedRouteLayoutRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_protectedRouteLayout/inbox': {
-      id: '/_protectedRouteLayout/inbox'
-      path: '/inbox'
-      fullPath: '/inbox'
-      preLoaderRoute: typeof ProtectedRouteLayoutInboxRouteImport
-      parentRoute: typeof ProtectedRouteLayoutRouteRoute
+    '/_authLayout': {
+      id: '/_authLayout'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof AuthLayoutRouteRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_protectedRouteLayout/tasks': {
       id: '/_protectedRouteLayout/tasks'
@@ -122,18 +113,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProtectedRouteLayoutTasksRouteImport
       parentRoute: typeof ProtectedRouteLayoutRouteRoute
     }
-    '/_authLayout/auth/login': {
-      id: '/_authLayout/auth/login'
-      path: '/auth/login'
-      fullPath: '/auth/login'
-      preLoaderRoute: typeof AuthLayoutAuthLoginRouteImport
-      parentRoute: typeof AuthLayoutRouteRoute
+    '/_protectedRouteLayout/inbox': {
+      id: '/_protectedRouteLayout/inbox'
+      path: '/inbox'
+      fullPath: '/inbox'
+      preLoaderRoute: typeof ProtectedRouteLayoutInboxRouteImport
+      parentRoute: typeof ProtectedRouteLayoutRouteRoute
     }
     '/_authLayout/auth/registration': {
       id: '/_authLayout/auth/registration'
       path: '/auth/registration'
       fullPath: '/auth/registration'
       preLoaderRoute: typeof AuthLayoutAuthRegistrationRouteImport
+      parentRoute: typeof AuthLayoutRouteRoute
+    }
+    '/_authLayout/auth/login': {
+      id: '/_authLayout/auth/login'
+      path: '/auth/login'
+      fullPath: '/auth/login'
+      preLoaderRoute: typeof AuthLayoutAuthLoginRouteImport
       parentRoute: typeof AuthLayoutRouteRoute
     }
   }

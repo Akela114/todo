@@ -12,7 +12,7 @@ import {
   modifyTask,
 } from "./fetchers";
 import { useOptimisticMutation } from "@/shared/query/query-helpers";
-import type { Task } from "../model";
+import type { Task } from "@packages/schemas/task";
 
 export const useTasks = () =>
   useQuery({
