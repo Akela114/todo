@@ -4,6 +4,7 @@ import { twMerge } from "tailwind-merge";
 import type { Task } from "@packages/schemas/task";
 import { SimpleListItem } from "@/shared/ui/simple-list";
 import { TextSkeleton } from "@/shared/ui/text-skeleton";
+import { Rating } from "@/shared/ui/rating";
 
 interface TaskCardProps {
   data: Task;
@@ -24,8 +25,11 @@ export const TaskCard = ({ data, children, onStatusChange }: TaskCardProps) => {
         <div
           className={twMerge("flex-1", data.done && "line-through opacity-50")}
         >
-          <div className="text-xs">
-            {format(data.updatedAt, "yyyy-MM-dd HH:mm")}
+          <div className="flex items-center gap-2">
+            <div className="text-xs tabular-nums">
+              {format(data.updatedAt, "yyyy-MM-dd HH:mm")}
+            </div>
+            <Rating total={3} selected={data.priority + 1} />
           </div>
           <div className="text-lg font-semibold">{data.title}</div>
         </div>

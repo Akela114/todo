@@ -39,7 +39,7 @@ export const TasksList = ({ className, children }: TasksListProps) => {
                     modifyTask({ body: { done: isDone }, urlParams: task.id })
                   }
                 >
-                  <ModifyTaskButton data={task} />
+                  {!task.done && <ModifyTaskButton data={task} />}
                   <DeleteTaskButton data={task} />
                 </TaskCard>
               ))}

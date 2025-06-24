@@ -42,6 +42,7 @@ export const task = pgTable("task", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
   title: varchar({ length: 255 }).notNull(),
   done: boolean().notNull().default(false),
+  priority: integer().notNull().default(1),
   userId: integer()
     .notNull()
     .references(() => user.id, {

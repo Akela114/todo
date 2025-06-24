@@ -1,7 +1,7 @@
 import type { Task } from "@packages/schemas/task";
 import { Modal } from "@/shared/ui/dialog";
 import { Pencil1Icon } from "@radix-ui/react-icons";
-import { useRef, type ComponentRef } from "react";
+import { useRef } from "react";
 import { ModifyTaskForm } from "./modify-task-form";
 
 interface ModifyTaskButtonProps {
@@ -9,26 +9,19 @@ interface ModifyTaskButtonProps {
 }
 
 export const ModifyTaskButton = ({ data }: ModifyTaskButtonProps) => {
-  const dialogRef = useRef<ComponentRef<typeof Modal>>(null);
+  const modalRef = useRef<{ close: () => void }>(null);
 
   return (
     <Modal
-      ref={dialogRef}
+      ref={modalRef}
       title="Изменение задачи"
-      renderModalButton={(openModal) => (
-        <button
-          type="button"
-          className="btn btn-soft btn-square btn-sm"
-          onClick={openModal}
-        >
+      triggerModalButton={
+        <button type="button" className="btn btn-soft btn-square btn-sm">
           <Pencil1Icon />
         </button>
-      )}
+      }
     >
-      <ModifyTaskForm
-        data={data}
-        onSuccess={() => dialogRef.current?.close()}
-      />
+      <ModifyTaskForm data={data} onSuccess={() => modalRef.current?.close()} />
     </Modal>
   );
 };

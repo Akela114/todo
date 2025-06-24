@@ -2,7 +2,7 @@ import type { InboxEntry } from "@packages/schemas/inbox-entry";
 import { Modal } from "@/shared/ui/dialog";
 import { Pencil1Icon } from "@radix-ui/react-icons";
 import { ModifyInboxEntryForm } from "./modify-inbox-entry-form";
-import { useRef, type ComponentRef } from "react";
+import { useRef } from "react";
 
 interface ModifyInboxEntryButtonProps {
   data: InboxEntry;
@@ -11,25 +11,21 @@ interface ModifyInboxEntryButtonProps {
 export const ModifyInboxEntryButton = ({
   data,
 }: ModifyInboxEntryButtonProps) => {
-  const dialogRef = useRef<ComponentRef<typeof Modal>>(null);
+  const modalRef = useRef<{ close: () => void }>(null);
 
   return (
     <Modal
-      ref={dialogRef}
+      ref={modalRef}
       title="Изменение записи"
-      renderModalButton={(openModal) => (
-        <button
-          type="button"
-          className="btn btn-soft btn-square btn-sm"
-          onClick={openModal}
-        >
+      triggerModalButton={
+        <button type="button" className="btn btn-soft btn-square btn-sm">
           <Pencil1Icon />
         </button>
-      )}
+      }
     >
       <ModifyInboxEntryForm
         data={data}
-        onSuccess={() => dialogRef.current?.close()}
+        onSuccess={() => modalRef.current?.close()}
       />
     </Modal>
   );

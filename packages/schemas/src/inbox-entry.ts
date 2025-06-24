@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const inboxEntrySchema = z.object({
-  id: z.number(),
+  id: z.coerce.number(),
   title: z.string(),
   createdAt: z.string(),
   updatedAt: z.string(),

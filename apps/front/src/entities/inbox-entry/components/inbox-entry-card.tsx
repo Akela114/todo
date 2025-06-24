@@ -13,7 +13,7 @@ export const InboxEntryCard = ({ data, children }: InboxEntryCardProps) => {
   return (
     <SimpleListItem className="flex items-center p-4">
       <div className="flex-1">
-        <div className="text-xs">
+        <div className="text-xs tabular-nums">
           {format(data.updatedAt, "yyyy-MM-dd HH:mm")}
         </div>
         <div className="text-lg font-semibold">{data.title}</div>

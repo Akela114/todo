@@ -25,6 +25,10 @@ export default async (instance: FastifyInstance) => {
             direction: "asc",
           },
           {
+            column: "priority",
+            direction: "desc",
+          },
+          {
             column: "updatedAt",
             direction: "desc",
           },
@@ -51,10 +55,7 @@ export default async (instance: FastifyInstance) => {
         {
           userId: request.user.id,
         },
-        {
-          title: request.body.title,
-          done: request.body.done,
-        }
+        request.body
       );
     },
   });

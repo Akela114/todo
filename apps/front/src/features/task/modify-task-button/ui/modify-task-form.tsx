@@ -1,8 +1,10 @@
 import { modifyTaskSchema, type Task } from "@packages/schemas/task";
 import { Input } from "@/shared/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { useModifyTask } from "@/entities/task";
+import { Select } from "@/shared/ui/select";
+import { TASK_PRIORITIES_OPTIONS } from "@/entities/task/consts";
 
 interface ModifyTaskFormProps {
   data: Task;
@@ -14,9 +16,10 @@ export const ModifyTaskForm = ({ data, onSuccess }: ModifyTaskFormProps) => {
     onSuccess,
   });
 
-  const { handleSubmit, register } = useForm({
+  const { handleSubmit, control, register } = useForm({
     defaultValues: {
       title: data.title,
+      priority: data.priority,
     },
     resolver: zodResolver(modifyTaskSchema),
   });
@@ -35,6 +38,20 @@ export const ModifyTaskForm = ({ data, onSuccess }: ModifyTaskFormProps) => {
         {...register("title")}
         label="Заголовок"
         placeholder="Введите заголовок задачи..."
+      />
+      <Controller
+        control={control}
+        name="priority"
+        render={({ field: { value, onChange, ...field } }) => (
+          <Select
+            {...field}
+            value={String(value)}
+            onChange={(value) => onChange(Number(value))}
+            placeholder="Выберите приоритет задачи..."
+            label="Приоритет"
+            options={TASK_PRIORITIES_OPTIONS}
+          />
+        )}
       />
       <button
         type="submit"

@@ -6,16 +6,12 @@ export const CreateInboxEntryButton = () => {
   return (
     <Modal
       title="Добавление записи"
-      renderModalButton={(openModal) => (
-        <button
-          type="button"
-          className="btn btn-primary self-start"
-          onClick={openModal}
-        >
+      triggerModalButton={
+        <button type="button" className="btn btn-primary self-start">
           <PlusIcon />
           Добавить
         </button>
-      )}
+      }
     >
       <CreateInboxEntryForm />
     </Modal>
