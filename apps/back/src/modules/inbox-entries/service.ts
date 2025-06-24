@@ -20,10 +20,12 @@ export class InboxEntriesService extends BaseService<
     id,
     userId,
     title,
+    priority,
   }: {
     id: number;
     userId: number;
     title: string;
+    priority: number;
   }) {
     return await this.instance.db.transaction(async (tx) => {
       const inboxEntry = await this.delete(id, { userId }, tx);
@@ -35,6 +37,7 @@ export class InboxEntriesService extends BaseService<
       const task = await this.instance.tasksService.create({
         userId,
         title,
+        priority,
       });
 
       return task;
