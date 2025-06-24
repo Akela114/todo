@@ -9,7 +9,7 @@ import { useThrottledValue } from "@/shared/hooks/use-throttled-value";
 import { FetchEmpty } from "@/shared/ui/fetch-empty";
 import { FetchError } from "@/shared/ui/fetch-error";
 import { Match } from "@/shared/ui/match";
-import { SimpleList } from "@/shared/ui/simple-list";
+import { SimpleList, SimpleListItem } from "@/shared/ui/simple-list";
 import type { ReactNode } from "react";
 import { twMerge } from "tailwind-merge";
 
@@ -32,16 +32,17 @@ export const TasksList = ({ className, children }: TasksListProps) => {
           tasks?.length ? (
             <SimpleList>
               {tasks.map((task) => (
-                <TaskCard
-                  data={task}
-                  key={task.id}
-                  onStatusChange={(isDone) =>
-                    modifyTask({ body: { done: isDone }, urlParams: task.id })
-                  }
-                >
-                  {!task.done && <ModifyTaskButton data={task} />}
-                  <DeleteTaskButton data={task} />
-                </TaskCard>
+                <SimpleListItem key={task.id}>
+                  <TaskCard
+                    data={task}
+                    onStatusChange={(isDone) =>
+                      modifyTask({ body: { done: isDone }, urlParams: task.id })
+                    }
+                  >
+                    {!task.done && <ModifyTaskButton data={task} />}
+                    <DeleteTaskButton data={task} />
+                  </TaskCard>
+                </SimpleListItem>
               ))}
             </SimpleList>
           ) : (
@@ -56,7 +57,9 @@ export const TasksList = ({ className, children }: TasksListProps) => {
         pending={() => (
           <SimpleList>
             {Array.from({ length: 3 }).map((_, index) => (
-              <TaskCardSkeleton key={index} />
+              <SimpleListItem key={index}>
+                <TaskCardSkeleton />
+              </SimpleListItem>
             ))}
           </SimpleList>
         )}

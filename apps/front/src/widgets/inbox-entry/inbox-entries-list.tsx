@@ -12,7 +12,7 @@ import { useThrottledValue } from "@/shared/hooks/use-throttled-value";
 import { FetchEmpty } from "@/shared/ui/fetch-empty";
 import { FetchError } from "@/shared/ui/fetch-error";
 import { Match } from "@/shared/ui/match";
-import { SimpleList } from "@/shared/ui/simple-list";
+import { SimpleList, SimpleListItem } from "@/shared/ui/simple-list";
 import type { ReactNode } from "@tanstack/react-router";
 import { twMerge } from "tailwind-merge";
 
@@ -37,11 +37,13 @@ export const InboxEntriesList = ({
           entries?.length ? (
             <SimpleList>
               {entries.map((entry) => (
-                <InboxEntryCard data={entry} key={entry.id}>
-                  <CreateTaskFromInboxEntryButton data={entry} />
-                  <ModifyInboxEntryButton data={entry} />
-                  <DeleteInboxEntryButton data={entry} />
-                </InboxEntryCard>
+                <SimpleListItem key={entry.id}>
+                  <InboxEntryCard data={entry}>
+                    <CreateTaskFromInboxEntryButton data={entry} />
+                    <ModifyInboxEntryButton data={entry} />
+                    <DeleteInboxEntryButton data={entry} />
+                  </InboxEntryCard>
+                </SimpleListItem>
               ))}
             </SimpleList>
           ) : (
@@ -56,7 +58,9 @@ export const InboxEntriesList = ({
         pending={() => (
           <SimpleList>
             {Array.from({ length: 3 }).map((_, index) => (
-              <InboxEntryCardSkeleton key={index} />
+              <SimpleListItem key={index}>
+                <InboxEntryCardSkeleton />
+              </SimpleListItem>
             ))}
           </SimpleList>
         )}

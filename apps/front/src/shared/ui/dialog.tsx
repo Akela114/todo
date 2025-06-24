@@ -38,8 +38,8 @@ export const Modal = ({
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>{triggerModalButton}</DialogTrigger>
       <DialogPortal>
-        <DialogOverlay className="absolute inset-0 bg-black/30" />
-        <DialogContent className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-base-100 p-6 rounded-lg w-5/6 max-w-md shadow">
+        <DialogOverlay className="fixed inset-0 bg-black/30" />
+        <DialogContent className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-base-100 p-6 rounded-lg w-5/6 max-w-md shadow">
           <div className="flex items-center justify-between gap-2">
             <DialogTitle className="font-bold text-lg">{title}</DialogTitle>
             <DialogClose asChild>
