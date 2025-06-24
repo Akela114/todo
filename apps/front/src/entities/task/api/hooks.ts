@@ -12,6 +12,7 @@ import {
   modifyTask,
 } from "./fetchers";
 import type { Task } from "@packages/schemas/task";
+import type { CoreApiBasicResponse } from "@packages/schemas/common";
 
 export const useTasks = () =>
   useQuery({
@@ -22,7 +23,11 @@ export const useTasks = () =>
 export const useCreateTaskFromInboxEntry = () => {
   const queryClient = useQueryClient();
 
-  return useMutation({
+  return useMutation<
+    Awaited<ReturnType<typeof createTaskFromInboxEntry>>,
+    CoreApiBasicResponse,
+    Parameters<typeof createTaskFromInboxEntry>[0]
+  >({
     mutationFn: createTaskFromInboxEntry,
     onSettled: () => {
       queryClient.invalidateQueries({
@@ -39,7 +44,7 @@ export const useModifyTask = (
   opts: Omit<
     UseMutationOptions<
       Awaited<ReturnType<typeof modifyTask>>,
-      unknown,
+      CoreApiBasicResponse,
       Parameters<typeof modifyTask>[0]
     >,
     "mutationFn"

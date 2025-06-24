@@ -4,8 +4,7 @@ import {
   createOrModifyInboxEntrySchema,
 } from "@packages/schemas/inbox-entry";
 import { Input } from "@/shared/ui";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { getInputValidation, useDefaultForm } from "@/shared/forms";
 
 interface ModifyInboxEntryFormProps {
   data: InboxEntry;
@@ -16,39 +15,33 @@ export const ModifyInboxEntryForm = ({
   data,
   onSuccess,
 }: ModifyInboxEntryFormProps) => {
-  const { mutate: modifyEntry, isPending } = useModifyInboxEntry({
+  const {
+    mutate: modifyEntry,
+    error: submitError,
+    reset: resetSubmit,
+  } = useModifyInboxEntry({
     onSuccess,
   });
 
-  const { handleSubmit, register } = useForm({
-    defaultValues: {
-      title: data.title,
-    },
-    resolver: zodResolver(createOrModifyInboxEntrySchema),
+  const {
+    form: { register, formState },
+    getFormComponent,
+  } = useDefaultForm({
+    schema: createOrModifyInboxEntrySchema,
+    useFormProps: {},
+    onResetSubmit: resetSubmit,
+    onSubmit: (submitData) =>
+      modifyEntry({ urlParams: data.id, body: submitData }),
+    submitButtonTitle: "Войти",
+    submitError,
   });
 
-  return (
-    <form
-      onSubmit={handleSubmit((formData) =>
-        modifyEntry({
-          body: formData,
-          urlParams: data.id,
-        }),
-      )}
-      className="flex flex-col gap-4"
-    >
-      <Input
-        {...register("title")}
-        label="Сообщение"
-        placeholder="Введите сообщение..."
-      />
-      <button
-        type="submit"
-        className="btn btn-primary self-end"
-        disabled={isPending}
-      >
-        Изменить запись
-      </button>
-    </form>
+  return getFormComponent(
+    <Input
+      {...register("title")}
+      label="Сообщение"
+      placeholder="Введите сообщение..."
+      inputValidation={getInputValidation(formState, "title")}
+    />,
   );
 };

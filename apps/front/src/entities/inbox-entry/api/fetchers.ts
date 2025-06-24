@@ -1,5 +1,11 @@
 import { coreApiWithAuth } from "@/entities/auth/@x";
-import { createFetcherWrapper, withValidation } from "@/shared/api";
+import {
+  CORE_API_BASIC_RESPONSE_FALLBACK,
+  createFetcherWrapper,
+  withHttpErrorParsing,
+  withValidation,
+} from "@/shared/api";
+import { coreApiBasicResponseSchema } from "@packages/schemas/common";
 import {
   type CreateOrModifyInboxEntry,
   inboxEntrySchema,
@@ -10,22 +16,30 @@ export const getInboxEntries = withValidation(
   inboxEntrySchema.array()
 );
 
-export const createInboxEntry = withValidation(
-  createFetcherWrapper<undefined, undefined, CreateOrModifyInboxEntry>(
-    coreApiWithAuth,
-    () => "inbox-entries",
-    "post"
+export const createInboxEntry = withHttpErrorParsing(
+  withValidation(
+    createFetcherWrapper<undefined, undefined, CreateOrModifyInboxEntry>(
+      coreApiWithAuth,
+      () => "inbox-entries",
+      "post"
+    ),
+    inboxEntrySchema
   ),
-  inboxEntrySchema
+  coreApiBasicResponseSchema,
+  CORE_API_BASIC_RESPONSE_FALLBACK
 );
 
-export const modifyInboxEntry = withValidation(
-  createFetcherWrapper<number, undefined, CreateOrModifyInboxEntry>(
-    coreApiWithAuth,
-    (id: number) => `inbox-entries/${id}`,
-    "put"
+export const modifyInboxEntry = withHttpErrorParsing(
+  withValidation(
+    createFetcherWrapper<number, undefined, CreateOrModifyInboxEntry>(
+      coreApiWithAuth,
+      (id: number) => `inbox-entries/${id}`,
+      "put"
+    ),
+    inboxEntrySchema
   ),
-  inboxEntrySchema
+  coreApiBasicResponseSchema,
+  CORE_API_BASIC_RESPONSE_FALLBACK
 );
 
 export const deleteInboxEntry = withValidation(

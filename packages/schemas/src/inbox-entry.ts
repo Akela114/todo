@@ -7,8 +7,8 @@ export const inboxEntrySchema = z.object({
   updatedAt: z.string(),
 });
 
-export const createOrModifyInboxEntrySchema = inboxEntrySchema.pick({
-  title: true,
+export const createOrModifyInboxEntrySchema = z.object({
+  title: z.string().min(1),
 });
 
 export type InboxEntry = z.infer<typeof inboxEntrySchema>;

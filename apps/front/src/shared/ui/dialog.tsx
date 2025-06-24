@@ -51,7 +51,7 @@ export const Modal = ({
               </button>
             </DialogClose>
           </div>
-          <div className="py-4">{children}</div>
+          <div className="pt-4">{children}</div>
         </DialogContent>
       </DialogPortal>
     </Dialog>

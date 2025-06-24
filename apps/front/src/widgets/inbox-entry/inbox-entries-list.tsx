@@ -29,7 +29,7 @@ export const InboxEntriesList = ({
   children,
 }: InboxEntriesListProps) => {
   const { data: entries, status, refetch } = useInboxEntries();
-  const throttledStatus = useThrottledValue(status, 500);
+  const throttledStatus = useThrottledValue(status, 300);
 
   return (
     <div className={twMerge("flex flex-col gap-4", className)}>

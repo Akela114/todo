@@ -8,3 +8,4 @@ export * from "./match";
 export * from "./rating";
 export * from "./select";
 export * from "./text-skeleton";
+export * from "./form-wrapper";

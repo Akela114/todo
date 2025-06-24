@@ -24,7 +24,7 @@ interface TasksListProps {
 export const TasksList = ({ className, children }: TasksListProps) => {
   const { data: tasks, status, refetch } = useTasks();
   const { mutate: modifyTask } = useModifyTask();
-  const throttledStatus = useThrottledValue(status, 500);
+  const throttledStatus = useThrottledValue(status, 300);
 
   return (
     <div className={twMerge("flex flex-col gap-4", className)}>

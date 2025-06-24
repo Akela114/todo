@@ -12,6 +12,7 @@ import {
   modifyInboxEntry,
 } from "./fetchers";
 import type { InboxEntry } from "@packages/schemas/inbox-entry";
+import type { CoreApiBasicResponse } from "@packages/schemas/common";
 
 export const useInboxEntries = () =>
   useQuery({
@@ -22,7 +23,11 @@ export const useInboxEntries = () =>
 export const useCreateInboxEntry = () => {
   const queryClient = useQueryClient();
 
-  return useMutation({
+  return useMutation<
+    Awaited<ReturnType<typeof createInboxEntry>>,
+    CoreApiBasicResponse,
+    Parameters<typeof createInboxEntry>[0]
+  >({
     mutationFn: createInboxEntry,
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.inboxEntries] });
@@ -34,7 +39,7 @@ export const useModifyInboxEntry = (
   opts: Omit<
     UseMutationOptions<
       Awaited<ReturnType<typeof modifyInboxEntry>>,
-      unknown,
+      CoreApiBasicResponse,
       Parameters<typeof modifyInboxEntry>[0]
     >,
     "mutationFn"

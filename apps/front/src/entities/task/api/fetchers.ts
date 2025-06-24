@@ -1,5 +1,11 @@
 import { coreApiWithAuth } from "@/entities/auth/@x";
-import { createFetcherWrapper, withValidation } from "@/shared/api";
+import {
+  CORE_API_BASIC_RESPONSE_FALLBACK,
+  createFetcherWrapper,
+  withHttpErrorParsing,
+  withValidation,
+} from "@/shared/api";
+import { coreApiBasicResponseSchema } from "@packages/schemas/common";
 import {
   type CreateTaskFromInboxEntry,
   type ModifyTask,
@@ -11,22 +17,30 @@ export const getTasks = withValidation(
   taskSchema.array()
 );
 
-export const createTaskFromInboxEntry = withValidation(
-  createFetcherWrapper<number, undefined, CreateTaskFromInboxEntry>(
-    coreApiWithAuth,
-    (id: number) => `inbox-entries/${id}/tasks`,
-    "post"
+export const createTaskFromInboxEntry = withHttpErrorParsing(
+  withValidation(
+    createFetcherWrapper<number, undefined, CreateTaskFromInboxEntry>(
+      coreApiWithAuth,
+      (id: number) => `inbox-entries/${id}/tasks`,
+      "post"
+    ),
+    taskSchema
   ),
-  taskSchema
+  coreApiBasicResponseSchema,
+  CORE_API_BASIC_RESPONSE_FALLBACK
 );
 
-export const modifyTask = withValidation(
-  createFetcherWrapper<number, undefined, ModifyTask>(
-    coreApiWithAuth,
-    (id: number) => `tasks/${id}`,
-    "put"
+export const modifyTask = withHttpErrorParsing(
+  withValidation(
+    createFetcherWrapper<number, undefined, ModifyTask>(
+      coreApiWithAuth,
+      (id: number) => `tasks/${id}`,
+      "put"
+    ),
+    taskSchema
   ),
-  taskSchema
+  coreApiBasicResponseSchema,
+  CORE_API_BASIC_RESPONSE_FALLBACK
 );
 
 export const deleteTask = withValidation(
