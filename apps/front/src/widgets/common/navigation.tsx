@@ -1,4 +1,4 @@
-import { ROUTE_LABELS } from "@/shared/router/route-labels";
+import { ROUTE_LABELS } from "@/shared/router";
 import { Link } from "@tanstack/react-router";
 
 export const Navigation = () => {

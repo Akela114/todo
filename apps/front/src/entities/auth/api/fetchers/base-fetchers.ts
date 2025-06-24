@@ -4,10 +4,10 @@ import {
   withHttpErrorParsing,
   withOnSuccessHook,
   withValidation,
+  CORE_API_BASIC_RESPONSE_FALLBACK,
 } from "@/shared/api";
 import { type Login, authTokensSchema } from "@packages/schemas/auth";
 import { useAuthStore } from "../../store/auth-store";
-import { CORE_API_BASIC_RESPONSE_FALLBACK } from "@/shared/api/core-api/consts";
 import { coreApiBasicResponseSchema } from "@packages/schemas/common";
 
 export const login = withOnSuccessHook(

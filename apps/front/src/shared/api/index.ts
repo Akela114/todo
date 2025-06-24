@@ -1,2 +1,2 @@
-export * from "./core-api/instance";
+export * from "./core-api";
 export * from "./utils";

@@ -1,1 +1,1 @@
-export * from "./ui/user-registration-form";
+export * from "./create-user";

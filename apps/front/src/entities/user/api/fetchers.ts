@@ -3,9 +3,9 @@ import {
   createFetcherWrapper,
   withHttpErrorParsing,
   withValidation,
+  CORE_API_BASIC_RESPONSE_FALLBACK,
 } from "@/shared/api";
 import { type CreateUser, userSchema } from "@packages/schemas/user";
-import { CORE_API_BASIC_RESPONSE_FALLBACK } from "@/shared/api/core-api/consts";
 import { coreApiBasicResponseSchema } from "@packages/schemas/common";
 
 export const createUser = withHttpErrorParsing(

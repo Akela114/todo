@@ -1,4 +1,4 @@
-import { queryClient } from "@/shared/query/query-client";
+import { queryClient } from "@/shared/query";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Link, Outlet, createRootRoute } from "@tanstack/react-router";

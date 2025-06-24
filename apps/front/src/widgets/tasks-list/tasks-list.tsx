@@ -5,11 +5,14 @@ import {
   useTasks,
 } from "@/entities/task";
 import { DeleteTaskButton, ModifyTaskButton } from "@/features/task";
-import { useThrottledValue } from "@/shared/hooks/use-throttled-value";
-import { FetchEmpty } from "@/shared/ui/fetch-empty";
-import { FetchError } from "@/shared/ui/fetch-error";
-import { Match } from "@/shared/ui/match";
-import { SimpleList, SimpleListItem } from "@/shared/ui/simple-list";
+import { useThrottledValue } from "@/shared/common-hooks/use-throttled-value";
+import {
+  FetchEmpty,
+  FetchError,
+  Match,
+  SimpleList,
+  SimpleListItem,
+} from "@/shared/ui";
 import type { ReactNode } from "react";
 import { twMerge } from "tailwind-merge";
 

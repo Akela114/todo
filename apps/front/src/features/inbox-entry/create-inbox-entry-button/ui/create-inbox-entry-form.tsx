@@ -3,7 +3,7 @@ import {
   type CreateOrModifyInboxEntry,
   createOrModifyInboxEntrySchema,
 } from "@packages/schemas/inbox-entry";
-import { Input } from "@/shared/ui/input";
+import { Input } from "@/shared/ui";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 

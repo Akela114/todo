@@ -1,4 +1,4 @@
-import { router } from "@/shared/router/router";
+import { router } from "@/shared/router";
 import { RouterProvider } from "@tanstack/react-router";
 import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";

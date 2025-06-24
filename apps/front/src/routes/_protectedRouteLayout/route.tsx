@@ -1,9 +1,8 @@
 import { checkAuth } from "@/entities/auth";
 import { LogoutButton } from "@/features/auth";
-import { queryClient } from "@/shared/query/query-client";
-import { QUERY_KEYS } from "@/shared/query/query-keys";
-import { ROUTE_LABELS } from "@/shared/router/route-labels";
-import { LoadingScreen } from "@/shared/ui/loading-wrapper";
+import { queryClient, QUERY_KEYS } from "@/shared/query";
+import { ROUTE_LABELS } from "@/shared/router";
+import { LoadingScreen } from "@/shared/ui";
 import { Header } from "@/widgets/common";
 import { Navigation } from "@/widgets/common/navigation";
 import {

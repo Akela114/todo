@@ -1,4 +1,4 @@
-import { QUERY_KEYS } from "@/shared/query/query-keys";
+import { QUERY_KEYS, useOptimisticMutation } from "@/shared/query";
 import {
   useMutation,
   useQuery,
@@ -11,7 +11,6 @@ import {
   getTasks,
   modifyTask,
 } from "./fetchers";
-import { useOptimisticMutation } from "@/shared/query/query-helpers";
 import type { Task } from "@packages/schemas/task";
 
 export const useTasks = () =>

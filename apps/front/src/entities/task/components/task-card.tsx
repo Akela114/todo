@@ -2,8 +2,7 @@ import { format } from "date-fns";
 import type { ReactNode } from "react";
 import { twMerge } from "tailwind-merge";
 import type { Task } from "@packages/schemas/task";
-import { TextSkeleton } from "@/shared/ui/text-skeleton";
-import { Rating } from "@/shared/ui/rating";
+import { TextSkeleton, Rating } from "@/shared/ui";
 
 interface TaskCardProps {
   data: Task;

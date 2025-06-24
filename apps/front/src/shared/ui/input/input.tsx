@@ -1,6 +1,6 @@
 import type { ComponentProps, ReactNode } from "react";
 import { twMerge } from "tailwind-merge";
-import type { getInputValidation } from "../../lib/form-utilts";
+import type { getInputValidation } from "../../forms/form-utilts";
 
 interface InputProps extends ComponentProps<"input"> {
   label?: string;

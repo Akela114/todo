@@ -1,48 +1,40 @@
-import { createUserSchema } from "@packages/schemas/user";
-import { getInputValidation } from "@/shared/lib/form-utilts";
-import { Input, PasswordInput } from "@/shared/ui/input";
+import { useLogin } from "@/entities/auth";
+import { getInputValidation } from "@/shared/forms";
+import { Input, PasswordInput } from "@/shared/ui";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useCreateUser } from "@/entities/user";
+import { loginSchema } from "@packages/schemas/auth";
 
-interface UserRegistrationFormProps {
+interface LoginFormProps {
   onSuccess?: () => void;
 }
 
-export const UserRegistrationForm = ({
-  onSuccess,
-}: UserRegistrationFormProps) => {
+export const LoginForm = ({ onSuccess }: LoginFormProps) => {
   const {
-    mutateAsync: createUser,
+    mutateAsync: login,
     error,
     isPending,
     reset: resetSubmit,
-  } = useCreateUser({
+  } = useLogin({
     onSuccess,
   });
 
   const { handleSubmit, register, reset, formState } = useForm({
-    resolver: zodResolver(createUserSchema),
+    resolver: zodResolver(loginSchema),
   });
 
   return (
     <form
       onSubmit={handleSubmit(async (data) => {
-        await createUser({
+        await login({
           body: data,
         });
         reset();
       })}
-      className="flex flex-col gap-5"
       onChange={resetSubmit}
+      className="flex flex-col gap-5"
     >
       <div className="flex flex-col gap-3">
-        <Input
-          {...register("email")}
-          label="Email"
-          placeholder="Введите email..."
-          inputValidation={getInputValidation(formState, "email")}
-        />
         <Input
           {...register("username")}
           label="Имя пользователя"
@@ -59,10 +51,10 @@ export const UserRegistrationForm = ({
       <div className="flex flex-col gap-2">
         <button
           type="submit"
-          className="btn btn-primary"
+          className={"btn btn-primary"}
           disabled={isPending || !!error}
         >
-          Зарегистрироваться
+          Войти
         </button>
         {error && <div className="text-error text-xs">{error.message}</div>}
       </div>

@@ -1,40 +1,48 @@
-import { useLogin } from "@/entities/auth";
-import { getInputValidation } from "@/shared/lib/form-utilts";
-import { Input, PasswordInput } from "@/shared/ui/input";
+import { createUserSchema } from "@packages/schemas/user";
+import { getInputValidation } from "@/shared/forms";
+import { Input, PasswordInput } from "@/shared/ui";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { loginSchema } from "@packages/schemas/auth";
+import { useCreateUser } from "@/entities/user";
 
-interface LoginFormProps {
+interface UserRegistrationFormProps {
   onSuccess?: () => void;
 }
 
-export const LoginForm = ({ onSuccess }: LoginFormProps) => {
+export const UserRegistrationForm = ({
+  onSuccess,
+}: UserRegistrationFormProps) => {
   const {
-    mutateAsync: login,
+    mutateAsync: createUser,
     error,
     isPending,
     reset: resetSubmit,
-  } = useLogin({
+  } = useCreateUser({
     onSuccess,
   });
 
   const { handleSubmit, register, reset, formState } = useForm({
-    resolver: zodResolver(loginSchema),
+    resolver: zodResolver(createUserSchema),
   });
 
   return (
     <form
       onSubmit={handleSubmit(async (data) => {
-        await login({
+        await createUser({
           body: data,
         });
         reset();
       })}
-      onChange={resetSubmit}
       className="flex flex-col gap-5"
+      onChange={resetSubmit}
     >
       <div className="flex flex-col gap-3">
+        <Input
+          {...register("email")}
+          label="Email"
+          placeholder="Введите email..."
+          inputValidation={getInputValidation(formState, "email")}
+        />
         <Input
           {...register("username")}
           label="Имя пользователя"
@@ -51,10 +59,10 @@ export const LoginForm = ({ onSuccess }: LoginFormProps) => {
       <div className="flex flex-col gap-2">
         <button
           type="submit"
-          className={"btn btn-primary"}
+          className="btn btn-primary"
           disabled={isPending || !!error}
         >
-          Войти
+          Зарегистрироваться
         </button>
         {error && <div className="text-error text-xs">{error.message}</div>}
       </div>

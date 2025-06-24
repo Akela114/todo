@@ -7,12 +7,15 @@ import {
   ModifyInboxEntryButton,
   DeleteInboxEntryButton,
 } from "@/features/inbox-entry";
-import { CreateTaskFromInboxEntryButton } from "@/features/task/create-task-from-inbox-entry";
-import { useThrottledValue } from "@/shared/hooks/use-throttled-value";
-import { FetchEmpty } from "@/shared/ui/fetch-empty";
-import { FetchError } from "@/shared/ui/fetch-error";
-import { Match } from "@/shared/ui/match";
-import { SimpleList, SimpleListItem } from "@/shared/ui/simple-list";
+import { CreateTaskFromInboxEntryButton } from "@/features/task";
+import { useThrottledValue } from "@/shared/common-hooks";
+import {
+  FetchEmpty,
+  FetchError,
+  Match,
+  SimpleList,
+  SimpleListItem,
+} from "@/shared/ui";
 import type { ReactNode } from "@tanstack/react-router";
 import { twMerge } from "tailwind-merge";
 

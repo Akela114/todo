@@ -1,7 +1,6 @@
 import { checkAuth } from "@/entities/auth";
-import { queryClient } from "@/shared/query/query-client";
-import { QUERY_KEYS } from "@/shared/query/query-keys";
-import { LoadingScreen } from "@/shared/ui/loading-wrapper";
+import { queryClient, QUERY_KEYS } from "@/shared/query";
+import { LoadingScreen } from "@/shared/ui";
 import { Outlet, createFileRoute, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_authLayout")({

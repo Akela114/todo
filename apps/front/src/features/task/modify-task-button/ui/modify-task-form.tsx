@@ -1,11 +1,8 @@
 import { modifyTaskSchema, type Task } from "@packages/schemas/task";
-import { Input } from "@/shared/ui/input";
+import { Input, Select } from "@/shared/ui";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
-import { useModifyTask } from "@/entities/task";
-import { Select } from "@/shared/ui/select";
-import { TASK_PRIORITIES_OPTIONS } from "@/entities/task/consts";
-
+import { useModifyTask, TASK_PRIORITIES_OPTIONS } from "@/entities/task";
 interface ModifyTaskFormProps {
   data: Task;
   onSuccess?: () => void;

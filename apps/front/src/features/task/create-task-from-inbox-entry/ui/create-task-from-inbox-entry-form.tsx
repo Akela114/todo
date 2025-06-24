@@ -1,14 +1,15 @@
 import type { InboxEntry } from "@packages/schemas/inbox-entry";
-import { useCreateTaskFromInboxEntry } from "@/entities/task";
-import { Input } from "@/shared/ui/input";
+import {
+  useCreateTaskFromInboxEntry,
+  TASK_PRIORITIES_OPTIONS,
+} from "@/entities/task";
+import { Input, Select } from "@/shared/ui";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, Controller } from "react-hook-form";
 import {
   createTaskFromInboxEntrySchema,
   type CreateTaskFromInboxEntry,
 } from "@packages/schemas/task";
-import { Select } from "@/shared/ui/select";
-import { TASK_PRIORITIES_OPTIONS } from "@/entities/task/consts";
 
 interface CreateTaskFromInboxEntryFormProps {
   inboxEntry: InboxEntry;

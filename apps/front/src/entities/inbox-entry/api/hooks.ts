@@ -1,4 +1,4 @@
-import { QUERY_KEYS } from "@/shared/query/query-keys";
+import { QUERY_KEYS, useOptimisticMutation } from "@/shared/query";
 import {
   useMutation,
   useQuery,
@@ -12,7 +12,6 @@ import {
   modifyInboxEntry,
 } from "./fetchers";
 import type { InboxEntry } from "@packages/schemas/inbox-entry";
-import { useOptimisticMutation } from "@/shared/query/query-helpers";
 
 export const useInboxEntries = () =>
   useQuery({
