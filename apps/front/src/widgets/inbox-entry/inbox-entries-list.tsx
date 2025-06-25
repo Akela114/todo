@@ -24,6 +24,8 @@ interface InboxEntriesListProps {
   className?: string;
 }
 
+const NUM_OF_SKELETONS = 3;
+
 export const InboxEntriesList = ({
   className,
   children,
@@ -39,8 +41,14 @@ export const InboxEntriesList = ({
         success={() =>
           entries?.length ? (
             <SimpleList>
-              {entries.map((entry) => (
-                <SimpleListItem key={entry.id}>
+              {entries.map((entry, idx, entries) => (
+                <SimpleListItem
+                  key={entry.id}
+                  initialAnimationDelayMultiplier={
+                    idx < NUM_OF_SKELETONS ? 0 : idx - (NUM_OF_SKELETONS - 1)
+                  }
+                  isLastItem={idx === entries.length - 1}
+                >
                   <InboxEntryCard data={entry}>
                     <CreateTaskFromInboxEntryButton data={entry} />
                     <ModifyInboxEntryButton data={entry} />
@@ -60,7 +68,7 @@ export const InboxEntriesList = ({
         )}
         pending={() => (
           <SimpleList>
-            {Array.from({ length: 3 }).map((_, index) => (
+            {Array.from({ length: NUM_OF_SKELETONS }).map((_, index) => (
               <SimpleListItem key={index}>
                 <InboxEntryCardSkeleton />
               </SimpleListItem>

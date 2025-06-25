@@ -21,6 +21,8 @@ interface TasksListProps {
   className?: string;
 }
 
+const NUM_OF_SKELETONS = 3;
+
 export const TasksList = ({ className, children }: TasksListProps) => {
   const { data: tasks, status, refetch } = useTasks();
   const { mutate: modifyTask } = useModifyTask();
@@ -34,8 +36,14 @@ export const TasksList = ({ className, children }: TasksListProps) => {
         success={() =>
           tasks?.length ? (
             <SimpleList>
-              {tasks.map((task) => (
-                <SimpleListItem key={task.id}>
+              {tasks.map((task, idx, tasks) => (
+                <SimpleListItem
+                  key={task.id}
+                  initialAnimationDelayMultiplier={
+                    idx < NUM_OF_SKELETONS ? 0 : idx - (NUM_OF_SKELETONS - 1)
+                  }
+                  isLastItem={idx === tasks.length - 1}
+                >
                   <TaskCard
                     data={task}
                     onStatusChange={(isDone) =>
@@ -59,7 +67,7 @@ export const TasksList = ({ className, children }: TasksListProps) => {
         )}
         pending={() => (
           <SimpleList>
-            {Array.from({ length: 3 }).map((_, index) => (
+            {Array.from({ length: NUM_OF_SKELETONS }).map((_, index) => (
               <SimpleListItem key={index}>
                 <TaskCardSkeleton />
               </SimpleListItem>
