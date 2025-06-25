@@ -1,4 +1,4 @@
-import { and, asc, desc, eq } from "drizzle-orm";
+import { and, asc, count, desc, eq, type InferSelectModel } from "drizzle-orm";
 import type { NodePgDatabase } from "drizzle-orm/node-postgres";
 import type {
   PgColumn,
@@ -9,10 +9,24 @@ import type {
   PgUpdateSetSource,
 } from "drizzle-orm/pg-core";
 
+interface GetFewBaseOptions<
+  T extends PgTable & Record<K | PK, PgColumn>,
+  PK extends keyof InferSelectModel<T>,
+  K extends keyof InferSelectModel<T> = never
+> {
+  columnsToCheck: Record<K, unknown> &
+    Partial<Record<keyof InferSelectModel<T>, unknown>>;
+  orders?: {
+    column: keyof InferSelectModel<T>;
+    direction: "asc" | "desc";
+  }[];
+  transaction?: PgTransaction<PgQueryResultHKT, Record<string, unknown>>;
+}
+
 export class BaseRepository<
   T extends PgTable & Record<K | PK, PgColumn>,
-  PK extends keyof T["$inferSelect"],
-  K extends keyof T["$inferSelect"] = never
+  PK extends keyof InferSelectModel<T>,
+  K extends keyof InferSelectModel<T> = never
 > {
   constructor(
     protected client: NodePgDatabase<Record<string, unknown>>,
@@ -21,40 +35,36 @@ export class BaseRepository<
     protected columnsToCheckAlwaysNames: K[] = []
   ) {}
 
-  getAll(
-    columnsToCheckAlwaysValues: Record<K, unknown>,
-    orders?: {
-      column: keyof T & keyof T["$inferSelect"];
-      direction: "asc" | "desc";
-    }[],
-    transaction?: PgTransaction<PgQueryResultHKT, Record<string, unknown>>
-  ) {
-    const client = transaction ?? this.client;
+  async getFew(options: GetFewBaseOptions<T, PK, K>) {
+    return this.generateGetFewBaseQuery(options);
+  }
 
-    const query = client
-      .select()
-      // TODO: https://github.com/drizzle-team/drizzle-orm/discussions/4318
-      // @ts-ignore drizzle-bug
-      .from(this.table)
-      .where(
-        and(
-          ...this.columnsToCheckAlwaysNames.map((name) =>
-            eq(this.table[name], columnsToCheckAlwaysValues[name])
-          )
-        )
-      );
+  async getFewWithPagination({
+    pagination,
+    ...options
+  }: GetFewBaseOptions<T, PK, K> & {
+    pagination: {
+      page: number;
+      pageSize: number;
+    };
+  }) {
+    const baseQuery = this.generateGetFewBaseQuery(options);
 
-    if (orders?.length) {
-      query.orderBy(
-        ...orders.map(({ column, direction }) => {
-          return direction === "asc"
-            ? asc(this.table[column])
-            : desc(this.table[column]);
-        })
-      );
-    }
+    const [entries, totalCount] = await Promise.all([
+      baseQuery
+        .offset((pagination.page - 1) * pagination.pageSize)
+        .limit(pagination.pageSize),
+      this.getFewCount(options),
+    ]);
 
-    return query;
+    return {
+      data: entries,
+      pagination: {
+        page: pagination.page,
+        pageSize: pagination.pageSize,
+        totalCount,
+      },
+    };
   }
 
   async getOne(
@@ -89,7 +99,7 @@ export class BaseRepository<
 
     const result = await client.insert(this.table).values(data).returning();
 
-    return (result as T["$inferSelect"][])[0];
+    return (result as InferSelectModel<T>[])[0];
   }
 
   async update(
@@ -113,7 +123,7 @@ export class BaseRepository<
       )
       .returning();
 
-    return (result as T["$inferSelect"][])[0];
+    return (result as InferSelectModel<T>[])[0];
   }
 
   async delete(
@@ -135,6 +145,63 @@ export class BaseRepository<
       )
       .returning();
 
-    return (result as T["$inferSelect"][])[0];
+    return (result as InferSelectModel<T>[])[0];
+  }
+
+  private generateGetFewBaseQuery({
+    columnsToCheck,
+    orders,
+    transaction,
+  }: GetFewBaseOptions<T, PK, K>) {
+    const client = transaction ?? this.client;
+
+    const query = client
+      .select()
+      // TODO: https://github.com/drizzle-team/drizzle-orm/discussions/4318
+      // @ts-ignore drizzle-bug
+      .from(this.table)
+      .where(
+        and(
+          ...this.columnsToCheckAlwaysNames.map((name) =>
+            eq(this.table[name], columnsToCheck[name])
+          )
+        )
+      );
+
+    if (orders?.length) {
+      query.orderBy(
+        ...orders.map(({ column, direction }) => {
+          return direction === "asc"
+            ? asc(this.table[column])
+            : desc(this.table[column]);
+        })
+      );
+    }
+
+    return query;
+  }
+
+  private async getFewCount({
+    columnsToCheck,
+    transaction,
+  }: GetFewBaseOptions<T, PK, K>) {
+    const client = transaction ?? this.client;
+
+    const query = client
+      .select({ count: count() })
+      // TODO: https://github.com/drizzle-team/drizzle-orm/discussions/4318
+      // @ts-ignore drizzle-bug
+      .from(this.table)
+      .where(
+        and(
+          ...this.columnsToCheckAlwaysNames.map((name) =>
+            eq(this.table[name], columnsToCheck[name])
+          )
+        )
+      );
+
+    const result = await query;
+
+    return result[0].count;
   }
 }

@@ -5,16 +5,24 @@ import {
   withHttpErrorParsing,
   withValidation,
 } from "@/shared/api";
-import { coreApiBasicResponseSchema } from "@packages/schemas/common";
+import {
+  coreApiBasicResponseSchema,
+  type BasePaginatedRequestParams,
+} from "@packages/schemas/common";
 import {
   type CreateTaskFromInboxEntry,
   type ModifyTask,
+  paginatedTasks,
   taskSchema,
 } from "@packages/schemas/task";
 
 export const getTasks = withValidation(
-  createFetcherWrapper(coreApiWithAuth, () => "tasks", "get"),
-  taskSchema.array()
+  createFetcherWrapper<undefined, BasePaginatedRequestParams>(
+    coreApiWithAuth,
+    () => "tasks",
+    "get"
+  ),
+  paginatedTasks
 );
 
 export const createTaskFromInboxEntry = withHttpErrorParsing(

@@ -14,10 +14,19 @@ import {
 import type { InboxEntry } from "@packages/schemas/inbox-entry";
 import type { CoreApiBasicResponse } from "@packages/schemas/common";
 
-export const useInboxEntries = () =>
+export const useInboxEntries = (
+  searchParams: Parameters<typeof getInboxEntries>[0]["searchParams"],
+  onSuccess?: (data: Awaited<ReturnType<typeof getInboxEntries>>) => void
+) =>
   useQuery({
-    queryKey: [QUERY_KEYS.inboxEntries],
-    queryFn: () => getInboxEntries(),
+    queryKey: [QUERY_KEYS.inboxEntries, searchParams],
+    queryFn: async () => {
+      const data = await getInboxEntries({
+        searchParams,
+      });
+      onSuccess?.(data);
+      return data;
+    },
   });
 
 export const useCreateInboxEntry = () => {

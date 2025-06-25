@@ -4,7 +4,9 @@ import type { z } from "zod";
 export const createFetcherWrapper =
   <
     UrlParams = undefined,
-    SearchParams extends Record<string, string> | undefined = undefined,
+    SearchParams extends
+      | Record<string, string | number>
+      | undefined = undefined,
     Body = undefined,
     Response = unknown
   >(

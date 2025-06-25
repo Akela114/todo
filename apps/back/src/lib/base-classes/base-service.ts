@@ -1,19 +1,32 @@
 import type { AnyPgColumn, AnyPgTable } from "drizzle-orm/pg-core";
 import type { BaseRepository } from "./base-repository.js";
 import { NotFoundError } from "../errors/not-found-error.js";
+import type { InferSelectModel } from "drizzle-orm";
 
 export class BaseService<
   T extends AnyPgTable & Record<K | PK, AnyPgColumn>,
-  PK extends keyof T["$inferSelect"],
-  K extends keyof T["$inferSelect"] = never
+  PK extends keyof InferSelectModel<T>,
+  K extends keyof InferSelectModel<T> = never
 > {
   constructor(
     protected repository: BaseRepository<T, PK, K>,
     protected entityName: string
   ) {}
 
-  async getAll(...args: Parameters<BaseRepository<T, PK, K>["getAll"]>) {
-    return this.repository.getAll(...args);
+  async getFew(...args: Parameters<BaseRepository<T, PK, K>["getFew"]>) {
+    return this.repository.getFew(...args);
+  }
+
+  async getFewWithPagination(
+    ...args: Parameters<BaseRepository<T, PK, K>["getFewWithPagination"]>
+  ) {
+    return this.repository.getFewWithPagination(...args);
+  }
+
+  async getAllPaginated(
+    ...args: Parameters<BaseRepository<T, PK, K>["getFewWithPagination"]>
+  ) {
+    return this.repository.getFewWithPagination(...args);
   }
 
   async getOne(...args: Parameters<BaseRepository<T, PK, K>["getOne"]>) {

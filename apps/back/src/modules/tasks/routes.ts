@@ -1,7 +1,15 @@
 import type { ZodTypeProvider } from "fastify-type-provider-zod";
 import type { FastifyInstance } from "fastify";
 import { SWAGGER_TAGS } from "@/lib/constants/swagger-tags.js";
-import { taskSchema, modifyTaskSchema } from "@packages/schemas/task";
+import {
+  taskSchema,
+  modifyTaskSchema,
+  paginatedTasks,
+} from "@packages/schemas/task";
+import {
+  basePaginatedRequestParams,
+  getPaginatedRequestParams,
+} from "@packages/schemas/common";
 
 export default async (instance: FastifyInstance) => {
   instance.withTypeProvider<ZodTypeProvider>().route({
@@ -10,16 +18,21 @@ export default async (instance: FastifyInstance) => {
     url: "/",
     schema: {
       tags: [SWAGGER_TAGS.tasks.name],
+      querystring: basePaginatedRequestParams,
       response: {
-        200: taskSchema.array(),
+        200: paginatedTasks,
       },
     },
     handler: (request) => {
-      return instance.tasksService.getAll(
-        {
+      return instance.tasksService.getFewWithPagination({
+        columnsToCheck: {
           userId: request.user.id,
         },
-        [
+        pagination: {
+          page: request.query.page,
+          pageSize: request.query.pageSize,
+        },
+        orders: [
           {
             column: "done",
             direction: "asc",
@@ -32,8 +45,8 @@ export default async (instance: FastifyInstance) => {
             column: "updatedAt",
             direction: "desc",
           },
-        ]
-      );
+        ],
+      });
     },
   });
 

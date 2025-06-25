@@ -4,11 +4,13 @@ import { SWAGGER_TAGS } from "@/lib/constants/swagger-tags.js";
 import {
   createOrModifyInboxEntrySchema,
   inboxEntrySchema,
+  paginatedInoxEntries,
 } from "@packages/schemas/inbox-entry";
 import {
   taskSchema,
   createTaskFromInboxEntrySchema,
 } from "@packages/schemas/task";
+import { basePaginatedRequestParams } from "@packages/schemas/common";
 
 export default async (instance: FastifyInstance) => {
   instance.withTypeProvider<ZodTypeProvider>().route({
@@ -17,14 +19,23 @@ export default async (instance: FastifyInstance) => {
     url: "/",
     schema: {
       tags: [SWAGGER_TAGS.inboxEntries.name],
+      querystring: basePaginatedRequestParams,
       response: {
-        200: inboxEntrySchema.array(),
+        200: paginatedInoxEntries,
       },
     },
-    handler: (request) => {
-      return instance.inboxEntryService.getAll({
-        userId: request.user.id,
+    handler: async (request) => {
+      const res = await instance.inboxEntryService.getFewWithPagination({
+        columnsToCheck: {
+          userId: request.user.id,
+        },
+        pagination: {
+          page: request.query.page,
+          pageSize: request.query.pageSize,
+        },
       });
+
+      return res;
     },
   });
 

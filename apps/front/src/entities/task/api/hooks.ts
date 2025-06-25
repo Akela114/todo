@@ -14,10 +14,19 @@ import {
 import type { Task } from "@packages/schemas/task";
 import type { CoreApiBasicResponse } from "@packages/schemas/common";
 
-export const useTasks = () =>
+export const useTasks = (
+  searchParams: Parameters<typeof getTasks>[0]["searchParams"],
+  onSuccess?: (data: Awaited<ReturnType<typeof getTasks>>) => void
+) =>
   useQuery({
-    queryKey: [QUERY_KEYS.tasks],
-    queryFn: () => getTasks(),
+    queryKey: [QUERY_KEYS.tasks, searchParams],
+    queryFn: async () => {
+      const data = await getTasks({
+        searchParams,
+      });
+      onSuccess?.(data);
+      return data;
+    },
   });
 
 export const useCreateTaskFromInboxEntry = () => {

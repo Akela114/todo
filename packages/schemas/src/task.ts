@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { getPaginatedResponseSchema } from "./common";
 
 export const taskSchema = z.object({
   id: z.coerce.number(),
@@ -8,6 +9,8 @@ export const taskSchema = z.object({
   createdAt: z.string(),
   updatedAt: z.string(),
 });
+
+export const paginatedTasks = getPaginatedResponseSchema(taskSchema.array());
 
 export const createTaskFromInboxEntrySchema = z.object({
   title: z.string().min(1),

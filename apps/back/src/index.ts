@@ -29,6 +29,13 @@ fastify.register(jwtPlugin);
 fastify.setErrorHandler((error, _request, reply) => {
   console.log(error);
 
+  if (error.statusCode) {
+    return reply.status(error.statusCode).send({
+      statusCode: error.statusCode,
+      message: error.message,
+    });
+  }
+
   if (error instanceof ValidationError) {
     return reply.status(400).send({
       statusCode: 400,

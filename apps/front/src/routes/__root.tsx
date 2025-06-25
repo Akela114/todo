@@ -17,7 +17,7 @@ export const Route = createRootRoute({
   notFoundComponent: () => (
     <div className="flex-1 flex flex-col items-center justify-center gap-4">
       <div className="text-lg font-bold">Страница не найдена</div>
-      <Link to="/tasks" className="btn btn-primary">
+      <Link to="/tasks" search={{ page: 1 }} className="btn btn-primary">
         К списку задач
       </Link>
     </div>

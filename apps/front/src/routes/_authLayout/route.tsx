@@ -17,7 +17,7 @@ export const Route = createFileRoute("/_authLayout")({
     } catch {
       return;
     }
-    throw redirect({ to: "/inbox" });
+    throw redirect({ to: "/inbox", search: { page: 1 } });
   },
 });
 

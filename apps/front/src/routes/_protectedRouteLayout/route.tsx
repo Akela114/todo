@@ -3,8 +3,7 @@ import { LogoutButton } from "@/features/auth";
 import { queryClient, QUERY_KEYS } from "@/shared/query";
 import { ROUTE_LABELS } from "@/shared/router";
 import { LoadingScreen } from "@/shared/ui";
-import { Header } from "@/widgets/common";
-import { Navigation } from "@/widgets/common/navigation";
+import { Header, Navigation } from "@/widgets/common";
 import {
   Outlet,
   createFileRoute,

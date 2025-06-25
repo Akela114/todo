@@ -5,45 +5,74 @@ import {
   useTasks,
 } from "@/entities/task";
 import { DeleteTaskButton, ModifyTaskButton } from "@/features/task";
-import { useThrottledValue } from "@/shared/common-hooks/use-throttled-value";
+import { useThrottledValue } from "@/shared/common-hooks";
 import {
   FetchEmpty,
   FetchError,
   Match,
   SimpleList,
   SimpleListItem,
+  Pagination,
+  PaginationSkeleton,
 } from "@/shared/ui";
 import type { ReactNode } from "react";
 import { twMerge } from "tailwind-merge";
 
 interface TasksListProps {
+  page: number;
+  pageSize: number;
+  onPageChange: (page: number) => void;
+  renderPageLink: (page: number, className?: string) => ReactNode;
   children?: ReactNode;
   className?: string;
 }
 
-const NUM_OF_SKELETONS = 3;
-
-export const TasksList = ({ className, children }: TasksListProps) => {
-  const { data: tasks, status, refetch } = useTasks();
+export const TasksList = ({
+  className,
+  children,
+  page,
+  pageSize,
+  onPageChange,
+  renderPageLink,
+}: TasksListProps) => {
+  const {
+    data: tasks,
+    status,
+    refetch,
+  } = useTasks({ page, pageSize }, (tasks) => {
+    if (tasks.pagination.page > 1 && !tasks.data.length) {
+      onPageChange(1);
+    }
+  });
   const { mutate: modifyTask } = useModifyTask();
   const throttledStatus = useThrottledValue(status, 300);
 
   return (
     <div className={twMerge("flex flex-col gap-4", className)}>
-      {children && <div className="flex gap-2">{children}</div>}
+      <div className="flex items-center justify-between gap-2 flex-wrap">
+        <div className="flex gap-2 flex-1">{children}</div>
+        <Match
+          value={throttledStatus}
+          success={() =>
+            tasks?.pagination ? (
+              <Pagination
+                page={tasks.pagination.page}
+                renderPaginationElement={renderPageLink}
+                totalCount={tasks.pagination.totalCount}
+                pageSize={tasks.pagination.pageSize}
+              />
+            ) : null
+          }
+          pending={() => <PaginationSkeleton />}
+        />
+      </div>
       <Match
         value={throttledStatus}
         success={() =>
-          tasks?.length ? (
+          tasks?.data.length ? (
             <SimpleList>
-              {tasks.map((task, idx, tasks) => (
-                <SimpleListItem
-                  key={task.id}
-                  initialAnimationDelayMultiplier={
-                    idx < NUM_OF_SKELETONS ? 0 : idx - (NUM_OF_SKELETONS - 1)
-                  }
-                  isLastItem={idx === tasks.length - 1}
-                >
+              {tasks.data.map((task) => (
+                <SimpleListItem key={task.id}>
                   <TaskCard
                     data={task}
                     onStatusChange={(isDone) =>
@@ -67,8 +96,8 @@ export const TasksList = ({ className, children }: TasksListProps) => {
         )}
         pending={() => (
           <SimpleList>
-            {Array.from({ length: NUM_OF_SKELETONS }).map((_, index) => (
-              <SimpleListItem key={index}>
+            {Array.from({ length: pageSize }).map((_, idx) => (
+              <SimpleListItem key={idx}>
                 <TaskCardSkeleton />
               </SimpleListItem>
             ))}

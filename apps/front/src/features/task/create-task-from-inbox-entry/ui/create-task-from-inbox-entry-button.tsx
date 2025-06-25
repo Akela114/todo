@@ -14,12 +14,8 @@ export const CreateTaskFromInboxEntryButton = ({
     <Modal
       title="Преобразовать в задачу"
       triggerModalButton={
-        <button
-          type="button"
-          className="btn btn-primary btn-sm max-md:btn-square"
-        >
+        <button type="button" className="btn btn-primary btn-sm btn-square">
           <MagicWandIcon />
-          <span className="hidden md:inline">Преобразовать в задачу</span>
         </button>
       }
     >

@@ -9,3 +9,4 @@ export * from "./rating";
 export * from "./select";
 export * from "./text-skeleton";
 export * from "./form-wrapper";
+export * from "./pagination";

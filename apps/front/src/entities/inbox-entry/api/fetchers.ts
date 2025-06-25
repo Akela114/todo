@@ -5,15 +5,23 @@ import {
   withHttpErrorParsing,
   withValidation,
 } from "@/shared/api";
-import { coreApiBasicResponseSchema } from "@packages/schemas/common";
+import {
+  coreApiBasicResponseSchema,
+  type BasePaginatedRequestParams,
+} from "@packages/schemas/common";
 import {
   type CreateOrModifyInboxEntry,
   inboxEntrySchema,
+  paginatedInoxEntries,
 } from "@packages/schemas/inbox-entry";
 
 export const getInboxEntries = withValidation(
-  createFetcherWrapper(coreApiWithAuth, () => "inbox-entries", "get"),
-  inboxEntrySchema.array()
+  createFetcherWrapper<undefined, BasePaginatedRequestParams>(
+    coreApiWithAuth,
+    () => "inbox-entries",
+    "get"
+  ),
+  paginatedInoxEntries
 );
 
 export const createInboxEntry = withHttpErrorParsing(
