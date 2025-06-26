@@ -1,6 +1,7 @@
 import { sql } from "drizzle-orm";
 import {
   boolean,
+  date,
   integer,
   pgTable,
   text,
@@ -43,6 +44,7 @@ export const task = pgTable("task", {
   title: varchar({ length: 255 }).notNull(),
   done: boolean().notNull().default(false),
   priority: integer().notNull().default(1),
+  startDate: date({ mode: "string" }).notNull(),
   userId: integer()
     .notNull()
     .references(() => user.id, {

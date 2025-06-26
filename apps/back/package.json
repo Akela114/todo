@@ -1,12 +1,11 @@
 {
-  "name": "todo-fastify",
+  "name": "@apps/back",
   "version": "1.0.0",
   "description": "",
   "type": "module",
   "scripts": {
     "build": "tsc",
     "predev": "docker compose up -d",
-    "postdev": "docker compose down",
     "dev": "node --watch --import=tsx src/index.ts",
     "drizzle:generate": "drizzle-kit generate",
     "drizzle:migrate": "drizzle-kit migrate",

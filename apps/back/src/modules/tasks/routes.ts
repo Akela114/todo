@@ -1,11 +1,8 @@
 import { SWAGGER_TAGS } from "@/lib/constants/swagger-tags.js";
 import {
-  basePaginatedRequestParams,
-  getPaginatedRequestParams,
-} from "@packages/schemas/common";
-import {
   modifyTaskSchema,
   paginatedTasks,
+  paginatedTasksQueryParams,
   taskSchema,
 } from "@packages/schemas/task";
 import type { FastifyInstance } from "fastify";
@@ -18,7 +15,7 @@ export default async (instance: FastifyInstance) => {
     url: "/",
     schema: {
       tags: [SWAGGER_TAGS.tasks.name],
-      querystring: basePaginatedRequestParams,
+      querystring: paginatedTasksQueryParams,
       response: {
         200: paginatedTasks,
       },
@@ -27,6 +24,10 @@ export default async (instance: FastifyInstance) => {
       return instance.tasksService.getFewWithPagination({
         columnsToCheck: {
           userId: request.user.id,
+          startDate: {
+            value: request.query.startFrom,
+            opertaion: "lte",
+          },
         },
         pagination: {
           page: request.query.page,

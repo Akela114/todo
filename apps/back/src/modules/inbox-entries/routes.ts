@@ -117,10 +117,9 @@ export default async (instance: FastifyInstance) => {
     },
     handler: async (request, reply) => {
       const task = await instance.inboxEntryService.convertInboxEntryToTask({
+        ...request.body,
         id: request.params.id,
         userId: request.user.id,
-        title: request.body.title,
-        priority: request.body.priority,
       });
 
       return reply.status(201).send(task);

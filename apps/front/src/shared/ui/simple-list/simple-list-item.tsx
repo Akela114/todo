@@ -4,7 +4,6 @@ import type { ComponentRef, Ref } from "react";
 
 interface SimpleListItemProps {
   children: ReactNode;
-  className?: string;
   ref?: Ref<ComponentRef<"li">>;
 }
 

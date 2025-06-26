@@ -1,0 +1,1 @@
+ALTER TABLE "task" ADD COLUMN "startDate" date DEFAULT '2025-06-26' NOT NULL;

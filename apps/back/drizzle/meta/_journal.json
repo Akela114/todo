@@ -36,6 +36,20 @@
       "when": 1750758022275,
       "tag": "0004_outgoing_kylun",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1750929390450,
+      "tag": "0005_volatile_charles_xavier",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1750929405003,
+      "tag": "0006_aberrant_spirit",
+      "breakpoints": true
     }
   ]
 }

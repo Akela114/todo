@@ -12,7 +12,7 @@ export const Navigation = () => {
 
   return (
     <nav className="self-stretch">
-      <ul className="menu menu-horizontal md:menu-vertical bg-base-100 rounded-box min-w-44">
+      <ul className="w-full menu menu-horizontal bg-base-100 rounded-box min-w-44">
         {links}
       </ul>
     </nav>

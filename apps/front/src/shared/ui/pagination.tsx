@@ -6,6 +6,7 @@ interface PaginationProps {
   page: number;
   pageSize: number;
   totalCount: number;
+  className?: string;
   renderPaginationElement: (page: number, className?: string) => ReactNode;
 }
 
@@ -15,6 +16,7 @@ export const Pagination = ({
   page,
   pageSize,
   totalCount,
+  className,
   renderPaginationElement,
 }: PaginationProps) => {
   const firstPage = 1;
@@ -28,7 +30,7 @@ export const Pagination = ({
   const shouldRenderLastPage = lastPage > nextPage;
 
   return (
-    <div className="join">
+    <div className={twMerge("join", className)}>
       {shouldRenderFirstPage && (
         <>
           {renderPaginationElement(firstPage, PAGE_LINK_CLASSNAMES)}
@@ -61,9 +63,13 @@ export const Pagination = ({
   );
 };
 
-export const PaginationSkeleton = () => {
+interface PaginationSkeletonProps {
+  className?: string;
+}
+
+export const PaginationSkeleton = ({ className }: PaginationSkeletonProps) => {
   return (
-    <div className="join">
+    <div className={twMerge("join", className)}>
       <div className="join-item btn btn-sm btn-square cursor-auto">
         <TextSkeleton size="xs" variant="square" />
       </div>

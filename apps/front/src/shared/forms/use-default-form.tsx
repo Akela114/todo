@@ -25,7 +25,8 @@ export const useDefaultForm = <T extends z.ZodObject<z.ZodRawShape>>({
   beforeSubmit?: (data: z.infer<T>) => void;
   submitError?: { message: string } | null;
 }) => {
-  const form = useForm({
+  // biome-ignore lint/suspicious/noExplicitAny: it is any in react-hook-form
+  const form = useForm<z.infer<T>, any, z.infer<T>>({
     ...useFormProps,
     resolver: zodResolver(schema),
   });

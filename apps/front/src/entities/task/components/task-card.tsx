@@ -1,6 +1,6 @@
+import { formatDate } from "@/shared/common-helpers";
 import { Rating, TextSkeleton } from "@/shared/ui";
 import type { Task } from "@packages/schemas/task";
-import { format } from "date-fns";
 import type { ReactNode } from "react";
 import { twMerge } from "tailwind-merge";
 
@@ -12,27 +12,40 @@ interface TaskCardProps {
 
 export const TaskCard = ({ data, children, onStatusChange }: TaskCardProps) => {
   return (
-    <div className="flex items-center p-4">
-      <div className="flex-1 flex items-center gap-4">
-        <input
-          type="checkbox"
-          className="checkbox"
-          checked={data.done}
-          onChange={() => onStatusChange?.(!data.done)}
-        />
-        <div
-          className={twMerge("flex-1", data.done && "line-through opacity-50")}
-        >
-          <div className="flex items-center gap-2">
-            <div className="text-xs tabular-nums">
-              {format(data.updatedAt, "yyyy-MM-dd HH:mm")}
+    <div className="p-4">
+      <div className="grid grid-cols-[auto_1fr_auto] items-center gap-x-4 gap-y-2">
+        <div className="flex-1 grid grid-cols-subgrid col-span-2 items-center">
+          <input
+            type="checkbox"
+            className="checkbox"
+            checked={data.done}
+            onChange={() => onStatusChange?.(!data.done)}
+          />
+          <div
+            className={twMerge(
+              "flex-1",
+              data.done && "line-through opacity-50",
+            )}
+          >
+            <div className="flex items-center gap-2">
+              <div className="text-xs tabular-nums">
+                {formatDate(data.updatedAt, "timeDate")}
+              </div>
+              <Rating total={3} selected={data.priority + 1} />
             </div>
-            <Rating total={3} selected={data.priority + 1} />
+            <div className="text-lg font-semibold">{data.title}</div>
           </div>
-          <div className="text-lg font-semibold">{data.title}</div>
+        </div>
+        {children && <div className="card-actions justify-end">{children}</div>}
+
+        <div className="col-start-2">
+          {!data.done && (
+            <div className="text-xs tabular-nums">
+              Срок выполнения: с {formatDate(data.startDate, "date")}
+            </div>
+          )}
         </div>
       </div>
-      {children && <div className="card-actions justify-end">{children}</div>}
     </div>
   );
 };

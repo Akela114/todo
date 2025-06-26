@@ -1,6 +1,6 @@
+import { formatDate } from "@/shared/common-helpers";
 import { TextSkeleton } from "@/shared/ui";
 import type { InboxEntry } from "@packages/schemas/inbox-entry";
-import { format } from "date-fns";
 import type { ReactNode } from "react";
 
 interface InboxEntryCardProps {
@@ -13,7 +13,7 @@ export const InboxEntryCard = ({ data, children }: InboxEntryCardProps) => {
     <div className="flex items-center p-4">
       <div className="flex-1">
         <div className="text-xs tabular-nums">
-          {format(data.updatedAt, "yyyy-MM-dd HH:mm")}
+          {formatDate(data.updatedAt, "timeDate")}
         </div>
         <div className="text-lg font-semibold">{data.title}</div>
       </div>

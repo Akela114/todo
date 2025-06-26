@@ -2,8 +2,9 @@ import {
   TASK_PRIORITIES_OPTIONS,
   useCreateTaskFromInboxEntry,
 } from "@/entities/task";
+import { TODAY_AS_STRING, formatDate } from "@/shared/common-helpers";
 import { getInputValidation, useDefaultForm } from "@/shared/forms";
-import { Input, Select } from "@/shared/ui";
+import { DayInput, Input, Select } from "@/shared/ui";
 import type { InboxEntry } from "@packages/schemas/inbox-entry";
 import {
   type CreateTaskFromInboxEntry,
@@ -35,6 +36,7 @@ export const CreateTaskFromInboxEntryForm = ({
       defaultValues: {
         title: inboxEntry.title,
         priority: 1,
+        startDate: formatDate(TODAY_AS_STRING),
       },
     },
     onResetSubmit: resetSubmit,
@@ -45,7 +47,7 @@ export const CreateTaskFromInboxEntryForm = ({
   });
 
   return getFormComponent(
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-4">
       <Input
         {...register("title")}
         label="Заголовок"
@@ -64,6 +66,22 @@ export const CreateTaskFromInboxEntryForm = ({
             label="Приоритет"
             options={TASK_PRIORITIES_OPTIONS}
             inputValidation={getInputValidation(formState, "priority")}
+          />
+        )}
+      />
+      <Controller
+        control={control}
+        name="startDate"
+        render={({ field: { value, onChange, ...field } }) => (
+          <DayInput
+            {...field}
+            value={value ? new Date(value) : undefined}
+            onChange={(value) =>
+              onChange(value ? formatDate(value) : TODAY_AS_STRING)
+            }
+            placeholder="Выберите дату начала..."
+            label="Дата начала"
+            inputValidation={getInputValidation(formState, "startDate")}
           />
         )}
       />

@@ -5,8 +5,10 @@ import {
   useTasks,
 } from "@/entities/task";
 import { DeleteTaskButton, ModifyTaskButton } from "@/features/task";
+import { formatDate } from "@/shared/common-helpers";
 import { useThrottledValue } from "@/shared/common-hooks";
 import {
+  DaySelection,
   FetchEmpty,
   FetchError,
   Match,
@@ -21,7 +23,9 @@ import { twMerge } from "tailwind-merge";
 interface TasksListProps {
   page: number;
   pageSize: number;
+  date: Date;
   onPageChange: (page: number) => void;
+  onDateChange: (date?: Date) => void;
   renderPageLink: (page: number, className?: string) => ReactNode;
   children?: ReactNode;
   className?: string;
@@ -29,17 +33,18 @@ interface TasksListProps {
 
 export const TasksList = ({
   className,
-  children,
   page,
   pageSize,
+  date,
   onPageChange,
+  onDateChange,
   renderPageLink,
 }: TasksListProps) => {
   const {
     data: tasks,
     status,
     refetch,
-  } = useTasks({ page, pageSize }, (tasks) => {
+  } = useTasks({ page, pageSize, startFrom: formatDate(date) }, (tasks) => {
     if (tasks.pagination.page > 1 && !tasks.data.length) {
       onPageChange(1);
     }
@@ -49,8 +54,8 @@ export const TasksList = ({
 
   return (
     <div className={twMerge("flex flex-col gap-4", className)}>
-      <div className="flex items-center justify-between gap-2 flex-wrap">
-        <div className="flex gap-2 flex-1">{children}</div>
+      <div className="flex justify-between items-center">
+        <DaySelection date={date} onChange={onDateChange} />
         <Match
           value={throttledStatus}
           success={() =>

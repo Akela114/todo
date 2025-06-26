@@ -5,19 +5,17 @@ import {
   withHttpErrorParsing,
   withValidation,
 } from "@/shared/api";
-import {
-  type BasePaginatedRequestParams,
-  coreApiBasicResponseSchema,
-} from "@packages/schemas/common";
+import { coreApiBasicResponseSchema } from "@packages/schemas/common";
 import {
   type CreateTaskFromInboxEntry,
   type ModifyTask,
+  type PaginatedTasksQueryParams,
   paginatedTasks,
   taskSchema,
 } from "@packages/schemas/task";
 
 export const getTasks = withValidation(
-  createFetcherWrapper<undefined, BasePaginatedRequestParams>(
+  createFetcherWrapper<undefined, PaginatedTasksQueryParams>(
     coreApiWithAuth,
     () => "tasks",
     "get",

@@ -1,6 +1,7 @@
 import { TASK_PRIORITIES_OPTIONS, useModifyTask } from "@/entities/task";
+import { TODAY_AS_STRING, formatDate } from "@/shared/common-helpers";
 import { getInputValidation, useDefaultForm } from "@/shared/forms";
-import { Input, Select } from "@/shared/ui";
+import { DayInput, Input, Select } from "@/shared/ui";
 import { type Task, modifyTaskSchema } from "@packages/schemas/task";
 import { Controller } from "react-hook-form";
 interface ModifyTaskFormProps {
@@ -26,6 +27,7 @@ export const ModifyTaskForm = ({ data, onSuccess }: ModifyTaskFormProps) => {
       defaultValues: {
         title: data.title,
         priority: data.priority,
+        startDate: data.startDate,
       },
     },
     onResetSubmit: resetSubmit,
@@ -36,7 +38,7 @@ export const ModifyTaskForm = ({ data, onSuccess }: ModifyTaskFormProps) => {
   });
 
   return getFormComponent(
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-4">
       <Input
         {...register("title")}
         label="Заголовок"
@@ -55,6 +57,22 @@ export const ModifyTaskForm = ({ data, onSuccess }: ModifyTaskFormProps) => {
             label="Приоритет"
             options={TASK_PRIORITIES_OPTIONS}
             inputValidation={getInputValidation(formState, "priority")}
+          />
+        )}
+      />
+      <Controller
+        control={control}
+        name="startDate"
+        render={({ field: { value, onChange, ...field } }) => (
+          <DayInput
+            {...field}
+            value={value ? new Date(value) : undefined}
+            onChange={(value) =>
+              onChange(value ? formatDate(value) : TODAY_AS_STRING)
+            }
+            placeholder="Выберите дату начала..."
+            label="Дата начала"
+            inputValidation={getInputValidation(formState, "startDate")}
           />
         )}
       />

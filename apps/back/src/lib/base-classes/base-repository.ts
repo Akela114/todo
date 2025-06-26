@@ -1,4 +1,13 @@
-import { type InferSelectModel, and, asc, count, desc, eq } from "drizzle-orm";
+import {
+  type BinaryOperator,
+  type InferSelectModel,
+  and,
+  asc,
+  count,
+  desc,
+  eq,
+  lte,
+} from "drizzle-orm";
 import type { NodePgDatabase } from "drizzle-orm/node-postgres";
 import type {
   PgColumn,
@@ -9,19 +18,34 @@ import type {
   PgUpdateSetSource,
 } from "drizzle-orm/pg-core";
 
+type ColumnOpertaion = "eq" | "lte";
+type ColumnValue = number | string | boolean | null;
+
+type ColumnValueWithOpertaion = {
+  value: ColumnValue;
+  opertaion: ColumnOpertaion;
+};
+
 interface GetFewBaseOptions<
   T extends PgTable & Record<K | PK, PgColumn>,
   PK extends keyof InferSelectModel<T>,
   K extends keyof InferSelectModel<T> = never,
 > {
-  columnsToCheck: Record<K, unknown> &
-    Partial<Record<keyof InferSelectModel<T>, unknown>>;
+  columnsToCheck: Record<K, ColumnValue | ColumnValueWithOpertaion> &
+    Partial<
+      Record<keyof InferSelectModel<T>, ColumnValue | ColumnValueWithOpertaion>
+    >;
   orders?: {
     column: keyof InferSelectModel<T>;
     direction: "asc" | "desc";
   }[];
   transaction?: PgTransaction<PgQueryResultHKT, Record<string, unknown>>;
 }
+
+const columnOperationsMap: Record<ColumnOpertaion, BinaryOperator> = {
+  eq,
+  lte,
+};
 
 export class BaseRepository<
   T extends PgTable & Record<K | PK, PgColumn>,
@@ -162,9 +186,15 @@ export class BaseRepository<
       .from(this.table)
       .where(
         and(
-          ...this.columnsToCheckAlwaysNames.map((name) =>
-            eq(this.table[name], columnsToCheck[name]),
-          ),
+          ...Object.entries(columnsToCheck).map(([name, value]) => {
+            if (value && typeof value === "object") {
+              return columnOperationsMap[value.opertaion](
+                this.table[name as K | keyof InferSelectModel<T>],
+                value.value,
+              );
+            }
+            return eq(this.table[name as K | keyof InferSelectModel<T>], value);
+          }),
         ),
       );
 
@@ -194,9 +224,15 @@ export class BaseRepository<
       .from(this.table)
       .where(
         and(
-          ...this.columnsToCheckAlwaysNames.map((name) =>
-            eq(this.table[name], columnsToCheck[name]),
-          ),
+          ...Object.entries(columnsToCheck).map(([name, value]) => {
+            if (value && typeof value === "object") {
+              return columnOperationsMap[value.opertaion](
+                this.table[name as K | keyof InferSelectModel<T>],
+                value.value,
+              );
+            }
+            return eq(this.table[name as K | keyof InferSelectModel<T>], value);
+          }),
         ),
       );
 
