@@ -10,4 +10,27 @@ export class InboxEntriesRepository extends BaseRepository<
   constructor(protected client: NodePgDatabase<Record<string, unknown>>) {
     super(client, inboxEntry, "id", ["userId"]);
   }
+
+  async getAllPaginated(
+    args: Parameters<InboxEntriesRepository["getAll"]>,
+    pagination: { page: number; pageSize: number },
+  ) {
+    const getAllQuery = this.getAll(...args);
+
+    const [entries, totalCount] = await Promise.all([
+      getAllQuery
+        .offset((pagination.page - 1) * pagination.pageSize)
+        .limit(pagination.pageSize),
+      this.getAllCount(args[0], args[2]),
+    ]);
+
+    return {
+      data: entries,
+      pagination: {
+        page: pagination.page,
+        pageSize: pagination.pageSize,
+        totalCount,
+      },
+    };
+  }
 }

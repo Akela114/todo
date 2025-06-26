@@ -22,7 +22,7 @@ function TasksPage() {
   const navigate = Route.useNavigate();
 
   const renderPageLink = (page: number, className?: string) => (
-    <Link to="/tasks" search={{ page }} className={className}>
+    <Link to="/tasks" search={{ page, date }} className={className}>
       {page}
     </Link>
   );

@@ -16,7 +16,13 @@ export class InboxEntriesService extends BaseService<
     super(repository, "Inbox entry");
   }
 
-  async convertInboxEntryToTask({
+  async getAllPaginated(
+    ...args: Parameters<InboxEntriesRepository["getAllPaginated"]>
+  ) {
+    return this.repository.getAllPaginated(...args);
+  }
+
+  async convertToTask({
     id,
     userId,
     title,

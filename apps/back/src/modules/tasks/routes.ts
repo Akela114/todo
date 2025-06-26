@@ -21,34 +21,14 @@ export default async (instance: FastifyInstance) => {
       },
     },
     handler: (request) => {
-      return instance.tasksService.getFewWithPagination({
-        columnsToCheck: {
-          userId: request.user.id,
-          doneDate: [null, request.query.startFrom],
-          startDate: {
-            value: request.query.startFrom, // TODO: or doneDate
-            opertaion: "lte",
-          },
-        },
-        pagination: {
+      return instance.tasksService.getFilteredByDayWithPagination(
+        request.user.id,
+        request.query.startFrom,
+        {
           page: request.query.page,
           pageSize: request.query.pageSize,
         },
-        orders: [
-          {
-            column: "doneDate",
-            direction: "desc",
-          },
-          {
-            column: "priority",
-            direction: "desc",
-          },
-          {
-            column: "updatedAt",
-            direction: "desc",
-          },
-        ],
-      });
+      );
     },
   });
 

@@ -13,20 +13,14 @@ export class BaseService<
     protected entityName: string,
   ) {}
 
-  async getFew(...args: Parameters<BaseRepository<T, PK, K>["getFew"]>) {
-    return this.repository.getFew(...args);
+  async getAllCount(
+    ...args: Parameters<BaseRepository<T, PK, K>["getAllCount"]>
+  ) {
+    return this.repository.getAllCount(...args);
   }
 
-  async getFewWithPagination(
-    ...args: Parameters<BaseRepository<T, PK, K>["getFewWithPagination"]>
-  ) {
-    return this.repository.getFewWithPagination(...args);
-  }
-
-  async getAllPaginated(
-    ...args: Parameters<BaseRepository<T, PK, K>["getFewWithPagination"]>
-  ) {
-    return this.repository.getFewWithPagination(...args);
+  async getAll(...args: Parameters<BaseRepository<T, PK, K>["getAll"]>) {
+    return this.repository.getAll(...args);
   }
 
   async getOne(...args: Parameters<BaseRepository<T, PK, K>["getOne"]>) {

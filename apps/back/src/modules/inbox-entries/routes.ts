@@ -25,15 +25,17 @@ export default async (instance: FastifyInstance) => {
       },
     },
     handler: async (request) => {
-      const res = await instance.inboxEntryService.getFewWithPagination({
-        columnsToCheck: {
-          userId: request.user.id,
-        },
-        pagination: {
+      const res = await instance.inboxEntryService.getAllPaginated(
+        [
+          {
+            userId: request.user.id,
+          },
+        ],
+        {
           page: request.query.page,
           pageSize: request.query.pageSize,
         },
-      });
+      );
 
       return res;
     },
@@ -116,7 +118,7 @@ export default async (instance: FastifyInstance) => {
       },
     },
     handler: async (request, reply) => {
-      const task = await instance.inboxEntryService.convertInboxEntryToTask({
+      const task = await instance.inboxEntryService.convertToTask({
         ...request.body,
         id: request.params.id,
         userId: request.user.id,

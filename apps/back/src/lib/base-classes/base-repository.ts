@@ -1,15 +1,4 @@
-import {
-  type BinaryOperator,
-  type InferSelectModel,
-  and,
-  asc,
-  count,
-  desc,
-  eq,
-  isNull,
-  lte,
-  or,
-} from "drizzle-orm";
+import { type InferSelectModel, and, asc, count, desc, eq } from "drizzle-orm";
 import type { NodePgDatabase } from "drizzle-orm/node-postgres";
 import type {
   PgColumn,
@@ -19,38 +8,6 @@ import type {
   PgTransaction,
   PgUpdateSetSource,
 } from "drizzle-orm/pg-core";
-
-type ColumnOpertaion = "eq" | "lte";
-type ColumnValue = number | string | boolean | null;
-
-type ColumnValueWithOpertaion = {
-  value: ColumnValue;
-  opertaion: ColumnOpertaion;
-};
-
-type PossibleCoumnValue =
-  | ColumnValue
-  | ColumnValueWithOpertaion
-  | Array<ColumnValue | ColumnValueWithOpertaion>;
-
-interface GetFewBaseOptions<
-  T extends PgTable & Record<K | PK, PgColumn>,
-  PK extends keyof InferSelectModel<T>,
-  K extends keyof InferSelectModel<T> = never,
-> {
-  columnsToCheck: Record<K, PossibleCoumnValue> &
-    Partial<Record<keyof InferSelectModel<T>, PossibleCoumnValue>>;
-  orders?: {
-    column: keyof InferSelectModel<T>;
-    direction: "asc" | "desc";
-  }[];
-  transaction?: PgTransaction<PgQueryResultHKT, Record<string, unknown>>;
-}
-
-const columnOperationsMap: Record<ColumnOpertaion, BinaryOperator> = {
-  eq,
-  lte,
-};
 
 export class BaseRepository<
   T extends PgTable & Record<K | PK, PgColumn>,
@@ -64,36 +21,62 @@ export class BaseRepository<
     protected columnsToCheckAlwaysNames: K[] = [],
   ) {}
 
-  async getFew(options: GetFewBaseOptions<T, PK, K>) {
-    return this.generateGetFewBaseQuery(options);
+  getAll(
+    columnsToCheckAlwaysValues: Record<K, unknown>,
+    orders?: {
+      column: keyof InferSelectModel<T>;
+      direction: "asc" | "desc";
+    }[],
+    transaction?: PgTransaction<PgQueryResultHKT, Record<string, unknown>>,
+  ) {
+    const client = transaction ?? this.client;
+
+    const query = client
+      .select()
+      // TODO: https://github.com/drizzle-team/drizzle-orm/discussions/4318
+      // @ts-ignore drizzle-bug
+      .from(this.table)
+      .where(
+        and(
+          ...this.columnsToCheckAlwaysNames.map((name) =>
+            eq(this.table[name], columnsToCheckAlwaysValues[name]),
+          ),
+        ),
+      );
+
+    if (orders?.length) {
+      query.orderBy(
+        ...orders.map(({ column, direction }) => {
+          return direction === "asc"
+            ? asc(this.table[column])
+            : desc(this.table[column]);
+        }),
+      );
+    }
+
+    return query;
   }
 
-  async getFewWithPagination({
-    pagination,
-    ...options
-  }: GetFewBaseOptions<T, PK, K> & {
-    pagination: {
-      page: number;
-      pageSize: number;
-    };
-  }) {
-    const baseQuery = this.generateGetFewBaseQuery(options);
+  async getAllCount(
+    columnsToCheckAlwaysValues: Record<K, unknown>,
+    transaction?: PgTransaction<PgQueryResultHKT, Record<string, unknown>>,
+  ) {
+    const client = transaction ?? this.client;
 
-    const [entries, totalCount] = await Promise.all([
-      baseQuery
-        .offset((pagination.page - 1) * pagination.pageSize)
-        .limit(pagination.pageSize),
-      this.getFewCount(options),
-    ]);
+    const result = await client
+      .select({ count: count() })
+      // TODO: https://github.com/drizzle-team/drizzle-orm/discussions/4318
+      // @ts-ignore drizzle-bug
+      .from(this.table)
+      .where(
+        and(
+          ...this.columnsToCheckAlwaysNames.map((name) =>
+            eq(this.table[name], columnsToCheckAlwaysValues[name]),
+          ),
+        ),
+      );
 
-    return {
-      data: entries,
-      pagination: {
-        page: pagination.page,
-        pageSize: pagination.pageSize,
-        totalCount,
-      },
-    };
+    return result[0].count;
   }
 
   async getOne(
@@ -175,116 +158,5 @@ export class BaseRepository<
       .returning();
 
     return (result as InferSelectModel<T>[])[0];
-  }
-
-  private generateGetFewBaseQuery({
-    columnsToCheck,
-    orders,
-    transaction,
-  }: GetFewBaseOptions<T, PK, K>) {
-    const client = transaction ?? this.client;
-
-    const query = client
-      .select()
-      // TODO: https://github.com/drizzle-team/drizzle-orm/discussions/4318
-      // @ts-ignore drizzle-bug
-      .from(this.table)
-      .where(
-        and(
-          ...Object.entries(columnsToCheck).map(([name, value]) => {
-            const getValue = (
-              value: ColumnValue | ColumnValueWithOpertaion | undefined,
-            ) => {
-              if (value === undefined) return;
-
-              if (typeof value === "object") {
-                if (value) {
-                  return columnOperationsMap[value.opertaion](
-                    this.table[name as K | keyof InferSelectModel<T>],
-                    value.value,
-                  );
-                }
-                return isNull(
-                  this.table[name as K | keyof InferSelectModel<T>],
-                );
-              }
-
-              return eq(
-                this.table[name as K | keyof InferSelectModel<T>],
-                value,
-              );
-            };
-
-            if (Array.isArray(value)) {
-              return or(...value.map(getValue));
-            }
-
-            return getValue(value);
-          }),
-        ),
-      );
-
-    if (orders?.length) {
-      query.orderBy(
-        ...orders.map(({ column, direction }) => {
-          return direction === "asc"
-            ? asc(this.table[column])
-            : desc(this.table[column]);
-        }),
-      );
-    }
-
-    return query;
-  }
-
-  private async getFewCount({
-    columnsToCheck,
-    transaction,
-  }: GetFewBaseOptions<T, PK, K>) {
-    const client = transaction ?? this.client;
-
-    const query = client
-      .select({ count: count() })
-      // TODO: https://github.com/drizzle-team/drizzle-orm/discussions/4318
-      // @ts-ignore drizzle-bug
-      .from(this.table)
-      .where(
-        and(
-          ...Object.entries(columnsToCheck).map(([name, value]) => {
-            const getValue = (
-              value: ColumnValue | ColumnValueWithOpertaion | undefined,
-            ) => {
-              if (value === undefined) return and();
-
-              if (typeof value === "object") {
-                if (value) {
-                  return columnOperationsMap[value.opertaion](
-                    this.table[name as K | keyof InferSelectModel<T>],
-                    value.value,
-                  );
-                }
-                return isNull(
-                  this.table[name as K | keyof InferSelectModel<T>],
-                );
-              }
-
-              return eq(
-                this.table[name as K | keyof InferSelectModel<T>],
-                value,
-              );
-            };
-
-            if (Array.isArray(value)) {
-              return or(...value.map(getValue));
-            }
-
-            return getValue(value);
-          }),
-        ),
-      );
-
-    const result = await query;
-
-    return result[0].count;
   }
 }
