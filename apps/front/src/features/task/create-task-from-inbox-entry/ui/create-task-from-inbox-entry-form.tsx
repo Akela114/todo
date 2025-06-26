@@ -2,7 +2,7 @@ import {
   TASK_PRIORITIES_OPTIONS,
   useCreateTaskFromInboxEntry,
 } from "@/entities/task";
-import { TODAY_AS_STRING, formatDate } from "@/shared/common-helpers";
+import { formatDate, formatTodayDate } from "@/shared/common-helpers";
 import { getInputValidation, useDefaultForm } from "@/shared/forms";
 import { DayInput, Input, Select } from "@/shared/ui";
 import type { InboxEntry } from "@packages/schemas/inbox-entry";
@@ -36,7 +36,7 @@ export const CreateTaskFromInboxEntryForm = ({
       defaultValues: {
         title: inboxEntry.title,
         priority: 1,
-        startDate: formatDate(TODAY_AS_STRING),
+        startDate: formatTodayDate(),
       },
     },
     onResetSubmit: resetSubmit,
@@ -77,7 +77,7 @@ export const CreateTaskFromInboxEntryForm = ({
             {...field}
             value={value ? new Date(value) : undefined}
             onChange={(value) =>
-              onChange(value ? formatDate(value) : TODAY_AS_STRING)
+              onChange(value ? formatDate(value) : formatTodayDate())
             }
             placeholder="Выберите дату начала..."
             label="Дата начала"

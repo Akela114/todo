@@ -11,6 +11,8 @@ interface TaskCardProps {
 }
 
 export const TaskCard = ({ data, children, onStatusChange }: TaskCardProps) => {
+  const isTaskDone = Boolean(data.doneDate);
+
   return (
     <div className="p-4">
       <div className="grid grid-cols-[auto_1fr_auto] items-center gap-x-4 gap-y-2">
@@ -18,28 +20,29 @@ export const TaskCard = ({ data, children, onStatusChange }: TaskCardProps) => {
           <input
             type="checkbox"
             className="checkbox"
-            checked={data.done}
-            onChange={() => onStatusChange?.(!data.done)}
+            checked={Boolean(isTaskDone)}
+            onChange={() => onStatusChange?.(!isTaskDone)}
           />
-          <div
-            className={twMerge(
-              "flex-1",
-              data.done && "line-through opacity-50",
-            )}
-          >
+          <div className={twMerge("flex-1", isTaskDone && "opacity-50")}>
             <div className="flex items-center gap-2">
               <div className="text-xs tabular-nums">
                 {formatDate(data.updatedAt, "timeDate")}
               </div>
               <Rating total={3} selected={data.priority + 1} />
             </div>
-            <div className="text-lg font-semibold">{data.title}</div>
+            <div
+              className={twMerge(
+                "text-lg font-semibold",
+                isTaskDone && "line-through",
+              )}
+            >
+              {data.title}
+            </div>
           </div>
         </div>
         {children && <div className="card-actions justify-end">{children}</div>}
-
         <div className="col-start-2">
-          {!data.done && (
+          {!isTaskDone && (
             <div className="text-xs tabular-nums">
               Срок выполнения: с {formatDate(data.startDate, "date")}
             </div>

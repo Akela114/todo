@@ -17,6 +17,7 @@ import {
   SimpleList,
   SimpleListItem,
 } from "@/shared/ui";
+import { min } from "date-fns";
 import type { ReactNode } from "react";
 import { twMerge } from "tailwind-merge";
 
@@ -52,6 +53,16 @@ export const TasksList = ({
   const { mutate: modifyTask } = useModifyTask();
   const throttledStatus = useThrottledValue(status, 300);
 
+  const handleTaskStatusChange = (taskId: number, isDone: boolean) => {
+    const currentDateOrToday = min([new Date(), date]);
+    modifyTask({
+      body: {
+        doneDate: isDone ? formatDate(currentDateOrToday) : null,
+      },
+      urlParams: taskId,
+    });
+  };
+
   return (
     <div className={twMerge("flex flex-col gap-4", className)}>
       <div className="flex justify-between items-center">
@@ -81,10 +92,10 @@ export const TasksList = ({
                   <TaskCard
                     data={task}
                     onStatusChange={(isDone) =>
-                      modifyTask({ body: { done: isDone }, urlParams: task.id })
+                      handleTaskStatusChange(task.id, isDone)
                     }
                   >
-                    {!task.done && <ModifyTaskButton data={task} />}
+                    {!task.doneDate && <ModifyTaskButton data={task} />}
                     <DeleteTaskButton data={task} />
                   </TaskCard>
                 </SimpleListItem>

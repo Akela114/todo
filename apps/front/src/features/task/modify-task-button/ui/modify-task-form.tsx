@@ -1,5 +1,5 @@
 import { TASK_PRIORITIES_OPTIONS, useModifyTask } from "@/entities/task";
-import { TODAY_AS_STRING, formatDate } from "@/shared/common-helpers";
+import { formatDate, formatTodayDate } from "@/shared/common-helpers";
 import { getInputValidation, useDefaultForm } from "@/shared/forms";
 import { DayInput, Input, Select } from "@/shared/ui";
 import { type Task, modifyTaskSchema } from "@packages/schemas/task";
@@ -68,7 +68,7 @@ export const ModifyTaskForm = ({ data, onSuccess }: ModifyTaskFormProps) => {
             {...field}
             value={value ? new Date(value) : undefined}
             onChange={(value) =>
-              onChange(value ? formatDate(value) : TODAY_AS_STRING)
+              onChange(value ? formatDate(value) : formatTodayDate)
             }
             placeholder="Выберите дату начала..."
             label="Дата начала"

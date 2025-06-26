@@ -26,7 +26,7 @@ function InboxEntries() {
   return (
     <InboxEntriesList
       page={page}
-      pageSize={8}
+      pageSize={6}
       renderPageLink={renderPageLink}
       onPageChange={(page) => navigate({ search: { page } })}
     >

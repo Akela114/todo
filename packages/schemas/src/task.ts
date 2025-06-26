@@ -7,9 +7,9 @@ import {
 export const taskSchema = z.object({
   id: z.coerce.number(),
   title: z.string(),
-  done: z.boolean(),
   priority: z.number(),
   startDate: z.string().date(),
+  doneDate: z.string().date().nullable(),
   createdAt: z.string(),
   updatedAt: z.string(),
 });
@@ -27,10 +27,10 @@ export const createTaskFromInboxEntrySchema = z.object({
 
 export const modifyTaskSchema = createTaskFromInboxEntrySchema
   .extend({
-    done: z.boolean(),
+    doneDate: z.string().date().nullable(),
   })
   .partial({
-    done: true,
+    doneDate: true,
     priority: true,
     title: true,
     startDate: true,

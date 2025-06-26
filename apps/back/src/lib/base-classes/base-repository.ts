@@ -6,7 +6,9 @@ import {
   count,
   desc,
   eq,
+  isNull,
   lte,
+  or,
 } from "drizzle-orm";
 import type { NodePgDatabase } from "drizzle-orm/node-postgres";
 import type {
@@ -26,15 +28,18 @@ type ColumnValueWithOpertaion = {
   opertaion: ColumnOpertaion;
 };
 
+type PossibleCoumnValue =
+  | ColumnValue
+  | ColumnValueWithOpertaion
+  | Array<ColumnValue | ColumnValueWithOpertaion>;
+
 interface GetFewBaseOptions<
   T extends PgTable & Record<K | PK, PgColumn>,
   PK extends keyof InferSelectModel<T>,
   K extends keyof InferSelectModel<T> = never,
 > {
-  columnsToCheck: Record<K, ColumnValue | ColumnValueWithOpertaion> &
-    Partial<
-      Record<keyof InferSelectModel<T>, ColumnValue | ColumnValueWithOpertaion>
-    >;
+  columnsToCheck: Record<K, PossibleCoumnValue> &
+    Partial<Record<keyof InferSelectModel<T>, PossibleCoumnValue>>;
   orders?: {
     column: keyof InferSelectModel<T>;
     direction: "asc" | "desc";
@@ -187,13 +192,34 @@ export class BaseRepository<
       .where(
         and(
           ...Object.entries(columnsToCheck).map(([name, value]) => {
-            if (value && typeof value === "object") {
-              return columnOperationsMap[value.opertaion](
+            const getValue = (
+              value: ColumnValue | ColumnValueWithOpertaion | undefined,
+            ) => {
+              if (value === undefined) return;
+
+              if (typeof value === "object") {
+                if (value) {
+                  return columnOperationsMap[value.opertaion](
+                    this.table[name as K | keyof InferSelectModel<T>],
+                    value.value,
+                  );
+                }
+                return isNull(
+                  this.table[name as K | keyof InferSelectModel<T>],
+                );
+              }
+
+              return eq(
                 this.table[name as K | keyof InferSelectModel<T>],
-                value.value,
+                value,
               );
+            };
+
+            if (Array.isArray(value)) {
+              return or(...value.map(getValue));
             }
-            return eq(this.table[name as K | keyof InferSelectModel<T>], value);
+
+            return getValue(value);
           }),
         ),
       );
@@ -225,13 +251,34 @@ export class BaseRepository<
       .where(
         and(
           ...Object.entries(columnsToCheck).map(([name, value]) => {
-            if (value && typeof value === "object") {
-              return columnOperationsMap[value.opertaion](
+            const getValue = (
+              value: ColumnValue | ColumnValueWithOpertaion | undefined,
+            ) => {
+              if (value === undefined) return and();
+
+              if (typeof value === "object") {
+                if (value) {
+                  return columnOperationsMap[value.opertaion](
+                    this.table[name as K | keyof InferSelectModel<T>],
+                    value.value,
+                  );
+                }
+                return isNull(
+                  this.table[name as K | keyof InferSelectModel<T>],
+                );
+              }
+
+              return eq(
                 this.table[name as K | keyof InferSelectModel<T>],
-                value.value,
+                value,
               );
+            };
+
+            if (Array.isArray(value)) {
+              return or(...value.map(getValue));
             }
-            return eq(this.table[name as K | keyof InferSelectModel<T>], value);
+
+            return getValue(value);
           }),
         ),
       );

@@ -24,8 +24,9 @@ export default async (instance: FastifyInstance) => {
       return instance.tasksService.getFewWithPagination({
         columnsToCheck: {
           userId: request.user.id,
+          doneDate: [null, request.query.startFrom],
           startDate: {
-            value: request.query.startFrom,
+            value: request.query.startFrom, // TODO: or doneDate
             opertaion: "lte",
           },
         },
@@ -35,8 +36,8 @@ export default async (instance: FastifyInstance) => {
         },
         orders: [
           {
-            column: "done",
-            direction: "asc",
+            column: "doneDate",
+            direction: "desc",
           },
           {
             column: "priority",

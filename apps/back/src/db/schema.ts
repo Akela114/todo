@@ -42,9 +42,9 @@ export const task = pgTable("task", {
   ...timestamps,
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
   title: varchar({ length: 255 }).notNull(),
-  done: boolean().notNull().default(false),
   priority: integer().notNull().default(1),
   startDate: date({ mode: "string" }).notNull(),
+  doneDate: date({ mode: "string" }),
   userId: integer()
     .notNull()
     .references(() => user.id, {

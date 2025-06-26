@@ -23,4 +23,4 @@ export const parseDate = (date: string, type: keyof typeof FORMAT_TYPES) => {
   });
 };
 
-export const TODAY_AS_STRING = formatDate(new Date());
+export const formatTodayDate = () => formatDate(new Date());
