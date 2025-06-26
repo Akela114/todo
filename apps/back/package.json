@@ -6,6 +6,7 @@
   "scripts": {
     "build": "tsc",
     "predev": "docker compose up -d",
+    "postdev": "docker compose down",
     "dev": "node --watch --import=tsx src/index.ts",
     "drizzle:generate": "drizzle-kit generate",
     "drizzle:migrate": "drizzle-kit migrate",
