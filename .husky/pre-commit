@@ -1,0 +1,4 @@
+STAGED_FILES=$(git diff --cached --name-only --diff-filter=d)
+
+pnpm lint:fix
+git add $STAGED_FILES
