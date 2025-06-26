@@ -67,7 +67,7 @@ export const Select = ({
                 inputValidation?.status === "error" && "text-error",
               )}
             >
-              Приоритет
+              {label}
             </div>
           )}
           <SelectTrigger

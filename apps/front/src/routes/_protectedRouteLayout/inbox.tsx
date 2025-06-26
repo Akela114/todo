@@ -1,15 +1,16 @@
 import { CreateInboxEntryButton } from "@/features/inbox-entry";
 import { InboxEntriesList } from "@/widgets/inbox-entry";
 import { Link, createFileRoute } from "@tanstack/react-router";
+import { fallback, zodValidator } from "@tanstack/zod-adapter";
 import { z } from "zod";
 
 const inboxEntriesPageSearchSchema = z.object({
-  page: z.coerce.number().min(1).catch(1),
+  page: fallback(z.coerce.number().min(1), 1),
 });
 
 export const Route = createFileRoute("/_protectedRouteLayout/inbox")({
   component: InboxEntries,
-  validateSearch: (search) => inboxEntriesPageSearchSchema.parse(search),
+  validateSearch: zodValidator(inboxEntriesPageSearchSchema),
 });
 
 function InboxEntries() {

@@ -36,7 +36,6 @@ function ProtectedRouteLayout() {
   });
 
   const pageLabel = ROUTE_LABELS[pathname as keyof typeof ROUTE_LABELS]?.label;
-
   return (
     <div className="flex-1 flex flex-col">
       <Header
@@ -45,13 +44,13 @@ function ProtectedRouteLayout() {
           <LogoutButton onSuccess={() => navigate({ to: "/auth/login" })} />
         }
       />
-      <main className="flex-1 px-2 py-6 w-full max-w-5xl self-center flex flex-col md:grid md:grid-cols-[auto_1fr] md:grid-rows-[auto_1fr] gap-4">
+      <main className="flex-1 px-2 py-6 w-full max-w-5xl self-center flex flex-col gap-4">
+        <Navigation />
         {pageLabel && (
           <h1 className="md:col-start-2 text-2xl font-bold hidden md:block">
             {pageLabel}
           </h1>
         )}
-        <Navigation />
         <div className="flex-1">
           <Outlet />
         </div>
