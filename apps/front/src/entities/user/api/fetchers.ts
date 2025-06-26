@@ -1,22 +1,22 @@
 import {
+  CORE_API_BASIC_RESPONSE_FALLBACK,
   coreApi,
   createFetcherWrapper,
   withHttpErrorParsing,
   withValidation,
-  CORE_API_BASIC_RESPONSE_FALLBACK,
 } from "@/shared/api";
-import { type CreateUser, userSchema } from "@packages/schemas/user";
 import { coreApiBasicResponseSchema } from "@packages/schemas/common";
+import { type CreateUser, userSchema } from "@packages/schemas/user";
 
 export const createUser = withHttpErrorParsing(
   withValidation(
     createFetcherWrapper<undefined, undefined, CreateUser>(
       coreApi,
       () => "users",
-      "post"
+      "post",
     ),
-    userSchema
+    userSchema,
   ),
   coreApiBasicResponseSchema,
-  CORE_API_BASIC_RESPONSE_FALLBACK
+  CORE_API_BASIC_RESPONSE_FALLBACK,
 );

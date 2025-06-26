@@ -6,7 +6,7 @@ export const coreApiBasicResponseSchema = z.object({
 });
 
 export const getPaginatedRequestParams = <T extends z.ZodObject<z.ZodRawShape>>(
-  schema: T
+  schema: T,
 ) => {
   return schema.extend({
     page: z.number().min(1),
@@ -15,9 +15,9 @@ export const getPaginatedRequestParams = <T extends z.ZodObject<z.ZodRawShape>>(
 };
 
 export const getPaginatedResponseSchema = <
-  T extends z.ZodTypeAny | z.ZodArray<z.ZodTypeAny>
+  T extends z.ZodTypeAny | z.ZodArray<z.ZodTypeAny>,
 >(
-  schema: T
+  schema: T,
 ) => {
   return z.object({
     data: schema,
@@ -44,5 +44,5 @@ export type PaginatedRequestParams<T extends z.ZodObject<z.ZodRawShape>> =
   z.infer<ReturnType<typeof getPaginatedRequestParams<T>>>;
 
 export type PaginatedResponse<
-  T extends z.ZodTypeAny | z.ZodArray<z.ZodTypeAny>
+  T extends z.ZodTypeAny | z.ZodArray<z.ZodTypeAny>,
 > = z.infer<ReturnType<typeof getPaginatedResponseSchema<T>>>;

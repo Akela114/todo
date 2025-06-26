@@ -1,9 +1,11 @@
 import { QUERY_KEYS, useOptimisticMutation } from "@/shared/query";
+import type { CoreApiBasicResponse } from "@packages/schemas/common";
+import type { InboxEntry } from "@packages/schemas/inbox-entry";
 import {
+  type UseMutationOptions,
   useMutation,
   useQuery,
   useQueryClient,
-  type UseMutationOptions,
 } from "@tanstack/react-query";
 import {
   createInboxEntry,
@@ -11,12 +13,10 @@ import {
   getInboxEntries,
   modifyInboxEntry,
 } from "./fetchers";
-import type { InboxEntry } from "@packages/schemas/inbox-entry";
-import type { CoreApiBasicResponse } from "@packages/schemas/common";
 
 export const useInboxEntries = (
   searchParams: Parameters<typeof getInboxEntries>[0]["searchParams"],
-  onSuccess?: (data: Awaited<ReturnType<typeof getInboxEntries>>) => void
+  onSuccess?: (data: Awaited<ReturnType<typeof getInboxEntries>>) => void,
 ) =>
   useQuery({
     queryKey: [QUERY_KEYS.inboxEntries, searchParams],
@@ -52,7 +52,7 @@ export const useModifyInboxEntry = (
       Parameters<typeof modifyInboxEntry>[0]
     >,
     "mutationFn"
-  > = {}
+  > = {},
 ) => {
   return useOptimisticMutation(
     {
@@ -71,7 +71,7 @@ export const useModifyInboxEntry = (
         return newInboxEntries;
       }
       return prevData;
-    }
+    },
   );
 };
 
@@ -82,10 +82,10 @@ export const useDeleteInboxEntry = () => {
     (variables, prevData?: InboxEntry[]) => {
       if (prevData) {
         return prevData.filter(
-          (inboxEntry) => inboxEntry.id !== variables.urlParams
+          (inboxEntry) => inboxEntry.id !== variables.urlParams,
         );
       }
       return prevData;
-    }
+    },
   );
 };

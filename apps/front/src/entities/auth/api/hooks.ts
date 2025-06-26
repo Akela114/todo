@@ -1,11 +1,11 @@
+import { QUERY_KEYS, queryClient } from "@/shared/query";
+import type { CoreApiBasicResponse } from "@packages/schemas/common";
 import {
   type UseMutationOptions,
   useMutation,
   useQueryClient,
 } from "@tanstack/react-query";
 import { login, logout } from "./fetchers/base-fetchers";
-import { QUERY_KEYS, queryClient } from "@/shared/query";
-import type { CoreApiBasicResponse } from "@packages/schemas/common";
 
 export const useLogin = (
   opts: Omit<
@@ -15,7 +15,7 @@ export const useLogin = (
       Parameters<typeof login>[0]
     >,
     "mutationFn"
-  > = {}
+  > = {},
 ) => {
   const queryClient = useQueryClient();
 

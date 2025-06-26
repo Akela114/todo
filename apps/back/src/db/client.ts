@@ -1,5 +1,5 @@
-import fp from "fastify-plugin";
 import { drizzle } from "drizzle-orm/node-postgres";
+import fp from "fastify-plugin";
 
 declare module "fastify" {
   interface FastifyInstance {

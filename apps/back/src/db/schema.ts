@@ -1,11 +1,11 @@
 import { sql } from "drizzle-orm";
 import {
+  boolean,
   integer,
   pgTable,
   text,
-  varchar,
-  boolean,
   timestamp,
+  varchar,
 } from "drizzle-orm/pg-core";
 
 const timestamps = {

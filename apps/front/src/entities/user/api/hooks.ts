@@ -1,6 +1,6 @@
-import { useMutation, type UseMutationOptions } from "@tanstack/react-query";
-import { createUser } from "./fetchers";
 import type { CoreApiBasicResponse } from "@packages/schemas/common";
+import { type UseMutationOptions, useMutation } from "@tanstack/react-query";
+import { createUser } from "./fetchers";
 
 export const useCreateUser = (
   opts: Omit<
@@ -10,7 +10,7 @@ export const useCreateUser = (
       Parameters<typeof createUser>[0]
     >,
     "mutationFn"
-  > = {}
+  > = {},
 ) => {
   return useMutation({
     ...opts,

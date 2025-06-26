@@ -1,5 +1,5 @@
-import type { Task } from "@packages/schemas/task";
 import { Modal } from "@/shared/ui";
+import type { Task } from "@packages/schemas/task";
 import { Pencil1Icon } from "@radix-ui/react-icons";
 import { useRef } from "react";
 import { ModifyTaskForm } from "./modify-task-form";

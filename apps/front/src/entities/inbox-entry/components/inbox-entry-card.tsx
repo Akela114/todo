@@ -1,7 +1,7 @@
+import { TextSkeleton } from "@/shared/ui";
+import type { InboxEntry } from "@packages/schemas/inbox-entry";
 import { format } from "date-fns";
 import type { ReactNode } from "react";
-import type { InboxEntry } from "@packages/schemas/inbox-entry";
-import { TextSkeleton } from "@/shared/ui";
 
 interface InboxEntryCardProps {
   data: InboxEntry;

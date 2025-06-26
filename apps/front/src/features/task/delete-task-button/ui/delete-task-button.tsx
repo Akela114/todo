@@ -1,5 +1,5 @@
-import type { InboxEntry } from "@packages/schemas/inbox-entry";
 import { useDeleteTask } from "@/entities/task";
+import type { InboxEntry } from "@packages/schemas/inbox-entry";
 import { Cross2Icon } from "@radix-ui/react-icons";
 
 interface DeleteTaskButtonProps {

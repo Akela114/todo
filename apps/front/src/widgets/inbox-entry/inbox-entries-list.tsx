@@ -4,8 +4,8 @@ import {
   useInboxEntries,
 } from "@/entities/inbox-entry";
 import {
-  ModifyInboxEntryButton,
   DeleteInboxEntryButton,
+  ModifyInboxEntryButton,
 } from "@/features/inbox-entry";
 import { CreateTaskFromInboxEntryButton } from "@/features/task";
 import { useThrottledValue } from "@/shared/common-hooks";
@@ -13,10 +13,10 @@ import {
   FetchEmpty,
   FetchError,
   Match,
-  SimpleList,
-  SimpleListItem,
   Pagination,
   PaginationSkeleton,
+  SimpleList,
+  SimpleListItem,
 } from "@/shared/ui";
 import type { ReactNode } from "react";
 import { twMerge } from "tailwind-merge";

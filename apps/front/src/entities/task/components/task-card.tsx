@@ -1,8 +1,8 @@
+import { Rating, TextSkeleton } from "@/shared/ui";
+import type { Task } from "@packages/schemas/task";
 import { format } from "date-fns";
 import type { ReactNode } from "react";
 import { twMerge } from "tailwind-merge";
-import type { Task } from "@packages/schemas/task";
-import { TextSkeleton, Rating } from "@/shared/ui";
 
 interface TaskCardProps {
   data: Task;

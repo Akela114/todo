@@ -1,16 +1,16 @@
-import type { AnyPgColumn, AnyPgTable } from "drizzle-orm/pg-core";
-import type { BaseRepository } from "./base-repository.js";
-import { NotFoundError } from "../errors/not-found-error.js";
 import type { InferSelectModel } from "drizzle-orm";
+import type { AnyPgColumn, AnyPgTable } from "drizzle-orm/pg-core";
+import { NotFoundError } from "../errors/not-found-error.js";
+import type { BaseRepository } from "./base-repository.js";
 
 export class BaseService<
   T extends AnyPgTable & Record<K | PK, AnyPgColumn>,
   PK extends keyof InferSelectModel<T>,
-  K extends keyof InferSelectModel<T> = never
+  K extends keyof InferSelectModel<T> = never,
 > {
   constructor(
     protected repository: BaseRepository<T, PK, K>,
-    protected entityName: string
+    protected entityName: string,
   ) {}
 
   async getFew(...args: Parameters<BaseRepository<T, PK, K>["getFew"]>) {

@@ -1,10 +1,10 @@
 import { useModifyInboxEntry } from "@/entities/inbox-entry";
+import { getInputValidation, useDefaultForm } from "@/shared/forms";
+import { Input } from "@/shared/ui";
 import {
   type InboxEntry,
   createOrModifyInboxEntrySchema,
 } from "@packages/schemas/inbox-entry";
-import { Input } from "@/shared/ui";
-import { getInputValidation, useDefaultForm } from "@/shared/forms";
 
 interface ModifyInboxEntryFormProps {
   data: InboxEntry;

@@ -1,7 +1,7 @@
-import { generateSalt, getHash } from "@/lib/utils/hash-utils.js";
-import { ValidationError } from "@/lib/errors/bad-request-error.js";
-import { BaseService } from "@/lib/base-classes/base-service.js";
 import type { user } from "@/db/schema.js";
+import { BaseService } from "@/lib/base-classes/base-service.js";
+import { ValidationError } from "@/lib/errors/bad-request-error.js";
+import { generateSalt, getHash } from "@/lib/utils/hash-utils.js";
 import type { UsersRepository } from "./repository.js";
 
 export class UsersService extends BaseService<typeof user, "id"> {

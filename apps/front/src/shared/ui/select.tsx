@@ -1,3 +1,4 @@
+import { ChevronDownIcon } from "@radix-ui/react-icons";
 import {
   Select as RadixSelect,
   SelectContent,
@@ -10,7 +11,6 @@ import {
   SelectValue,
   SelectViewport,
 } from "@radix-ui/react-select";
-import { ChevronDownIcon } from "@radix-ui/react-icons";
 import type { ComponentProps } from "react";
 import { twMerge } from "tailwind-merge";
 import type { getInputValidation } from "../forms";

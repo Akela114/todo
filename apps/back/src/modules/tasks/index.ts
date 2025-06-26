@@ -1,7 +1,7 @@
 import type { FastifyInstance } from "fastify";
 import { TasksRepository } from "./repository.js";
-import { TasksService } from "./service.js";
 import routes from "./routes.js";
+import { TasksService } from "./service.js";
 
 declare module "fastify" {
   interface FastifyInstance {

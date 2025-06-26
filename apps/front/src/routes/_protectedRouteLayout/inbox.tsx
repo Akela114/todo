@@ -1,6 +1,6 @@
 import { CreateInboxEntryButton } from "@/features/inbox-entry";
 import { InboxEntriesList } from "@/widgets/inbox-entry";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { Link, createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 
 const inboxEntriesPageSearchSchema = z.object({

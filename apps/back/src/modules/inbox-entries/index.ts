@@ -1,6 +1,6 @@
 import type { FastifyInstance } from "fastify";
-import routes from "./routes.js";
 import { InboxEntriesRepository } from "./repository.js";
+import routes from "./routes.js";
 import { InboxEntriesService } from "./service.js";
 
 declare module "fastify" {

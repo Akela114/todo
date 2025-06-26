@@ -1,5 +1,5 @@
-import { getHash } from "@/lib/utils/hash-utils.js";
 import { ValidationError } from "@/lib/errors/bad-request-error.js";
+import { getHash } from "@/lib/utils/hash-utils.js";
 import type { FastifyInstance } from "fastify";
 
 export class AuthService {

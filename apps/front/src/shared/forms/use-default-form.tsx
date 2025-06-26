@@ -1,8 +1,8 @@
-import { useForm, type UseFormProps } from "react-hook-form";
-import { FormWrapper } from "../ui";
-import type { ReactNode } from "@tanstack/react-router";
-import type { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { ReactNode } from "@tanstack/react-router";
+import { type UseFormProps, useForm } from "react-hook-form";
+import type { z } from "zod";
+import { FormWrapper } from "../ui";
 
 export const useDefaultForm = <T extends z.ZodObject<z.ZodRawShape>>({
   schema,

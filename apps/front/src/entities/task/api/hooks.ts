@@ -1,9 +1,11 @@
 import { QUERY_KEYS, useOptimisticMutation } from "@/shared/query";
+import type { CoreApiBasicResponse } from "@packages/schemas/common";
+import type { Task } from "@packages/schemas/task";
 import {
+  type UseMutationOptions,
   useMutation,
   useQuery,
   useQueryClient,
-  type UseMutationOptions,
 } from "@tanstack/react-query";
 import {
   createTaskFromInboxEntry,
@@ -11,12 +13,10 @@ import {
   getTasks,
   modifyTask,
 } from "./fetchers";
-import type { Task } from "@packages/schemas/task";
-import type { CoreApiBasicResponse } from "@packages/schemas/common";
 
 export const useTasks = (
   searchParams: Parameters<typeof getTasks>[0]["searchParams"],
-  onSuccess?: (data: Awaited<ReturnType<typeof getTasks>>) => void
+  onSuccess?: (data: Awaited<ReturnType<typeof getTasks>>) => void,
 ) =>
   useQuery({
     queryKey: [QUERY_KEYS.tasks, searchParams],
@@ -57,7 +57,7 @@ export const useModifyTask = (
       Parameters<typeof modifyTask>[0]
     >,
     "mutationFn"
-  > = {}
+  > = {},
 ) => {
   return useOptimisticMutation(
     {
@@ -76,7 +76,7 @@ export const useModifyTask = (
         return newTasks;
       }
       return prevData;
-    }
+    },
   );
 };
 
@@ -89,6 +89,6 @@ export const useDeleteTask = () => {
         return prevData.filter((task) => task.id !== variables.urlParams);
       }
       return prevData;
-    }
+    },
   );
 };

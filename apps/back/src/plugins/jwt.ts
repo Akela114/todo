@@ -1,21 +1,21 @@
-import fp from "fastify-plugin";
-import fastifyJwt, { type VerifyPayloadType } from "@fastify/jwt";
-import type { RouteOptions } from "fastify";
 import { valueToArray } from "@/lib/utils/value-to-array.js";
+import fastifyJwt, { type VerifyPayloadType } from "@fastify/jwt";
 import {
   type CoreApiBasicResponse,
   coreApiBasicResponseSchema,
 } from "@packages/schemas/common";
+import type { RouteOptions } from "fastify";
+import fp from "fastify-plugin";
 
 declare module "fastify" {
   interface FastifyInstance {
     authenticate: (
       request: FastifyRequest,
-      reply: FastifyReply
+      reply: FastifyReply,
     ) => Promise<VerifyPayloadType | null>;
     refresh: (
       request: FastifyRequest,
-      reply: FastifyReply
+      reply: FastifyReply,
     ) => Promise<VerifyPayloadType | null>;
   }
 

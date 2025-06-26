@@ -1,8 +1,8 @@
-import type { InboxEntry } from "@packages/schemas/inbox-entry";
 import { Modal } from "@/shared/ui";
+import type { InboxEntry } from "@packages/schemas/inbox-entry";
 import { Pencil1Icon } from "@radix-ui/react-icons";
-import { ModifyInboxEntryForm } from "./modify-inbox-entry-form";
 import { useRef } from "react";
+import { ModifyInboxEntryForm } from "./modify-inbox-entry-form";
 
 interface ModifyInboxEntryButtonProps {
   data: InboxEntry;

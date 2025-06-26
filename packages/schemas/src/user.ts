@@ -1,5 +1,5 @@
-import { z } from "zod";
 import { REGEXES } from "@packages/regexes";
+import { z } from "zod";
 
 export const userSchema = z.object({
   email: z.string().email(),

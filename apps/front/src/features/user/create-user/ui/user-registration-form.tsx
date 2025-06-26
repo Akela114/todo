@@ -1,7 +1,7 @@
-import { createUserSchema } from "@packages/schemas/user";
+import { useCreateUser } from "@/entities/user";
 import { getInputValidation, useDefaultForm } from "@/shared/forms";
 import { Input, PasswordInput } from "@/shared/ui";
-import { useCreateUser } from "@/entities/user";
+import { createUserSchema } from "@packages/schemas/user";
 
 interface UserRegistrationFormProps {
   onSuccess?: () => void;

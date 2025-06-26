@@ -1,8 +1,8 @@
 import { SWAGGER_TAGS } from "@/lib/constants/swagger-tags.js";
+import { coreApiBasicResponseSchema } from "@packages/schemas/common";
+import { createUserSchema, userSchema } from "@packages/schemas/user";
 import type { FastifyInstance } from "fastify";
 import type { ZodTypeProvider } from "fastify-type-provider-zod";
-import { userSchema, createUserSchema } from "@packages/schemas/user";
-import { coreApiBasicResponseSchema } from "@packages/schemas/common";
 
 export default async (instance: FastifyInstance) => {
   instance.withTypeProvider<ZodTypeProvider>().route({
@@ -18,7 +18,7 @@ export default async (instance: FastifyInstance) => {
     },
     handler: async (request, reply) => {
       const user = await instance.usersService.createWithPasswordGeneration(
-        request.body
+        request.body,
       );
 
       return reply.status(201).send(user);

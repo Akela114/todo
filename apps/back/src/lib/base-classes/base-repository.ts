@@ -1,4 +1,4 @@
-import { and, asc, count, desc, eq, type InferSelectModel } from "drizzle-orm";
+import { type InferSelectModel, and, asc, count, desc, eq } from "drizzle-orm";
 import type { NodePgDatabase } from "drizzle-orm/node-postgres";
 import type {
   PgColumn,
@@ -12,7 +12,7 @@ import type {
 interface GetFewBaseOptions<
   T extends PgTable & Record<K | PK, PgColumn>,
   PK extends keyof InferSelectModel<T>,
-  K extends keyof InferSelectModel<T> = never
+  K extends keyof InferSelectModel<T> = never,
 > {
   columnsToCheck: Record<K, unknown> &
     Partial<Record<keyof InferSelectModel<T>, unknown>>;
@@ -26,13 +26,13 @@ interface GetFewBaseOptions<
 export class BaseRepository<
   T extends PgTable & Record<K | PK, PgColumn>,
   PK extends keyof InferSelectModel<T>,
-  K extends keyof InferSelectModel<T> = never
+  K extends keyof InferSelectModel<T> = never,
 > {
   constructor(
     protected client: NodePgDatabase<Record<string, unknown>>,
     protected table: T,
     protected pKColumnName: PK,
-    protected columnsToCheckAlwaysNames: K[] = []
+    protected columnsToCheckAlwaysNames: K[] = [],
   ) {}
 
   async getFew(options: GetFewBaseOptions<T, PK, K>) {
@@ -70,7 +70,7 @@ export class BaseRepository<
   async getOne(
     pKColumnValue: unknown,
     columnsToCheckAlwaysValues: Record<K, unknown>,
-    transaction?: PgTransaction<PgQueryResultHKT, Record<string, unknown>>
+    transaction?: PgTransaction<PgQueryResultHKT, Record<string, unknown>>,
   ) {
     const client = transaction ?? this.client;
 
@@ -83,9 +83,9 @@ export class BaseRepository<
         and(
           eq(this.table[this.pKColumnName], pKColumnValue),
           ...this.columnsToCheckAlwaysNames.map((name) =>
-            eq(this.table[name], columnsToCheckAlwaysValues[name])
-          )
-        )
+            eq(this.table[name], columnsToCheckAlwaysValues[name]),
+          ),
+        ),
       );
 
     return result[0] ?? null;
@@ -93,7 +93,7 @@ export class BaseRepository<
 
   async create(
     data: PgInsertValue<T>,
-    transaction?: PgTransaction<PgQueryResultHKT, Record<string, unknown>>
+    transaction?: PgTransaction<PgQueryResultHKT, Record<string, unknown>>,
   ) {
     const client = transaction ?? this.client;
 
@@ -106,7 +106,7 @@ export class BaseRepository<
     pKColumnValue: unknown,
     columnsToCheckAlwaysValues: Record<K, unknown>,
     data: PgUpdateSetSource<T>,
-    transaction?: PgTransaction<PgQueryResultHKT, Record<string, unknown>>
+    transaction?: PgTransaction<PgQueryResultHKT, Record<string, unknown>>,
   ) {
     const client = transaction ?? this.client;
 
@@ -117,9 +117,9 @@ export class BaseRepository<
         and(
           eq(this.table[this.pKColumnName], pKColumnValue),
           ...this.columnsToCheckAlwaysNames.map((name) =>
-            eq(this.table[name], columnsToCheckAlwaysValues[name])
-          )
-        )
+            eq(this.table[name], columnsToCheckAlwaysValues[name]),
+          ),
+        ),
       )
       .returning();
 
@@ -129,7 +129,7 @@ export class BaseRepository<
   async delete(
     pKColumnValue: unknown,
     columnsToCheckAlwaysValues: Record<K, unknown>,
-    transaction?: PgTransaction<PgQueryResultHKT, Record<string, unknown>>
+    transaction?: PgTransaction<PgQueryResultHKT, Record<string, unknown>>,
   ) {
     const client = transaction ?? this.client;
 
@@ -139,9 +139,9 @@ export class BaseRepository<
         and(
           eq(this.table[this.pKColumnName], pKColumnValue),
           ...this.columnsToCheckAlwaysNames.map((name) =>
-            eq(this.table[name], columnsToCheckAlwaysValues[name])
-          )
-        )
+            eq(this.table[name], columnsToCheckAlwaysValues[name]),
+          ),
+        ),
       )
       .returning();
 
@@ -163,9 +163,9 @@ export class BaseRepository<
       .where(
         and(
           ...this.columnsToCheckAlwaysNames.map((name) =>
-            eq(this.table[name], columnsToCheck[name])
-          )
-        )
+            eq(this.table[name], columnsToCheck[name]),
+          ),
+        ),
       );
 
     if (orders?.length) {
@@ -174,7 +174,7 @@ export class BaseRepository<
           return direction === "asc"
             ? asc(this.table[column])
             : desc(this.table[column]);
-        })
+        }),
       );
     }
 
@@ -195,9 +195,9 @@ export class BaseRepository<
       .where(
         and(
           ...this.columnsToCheckAlwaysNames.map((name) =>
-            eq(this.table[name], columnsToCheck[name])
-          )
-        )
+            eq(this.table[name], columnsToCheck[name]),
+          ),
+        ),
       );
 
     const result = await query;

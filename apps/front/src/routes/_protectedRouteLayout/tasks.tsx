@@ -1,5 +1,5 @@
 import { TasksList } from "@/widgets/tasks-list";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { Link, createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 
 const tasksPageSearchSchema = z.object({

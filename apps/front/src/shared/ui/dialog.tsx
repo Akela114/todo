@@ -1,6 +1,3 @@
-import { Cross2Icon } from "@radix-ui/react-icons";
-import type { ReactNode } from "@tanstack/react-router";
-import { useState, useImperativeHandle, type RefObject } from "react";
 import {
   Dialog,
   DialogClose,
@@ -10,6 +7,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@radix-ui/react-dialog";
+import { Cross2Icon } from "@radix-ui/react-icons";
+import type { ReactNode } from "@tanstack/react-router";
+import { type RefObject, useImperativeHandle, useState } from "react";
 
 interface ModalProps {
   title: string;

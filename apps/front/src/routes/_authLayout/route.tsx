@@ -1,5 +1,5 @@
 import { checkAuth } from "@/entities/auth";
-import { queryClient, QUERY_KEYS } from "@/shared/query";
+import { QUERY_KEYS, queryClient } from "@/shared/query";
 import { LoadingScreen } from "@/shared/ui";
 import { Outlet, createFileRoute, redirect } from "@tanstack/react-router";
 

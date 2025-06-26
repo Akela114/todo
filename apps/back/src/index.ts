@@ -1,18 +1,18 @@
 import "./env";
 
-import Fastify from "fastify";
 import cookiePlugin from "@fastify/cookie";
+import Fastify from "fastify";
 import databaseClientPlugin from "./db/client.js";
-import swaggerPlugin from "./plugins/swagger.js";
 import jwtPlugin from "./plugins/jwt.js";
+import swaggerPlugin from "./plugins/swagger.js";
 
 import {
   serializerCompiler,
   validatorCompiler,
 } from "fastify-type-provider-zod";
 import { ValidationError } from "./lib/errors/bad-request-error.js";
-import modules from "./modules/index.js";
 import { NotFoundError } from "./lib/errors/not-found-error.js";
+import modules from "./modules/index.js";
 
 const fastify = Fastify({
   logger: true,

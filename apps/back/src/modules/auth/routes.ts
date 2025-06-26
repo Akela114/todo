@@ -1,8 +1,8 @@
-import type { ZodTypeProvider } from "fastify-type-provider-zod";
-import type { FastifyInstance } from "fastify";
 import { SWAGGER_TAGS } from "@/lib/constants/swagger-tags.js";
 import { authTokensSchema, loginSchema } from "@packages/schemas/auth";
 import { coreApiBasicResponseSchema } from "@packages/schemas/common";
+import type { FastifyInstance } from "fastify";
+import type { ZodTypeProvider } from "fastify-type-provider-zod";
 
 export default async (instance: FastifyInstance) => {
   instance.withTypeProvider<ZodTypeProvider>().route({
@@ -34,7 +34,7 @@ export default async (instance: FastifyInstance) => {
     handler: async (request, reply) => {
       const user = await instance.authService.getAuthenticatedUser(
         request.body.username,
-        request.body.password
+        request.body.password,
       );
 
       const accessToken = await reply.accessJwtSign({ id: user.id });

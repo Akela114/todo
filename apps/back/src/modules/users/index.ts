@@ -1,8 +1,8 @@
 import type { FastifyInstance } from "fastify";
-import routes from "./routes.js";
 import fastifyPlugin from "fastify-plugin";
-import { UsersService } from "./service.js";
 import { UsersRepository } from "./repository.js";
+import routes from "./routes.js";
+import { UsersService } from "./service.js";
 
 declare module "fastify" {
   interface FastifyInstance {

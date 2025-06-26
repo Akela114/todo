@@ -6,8 +6,8 @@ import {
   withValidation,
 } from "@/shared/api";
 import {
-  coreApiBasicResponseSchema,
   type BasePaginatedRequestParams,
+  coreApiBasicResponseSchema,
 } from "@packages/schemas/common";
 import {
   type CreateOrModifyInboxEntry,
@@ -19,9 +19,9 @@ export const getInboxEntries = withValidation(
   createFetcherWrapper<undefined, BasePaginatedRequestParams>(
     coreApiWithAuth,
     () => "inbox-entries",
-    "get"
+    "get",
   ),
-  paginatedInoxEntries
+  paginatedInoxEntries,
 );
 
 export const createInboxEntry = withHttpErrorParsing(
@@ -29,12 +29,12 @@ export const createInboxEntry = withHttpErrorParsing(
     createFetcherWrapper<undefined, undefined, CreateOrModifyInboxEntry>(
       coreApiWithAuth,
       () => "inbox-entries",
-      "post"
+      "post",
     ),
-    inboxEntrySchema
+    inboxEntrySchema,
   ),
   coreApiBasicResponseSchema,
-  CORE_API_BASIC_RESPONSE_FALLBACK
+  CORE_API_BASIC_RESPONSE_FALLBACK,
 );
 
 export const modifyInboxEntry = withHttpErrorParsing(
@@ -42,19 +42,19 @@ export const modifyInboxEntry = withHttpErrorParsing(
     createFetcherWrapper<number, undefined, CreateOrModifyInboxEntry>(
       coreApiWithAuth,
       (id: number) => `inbox-entries/${id}`,
-      "put"
+      "put",
     ),
-    inboxEntrySchema
+    inboxEntrySchema,
   ),
   coreApiBasicResponseSchema,
-  CORE_API_BASIC_RESPONSE_FALLBACK
+  CORE_API_BASIC_RESPONSE_FALLBACK,
 );
 
 export const deleteInboxEntry = withValidation(
   createFetcherWrapper(
     coreApiWithAuth,
     (id: number) => `inbox-entries/${id}`,
-    "delete"
+    "delete",
   ),
-  inboxEntrySchema
+  inboxEntrySchema,
 );

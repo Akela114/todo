@@ -6,8 +6,8 @@ import {
   withValidation,
 } from "@/shared/api";
 import {
-  coreApiBasicResponseSchema,
   type BasePaginatedRequestParams,
+  coreApiBasicResponseSchema,
 } from "@packages/schemas/common";
 import {
   type CreateTaskFromInboxEntry,
@@ -20,9 +20,9 @@ export const getTasks = withValidation(
   createFetcherWrapper<undefined, BasePaginatedRequestParams>(
     coreApiWithAuth,
     () => "tasks",
-    "get"
+    "get",
   ),
-  paginatedTasks
+  paginatedTasks,
 );
 
 export const createTaskFromInboxEntry = withHttpErrorParsing(
@@ -30,12 +30,12 @@ export const createTaskFromInboxEntry = withHttpErrorParsing(
     createFetcherWrapper<number, undefined, CreateTaskFromInboxEntry>(
       coreApiWithAuth,
       (id: number) => `inbox-entries/${id}/tasks`,
-      "post"
+      "post",
     ),
-    taskSchema
+    taskSchema,
   ),
   coreApiBasicResponseSchema,
-  CORE_API_BASIC_RESPONSE_FALLBACK
+  CORE_API_BASIC_RESPONSE_FALLBACK,
 );
 
 export const modifyTask = withHttpErrorParsing(
@@ -43,19 +43,19 @@ export const modifyTask = withHttpErrorParsing(
     createFetcherWrapper<number, undefined, ModifyTask>(
       coreApiWithAuth,
       (id: number) => `tasks/${id}`,
-      "put"
+      "put",
     ),
-    taskSchema
+    taskSchema,
   ),
   coreApiBasicResponseSchema,
-  CORE_API_BASIC_RESPONSE_FALLBACK
+  CORE_API_BASIC_RESPONSE_FALLBACK,
 );
 
 export const deleteTask = withValidation(
   createFetcherWrapper(
     coreApiWithAuth,
     (id: number) => `tasks/${id}`,
-    "delete"
+    "delete",
   ),
-  taskSchema
+  taskSchema,
 );

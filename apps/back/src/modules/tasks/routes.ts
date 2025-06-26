@@ -1,15 +1,15 @@
-import type { ZodTypeProvider } from "fastify-type-provider-zod";
-import type { FastifyInstance } from "fastify";
 import { SWAGGER_TAGS } from "@/lib/constants/swagger-tags.js";
-import {
-  taskSchema,
-  modifyTaskSchema,
-  paginatedTasks,
-} from "@packages/schemas/task";
 import {
   basePaginatedRequestParams,
   getPaginatedRequestParams,
 } from "@packages/schemas/common";
+import {
+  modifyTaskSchema,
+  paginatedTasks,
+  taskSchema,
+} from "@packages/schemas/task";
+import type { FastifyInstance } from "fastify";
+import type { ZodTypeProvider } from "fastify-type-provider-zod";
 
 export default async (instance: FastifyInstance) => {
   instance.withTypeProvider<ZodTypeProvider>().route({
@@ -68,7 +68,7 @@ export default async (instance: FastifyInstance) => {
         {
           userId: request.user.id,
         },
-        request.body
+        request.body,
       );
     },
   });

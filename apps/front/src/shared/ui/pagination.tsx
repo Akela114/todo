@@ -1,6 +1,6 @@
-import { TextSkeleton } from "./text-skeleton";
 import type { ReactNode } from "react";
 import { twMerge } from "tailwind-merge";
+import { TextSkeleton } from "./text-skeleton";
 
 interface PaginationProps {
   page: number;

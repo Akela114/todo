@@ -1,8 +1,8 @@
 import type { inboxEntry } from "@/db/schema.js";
 import { BaseService } from "@/lib/base-classes/base-service.js";
-import type { InboxEntriesRepository } from "./repository.js";
-import type { FastifyInstance } from "fastify";
 import { NotFoundError } from "@/lib/errors/not-found-error.js";
+import type { FastifyInstance } from "fastify";
+import type { InboxEntriesRepository } from "./repository.js";
 
 export class InboxEntriesService extends BaseService<
   typeof inboxEntry,
@@ -11,7 +11,7 @@ export class InboxEntriesService extends BaseService<
 > {
   constructor(
     private instance: FastifyInstance,
-    protected repository: InboxEntriesRepository
+    protected repository: InboxEntriesRepository,
   ) {
     super(repository, "Inbox entry");
   }

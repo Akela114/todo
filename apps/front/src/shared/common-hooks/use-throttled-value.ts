@@ -16,7 +16,7 @@ export const useThrottledValue = <T>(value: T, delay: number) => {
     if (timeBeforeChange > 0) {
       const timeoutId = setTimeout(
         () => setThrottledValue(value),
-        timeBeforeChange
+        timeBeforeChange,
       );
       return () => clearTimeout(timeoutId);
     }

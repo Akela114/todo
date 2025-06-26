@@ -1,6 +1,6 @@
 import { checkAuth } from "@/entities/auth";
 import { LogoutButton } from "@/features/auth";
-import { queryClient, QUERY_KEYS } from "@/shared/query";
+import { QUERY_KEYS, queryClient } from "@/shared/query";
 import { ROUTE_LABELS } from "@/shared/router";
 import { LoadingScreen } from "@/shared/ui";
 import { Header, Navigation } from "@/widgets/common";

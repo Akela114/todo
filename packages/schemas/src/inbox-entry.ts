@@ -9,7 +9,7 @@ export const inboxEntrySchema = z.object({
 });
 
 export const paginatedInoxEntries = getPaginatedResponseSchema(
-  inboxEntrySchema.array()
+  inboxEntrySchema.array(),
 );
 
 export const createOrModifyInboxEntrySchema = z.object({

@@ -1,8 +1,8 @@
-import { modifyTaskSchema, type Task } from "@packages/schemas/task";
-import { Input, Select } from "@/shared/ui";
-import { Controller } from "react-hook-form";
-import { useModifyTask, TASK_PRIORITIES_OPTIONS } from "@/entities/task";
+import { TASK_PRIORITIES_OPTIONS, useModifyTask } from "@/entities/task";
 import { getInputValidation, useDefaultForm } from "@/shared/forms";
+import { Input, Select } from "@/shared/ui";
+import { type Task, modifyTaskSchema } from "@packages/schemas/task";
+import { Controller } from "react-hook-form";
 interface ModifyTaskFormProps {
   data: Task;
   onSuccess?: () => void;

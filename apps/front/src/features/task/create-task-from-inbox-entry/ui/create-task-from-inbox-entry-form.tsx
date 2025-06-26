@@ -1,15 +1,15 @@
+import {
+  TASK_PRIORITIES_OPTIONS,
+  useCreateTaskFromInboxEntry,
+} from "@/entities/task";
+import { getInputValidation, useDefaultForm } from "@/shared/forms";
+import { Input, Select } from "@/shared/ui";
 import type { InboxEntry } from "@packages/schemas/inbox-entry";
 import {
-  useCreateTaskFromInboxEntry,
-  TASK_PRIORITIES_OPTIONS,
-} from "@/entities/task";
-import { Input, Select } from "@/shared/ui";
-import { Controller } from "react-hook-form";
-import {
-  createTaskFromInboxEntrySchema,
   type CreateTaskFromInboxEntry,
+  createTaskFromInboxEntrySchema,
 } from "@packages/schemas/task";
-import { getInputValidation, useDefaultForm } from "@/shared/forms";
+import { Controller } from "react-hook-form";
 
 interface CreateTaskFromInboxEntryFormProps {
   inboxEntry: InboxEntry;

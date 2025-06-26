@@ -1,13 +1,13 @@
 import {
+  type UseMutationOptions,
   useMutation,
   useQueryClient,
-  type UseMutationOptions,
 } from "@tanstack/react-query";
 
 export const useOptimisticMutation = <Data, T, U, V>(
   opts: UseMutationOptions<T, U, V>,
   queryKey: string[],
-  getNewData: (variables: V, prevData?: Data) => Data | undefined
+  getNewData: (variables: V, prevData?: Data) => Data | undefined,
 ) => {
   const queryClient = useQueryClient();
 

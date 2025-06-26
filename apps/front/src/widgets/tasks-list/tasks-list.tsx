@@ -10,10 +10,10 @@ import {
   FetchEmpty,
   FetchError,
   Match,
-  SimpleList,
-  SimpleListItem,
   Pagination,
   PaginationSkeleton,
+  SimpleList,
+  SimpleListItem,
 } from "@/shared/ui";
 import type { ReactNode } from "react";
 import { twMerge } from "tailwind-merge";

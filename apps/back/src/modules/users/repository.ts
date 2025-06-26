@@ -1,6 +1,6 @@
-import { eq } from "drizzle-orm";
 import { user } from "@/db/schema.js";
 import { BaseRepository } from "@/lib/base-classes/base-repository.js";
+import { eq } from "drizzle-orm";
 import type { NodePgDatabase } from "drizzle-orm/node-postgres";
 
 export class UsersRepository extends BaseRepository<typeof user, "id"> {
