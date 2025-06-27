@@ -28,12 +28,14 @@ export class InboxEntriesService extends BaseService<
     title,
     priority,
     startDate,
+    endDate,
   }: {
     id: number;
     userId: number;
     title: string;
     priority: number;
     startDate: string;
+    endDate: string | null;
   }) {
     return await this.instance.db.transaction(async (tx) => {
       const inboxEntry = await this.delete(id, { userId }, tx);
@@ -47,6 +49,7 @@ export class InboxEntriesService extends BaseService<
         title,
         priority,
         startDate,
+        endDate,
       });
 
       return task;

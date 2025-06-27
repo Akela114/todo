@@ -9,11 +9,15 @@ interface DayPickerProps
   > {
   selected?: Date;
   onSelect: (date?: Date) => void;
+  minDate?: Date;
+  maxDate?: Date;
 }
 
 export const DayPicker = ({
   selected,
   onSelect,
+  minDate,
+  maxDate,
   ...otherProps
 }: DayPickerProps) => {
   return (
@@ -24,6 +28,10 @@ export const DayPicker = ({
       className="react-day-picker"
       locale={ru}
       onSelect={onSelect}
+      disabled={[
+        ...(minDate ? [{ before: minDate }] : []),
+        ...(maxDate ? [{ after: maxDate }] : []),
+      ]}
     />
   );
 };

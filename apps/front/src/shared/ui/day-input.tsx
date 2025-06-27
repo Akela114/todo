@@ -10,6 +10,8 @@ interface DayInputProps {
   label?: string;
   onChange: (value?: Date) => void;
   inputValidation?: ReturnType<typeof getInputValidation>;
+  minDate?: Date;
+  maxDate?: Date;
 }
 
 export const DayInput = ({
@@ -18,6 +20,8 @@ export const DayInput = ({
   label,
   onChange,
   inputValidation,
+  minDate,
+  maxDate,
   ...otherProps
 }: DayInputProps) => {
   return (
@@ -49,6 +53,8 @@ export const DayInput = ({
                 onChange(value);
                 value && onClose();
               }}
+              minDate={minDate}
+              maxDate={maxDate}
             />
           )}
         >

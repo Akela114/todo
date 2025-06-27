@@ -44,6 +44,7 @@ export const task = pgTable("task", {
   title: varchar({ length: 255 }).notNull(),
   priority: integer().notNull().default(1),
   startDate: date({ mode: "string" }).notNull(),
+  endDate: date({ mode: "string" }),
   doneDate: date({ mode: "string" }),
   userId: integer()
     .notNull()

@@ -64,6 +64,13 @@
       "when": 1750943862108,
       "tag": "0008_white_stingray",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1751006570394,
+      "tag": "0009_supreme_nitro",
+      "breakpoints": true
     }
   ]
 }

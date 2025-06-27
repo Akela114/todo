@@ -4,7 +4,11 @@ import { type UseFormProps, useForm } from "react-hook-form";
 import type { z } from "zod";
 import { FormWrapper } from "../ui";
 
-export const useDefaultForm = <T extends z.ZodObject<z.ZodRawShape>>({
+export const useDefaultForm = <
+  T extends
+    | z.ZodObject<z.ZodRawShape>
+    | z.ZodEffects<z.ZodObject<z.ZodRawShape>>,
+>({
   schema,
   useFormProps,
   submitButtonTitle,

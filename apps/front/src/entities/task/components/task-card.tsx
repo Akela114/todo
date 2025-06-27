@@ -44,7 +44,12 @@ export const TaskCard = ({ data, children, onStatusChange }: TaskCardProps) => {
         <div className="col-start-2">
           {!isTaskDone && (
             <div className="text-xs tabular-nums">
-              Срок выполнения: с {formatDate(data.startDate, "date")}
+              <span>
+                Срок выполнения: с {formatDate(data.startDate, "date")}
+              </span>
+              {data.endDate && (
+                <span> по {formatDate(data.endDate, "date")}</span>
+              )}
             </div>
           )}
         </div>
