@@ -23,7 +23,7 @@ export const SimpleListItem = motion.create(
   ({ children, ref }: SimpleListItemProps) => {
     return (
       <motion.li
-        layout
+        layout="position"
         variants={animationVariants}
         initial="initial"
         animate="animate"

@@ -104,8 +104,12 @@ export const TasksList = ({
                       handleTaskStatusChange(task.id, isDone)
                     }
                   >
-                    {!task.doneDate && <ModifyTaskButton data={task} />}
-                    <DeleteTaskButton data={task} />
+                    {!task.doneDate && (
+                      <>
+                        <ModifyTaskButton data={task} />
+                        <DeleteTaskButton data={task} />
+                      </>
+                    )}
                   </TaskCard>
                 </SimpleListItem>
               ))}
