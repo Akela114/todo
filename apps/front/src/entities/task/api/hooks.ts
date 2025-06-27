@@ -17,6 +17,7 @@ import {
 export const useTasks = (
   searchParams: Parameters<typeof getTasks>[0]["searchParams"],
   onSuccess?: (data: Awaited<ReturnType<typeof getTasks>>) => void,
+  keepPreviousData?: boolean,
 ) =>
   useQuery({
     queryKey: [QUERY_KEYS.tasks, searchParams],
@@ -27,6 +28,9 @@ export const useTasks = (
       onSuccess?.(data);
       return data;
     },
+    placeholderData: keepPreviousData
+      ? (previousData) => previousData
+      : undefined,
   });
 
 export const useCreateTaskFromInboxEntry = () => {

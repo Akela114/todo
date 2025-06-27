@@ -17,6 +17,7 @@ import {
 export const useInboxEntries = (
   searchParams: Parameters<typeof getInboxEntries>[0]["searchParams"],
   onSuccess?: (data: Awaited<ReturnType<typeof getInboxEntries>>) => void,
+  keepPreviousData?: boolean,
 ) =>
   useQuery({
     queryKey: [QUERY_KEYS.inboxEntries, searchParams],
@@ -27,6 +28,9 @@ export const useInboxEntries = (
       onSuccess?.(data);
       return data;
     },
+    placeholderData: keepPreviousData
+      ? (previousData) => previousData
+      : undefined,
   });
 
 export const useCreateInboxEntry = () => {

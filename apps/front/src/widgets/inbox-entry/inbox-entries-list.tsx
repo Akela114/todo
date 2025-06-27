@@ -52,6 +52,7 @@ export const InboxEntriesList = ({
         onPageChange(1);
       }
     },
+    true,
   );
   const throttledStatus = useThrottledValue(status, 300);
 

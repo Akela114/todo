@@ -45,11 +45,15 @@ export const TasksList = ({
     data: tasks,
     status,
     refetch,
-  } = useTasks({ page, pageSize, startFrom: formatDate(date) }, (tasks) => {
-    if (tasks.pagination.page > 1 && !tasks.data.length) {
-      onPageChange(1);
-    }
-  });
+  } = useTasks(
+    { page, pageSize, startFrom: formatDate(date) },
+    (tasks) => {
+      if (tasks.pagination.page > 1 && !tasks.data.length) {
+        onPageChange(1);
+      }
+    },
+    true,
+  );
   const { mutate: modifyTask } = useModifyTask();
   const throttledStatus = useThrottledValue(status, 300);
 
