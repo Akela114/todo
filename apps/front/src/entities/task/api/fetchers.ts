@@ -7,6 +7,7 @@ import {
 } from "@/shared/api";
 import { coreApiBasicResponseSchema } from "@packages/schemas/common";
 import {
+  type ChangeTaskStatus,
   type CreateTaskFromInboxEntry,
   type ModifyTask,
   type PaginatedTasksQueryParams,
@@ -47,6 +48,15 @@ export const modifyTask = withHttpErrorParsing(
   ),
   coreApiBasicResponseSchema,
   CORE_API_BASIC_RESPONSE_FALLBACK,
+);
+
+export const changeTaskStatus = withValidation(
+  createFetcherWrapper<number, undefined, ChangeTaskStatus>(
+    coreApiWithAuth,
+    (id: number) => `tasks/${id}/done`,
+    "put",
+  ),
+  taskSchema,
 );
 
 export const deleteTask = withValidation(

@@ -1,7 +1,7 @@
 import {
   TaskCard,
   TaskCardSkeleton,
-  useModifyTask,
+  useChangeTaskStatus,
   useTasks,
 } from "@/entities/task";
 import { DeleteTaskButton, ModifyTaskButton } from "@/features/task";
@@ -54,12 +54,12 @@ export const TasksList = ({
     },
     true,
   );
-  const { mutate: modifyTask } = useModifyTask();
+  const { mutate: changeTaskStatus } = useChangeTaskStatus();
   const throttledStatus = useThrottledValue(status, 300);
 
   const handleTaskStatusChange = (taskId: number, isDone: boolean) => {
     const currentDateOrToday = min([new Date(), date]);
-    modifyTask({
+    changeTaskStatus({
       body: {
         doneDate: isDone ? formatDate(currentDateOrToday) : null,
       },

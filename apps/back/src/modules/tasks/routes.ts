@@ -1,5 +1,6 @@
 import { SWAGGER_TAGS } from "@/lib/constants/swagger-tags.js";
 import {
+  changeTaskStatusSchema,
   modifyTaskSchema,
   paginatedTasks,
   paginatedTasksQueryParams,
@@ -51,6 +52,29 @@ export default async (instance: FastifyInstance) => {
           userId: request.user.id,
         },
         request.body,
+      );
+    },
+  });
+
+  instance.withTypeProvider<ZodTypeProvider>().route({
+    withAuth: true,
+    method: "PUT",
+    url: "/:id/done",
+    schema: {
+      tags: [SWAGGER_TAGS.tasks.name],
+      params: taskSchema.pick({ id: true }),
+      body: changeTaskStatusSchema,
+      response: {
+        200: taskSchema,
+      },
+    },
+    handler: (request) => {
+      return instance.tasksService.changeStatus(
+        request.params.id,
+        {
+          userId: request.user.id,
+        },
+        request.body.doneDate,
       );
     },
   });

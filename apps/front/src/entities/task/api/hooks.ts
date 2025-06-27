@@ -8,6 +8,7 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import {
+  changeTaskStatus,
   createTaskFromInboxEntry,
   deleteTask,
   getTasks,
@@ -67,6 +68,27 @@ export const useModifyTask = (
     {
       ...opts,
       mutationFn: modifyTask,
+    },
+    [QUERY_KEYS.tasks],
+    (variables, prevData?: Task[]) => {
+      if (prevData) {
+        const newTasks = prevData.map((task) => {
+          if (task.id === variables.urlParams) {
+            return { ...task, ...variables.body } satisfies Task;
+          }
+          return task;
+        });
+        return newTasks;
+      }
+      return prevData;
+    },
+  );
+};
+
+export const useChangeTaskStatus = () => {
+  return useOptimisticMutation(
+    {
+      mutationFn: changeTaskStatus,
     },
     [QUERY_KEYS.tasks],
     (variables, prevData?: Task[]) => {

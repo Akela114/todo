@@ -12,4 +12,16 @@ export class TasksService extends BaseService<typeof task, "id", "userId"> {
   ) {
     return await this.repository.getFilteredByDayWithPagination(...args);
   }
+
+  async changeStatus(
+    pKColumnValue: unknown,
+    columnsToCheckAlwaysValues: Record<"userId", unknown>,
+    doneDate: string | null,
+  ) {
+    return await this.repository.update(
+      pKColumnValue,
+      columnsToCheckAlwaysValues,
+      { doneDate },
+    );
+  }
 }
