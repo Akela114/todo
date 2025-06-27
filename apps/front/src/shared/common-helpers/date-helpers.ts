@@ -1,4 +1,4 @@
-import { format, parse } from "date-fns";
+import { format, formatDistance as formatDistanceFns, parse } from "date-fns";
 import { ru } from "date-fns/locale";
 
 const FORMAT_TYPES = {
@@ -13,6 +13,15 @@ export const formatDate = (
   type: keyof typeof FORMAT_TYPES = "transfer",
 ) => {
   return format(date, FORMAT_TYPES[type], {
+    locale: ru,
+  });
+};
+
+export const formatDistance = (
+  ...args: Parameters<typeof formatDistanceFns>
+) => {
+  return formatDistanceFns(args[0], args[1], {
+    ...(args[2] ?? {}),
     locale: ru,
   });
 };

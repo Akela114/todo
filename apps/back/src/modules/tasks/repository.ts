@@ -1,6 +1,6 @@
 import { task } from "@/db/schema.js";
 import { BaseRepository } from "@/lib/base-classes/base-repository.js";
-import { and, count, desc, eq, isNull, lte, or } from "drizzle-orm";
+import { and, asc, count, desc, eq, isNull, lte, or } from "drizzle-orm";
 import type { NodePgDatabase } from "drizzle-orm/node-postgres";
 import type { PgQueryResultHKT, PgTransaction } from "drizzle-orm/pg-core";
 
@@ -37,6 +37,7 @@ export class TasksRepository extends BaseRepository<
         .orderBy(
           desc(this.table.doneDate),
           desc(this.table.priority),
+          asc(this.table.endDate),
           desc(this.table.updatedAt),
         )
         .offset((pagination.page - 1) * pagination.pageSize)

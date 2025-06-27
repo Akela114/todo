@@ -3,6 +3,7 @@ import { Rating, TextSkeleton } from "@/shared/ui";
 import type { Task } from "@packages/schemas/task";
 import type { ReactNode } from "react";
 import { twMerge } from "tailwind-merge";
+import { RemainingTime } from "./remaining-time";
 
 interface TaskCardProps {
   data: Task;
@@ -43,13 +44,8 @@ export const TaskCard = ({ data, children, onStatusChange }: TaskCardProps) => {
         {children && <div className="card-actions justify-end">{children}</div>}
         <div className="col-start-2">
           {!isTaskDone && (
-            <div className="text-xs tabular-nums">
-              <span>
-                Срок выполнения: с {formatDate(data.startDate, "date")}
-              </span>
-              {data.endDate && (
-                <span> по {formatDate(data.endDate, "date")}</span>
-              )}
+            <div className="text-xs">
+              <RemainingTime endDate={data.endDate} />
             </div>
           )}
         </div>
