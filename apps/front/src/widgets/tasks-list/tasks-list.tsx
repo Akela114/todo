@@ -69,8 +69,13 @@ export const TasksList = ({
 
   return (
     <div className={twMerge("flex flex-col gap-4", className)}>
-      <div className="flex justify-between items-center">
-        <DaySelection date={date} onChange={onDateChange} />
+      <div className="flex justify-between items-center gap-4">
+        <DaySelection
+          date={date}
+          onChange={onDateChange}
+          className="flex-1"
+          dayPickerTriggerClassName="flex-1 sm:flex-none"
+        />
         <Match
           value={throttledStatus}
           success={() =>

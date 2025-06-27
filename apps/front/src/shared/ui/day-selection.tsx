@@ -1,5 +1,6 @@
 import { ArrowLeftIcon, ArrowRightIcon } from "@radix-ui/react-icons";
 import { add, sub } from "date-fns";
+import { twMerge } from "tailwind-merge";
 import { formatDate } from "../common-helpers";
 import { DayPicker } from "./day-picker";
 import { Popover } from "./popover";
@@ -7,13 +8,20 @@ import { Popover } from "./popover";
 interface DaySelectionProps {
   date: Date;
   onChange: (date?: Date) => void;
+  className?: string;
+  dayPickerTriggerClassName?: string;
 }
 
-export const DaySelection = ({ date, onChange }: DaySelectionProps) => {
+export const DaySelection = ({
+  date,
+  onChange,
+  className,
+  dayPickerTriggerClassName,
+}: DaySelectionProps) => {
   return (
-    <div className="flex items-center gap-2">
+    <div className={twMerge("flex items-center gap-2", className)}>
       <button
-        className="btn btn-soft btn-square"
+        className="btn btn-sm sm:btn-md btn-soft btn-square"
         type="button"
         onClick={() =>
           onChange(
@@ -26,7 +34,10 @@ export const DaySelection = ({ date, onChange }: DaySelectionProps) => {
         <ArrowLeftIcon />
       </button>
       <Popover
-        className="btn btn-soft flex-1 sm:flex-none"
+        className={twMerge(
+          "btn btn-sm sm:btn-md btn-soft sm:min-w-62",
+          dayPickerTriggerClassName,
+        )}
         renderTarget={(onClose) => (
           <DayPicker
             selected={date}
@@ -40,7 +51,7 @@ export const DaySelection = ({ date, onChange }: DaySelectionProps) => {
         {formatDate(date, "weekdayDate")}
       </Popover>
       <button
-        className="btn btn-soft btn-square"
+        className="btn btn-sm sm:btn-md btn-soft btn-square"
         type="button"
         onClick={() =>
           onChange(
