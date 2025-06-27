@@ -31,7 +31,7 @@ function TasksPage() {
     <TasksList
       page={page}
       date={new Date(date)}
-      pageSize={6}
+      pageSize={10}
       onPageChange={(page) => navigate({ search: { page, date } })}
       onDateChange={(date) =>
         navigate({

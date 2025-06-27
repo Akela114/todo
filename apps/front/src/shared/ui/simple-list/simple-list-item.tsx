@@ -28,7 +28,7 @@ export const SimpleListItem = motion.create(
         initial="initial"
         animate="animate"
         exit="exit"
-        className="bg-base-100 first:rounded-t-lg last:rounded-b-lg not-last:border-b border-b-base-200"
+        className="bg-base-100 rounded"
         ref={ref}
       >
         {children}
