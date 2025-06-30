@@ -13,6 +13,23 @@ export class TasksRepository extends BaseRepository<
     super(client, task, "id", ["userId"]);
   }
 
+  async getChildrenTask(
+    userId: number,
+    taskId: number,
+    transaction?: PgTransaction<PgQueryResultHKT, Record<string, unknown>>,
+  ) {
+    const client = transaction ?? this.client;
+
+    const result = await client
+      .select()
+      .from(this.table)
+      .where(
+        and(eq(this.table.userId, userId), eq(this.table.parentTaskId, taskId)),
+      );
+
+    return result[0] ?? null;
+  }
+
   async getFilteredByDayWithPagination(
     userId: number,
     date: string,

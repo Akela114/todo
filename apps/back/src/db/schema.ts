@@ -2,6 +2,7 @@ import type { RepetitionRule } from "@packages/schemas/task";
 import { sql } from "drizzle-orm";
 import {
   date,
+  foreignKey,
   integer,
   jsonb,
   pgTable,
@@ -39,18 +40,29 @@ export const inboxEntry = pgTable("inboxEntry", {
     }),
 });
 
-export const task = pgTable("task", {
-  ...timestamps,
-  id: integer().primaryKey().generatedAlwaysAsIdentity(),
-  title: varchar({ length: 255 }).notNull(),
-  priority: integer().notNull().default(1),
-  startDate: date({ mode: "string" }).notNull(),
-  endDate: date({ mode: "string" }),
-  doneDate: date({ mode: "string" }),
-  repetitionRule: jsonb().$type<RepetitionRule>(),
-  userId: integer()
-    .notNull()
-    .references(() => user.id, {
-      onDelete: "cascade",
+export const task = pgTable(
+  "task",
+  {
+    ...timestamps,
+    id: integer().primaryKey().generatedAlwaysAsIdentity(),
+    title: varchar({ length: 255 }).notNull(),
+    priority: integer().notNull().default(1),
+    startDate: date({ mode: "string" }).notNull(),
+    endDate: date({ mode: "string" }),
+    doneDate: date({ mode: "string" }),
+    repetitionRule: jsonb().$type<RepetitionRule>(),
+    userId: integer()
+      .notNull()
+      .references(() => user.id, {
+        onDelete: "cascade",
+      }),
+    parentTaskId: integer().unique(),
+  },
+  (table) => [
+    foreignKey({
+      columns: [table.parentTaskId],
+      foreignColumns: [table.id],
+      name: "task_parent_task_id_fkey",
     }),
-});
+  ],
+);

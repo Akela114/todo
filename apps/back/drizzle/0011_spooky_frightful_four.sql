@@ -1,0 +1,2 @@
+ALTER TABLE "task" ADD COLUMN "parentTaskId" integer;--> statement-breakpoint
+ALTER TABLE "task" ADD CONSTRAINT "task_parent_task_id_fkey" FOREIGN KEY ("parentTaskId") REFERENCES "public"."task"("id") ON DELETE no action ON UPDATE no action;

@@ -1,0 +1,1 @@
+ALTER TABLE "task" ADD CONSTRAINT "task_parentTaskId_unique" UNIQUE("parentTaskId");

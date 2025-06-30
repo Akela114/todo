@@ -1,5 +1,6 @@
 import type { task } from "@/db/schema.js";
 import { BaseService } from "@/lib/base-classes/base-service.js";
+import { ConflictError } from "@/lib/errors/conflict-error.js";
 import { NotFoundError } from "@/lib/errors/not-found-error.js";
 import { TZDate } from "@date-fns/tz";
 import type {
@@ -69,8 +70,8 @@ export class TasksService extends BaseService<typeof task, "id", "userId"> {
   }
 
   async changeStatus(
-    pKColumnValue: unknown,
-    columnsToCheckAlwaysValues: Record<"userId", unknown>,
+    pKColumnValue: number,
+    columnsToCheckAlwaysValues: Record<"userId", number>,
     doneDate: string | null,
   ) {
     return await this.instance.db.transaction(async (tx) => {
@@ -83,9 +84,31 @@ export class TasksService extends BaseService<typeof task, "id", "userId"> {
         tx,
       );
 
-      if (!updatedTask.doneDate) return updatedTask;
+      if (!updatedTask.doneDate) {
+        await this.deleteUndoneChildrenTask(
+          columnsToCheckAlwaysValues.userId,
+          pKColumnValue,
+          tx,
+        );
+        if (updatedTask.parentTaskId) {
+          await this.deleteTaskIfParentTaskUndone(
+            columnsToCheckAlwaysValues.userId,
+            updatedTask.parentTaskId,
+            pKColumnValue,
+            tx,
+          );
+        }
+      } else {
+        const childrenTask = await this.getChildrenTask(
+          columnsToCheckAlwaysValues.userId,
+          pKColumnValue,
+          tx,
+        );
 
-      await this.createRepetativeTask(updatedTask, tx);
+        if (!childrenTask) {
+          await this.createRepetativeChildrenTask(updatedTask, tx);
+        }
+      }
 
       return updatedTask;
     });
@@ -95,7 +118,7 @@ export class TasksService extends BaseService<typeof task, "id", "userId"> {
     return await this.repository.update(id, { userId }, data);
   }
 
-  private async createRepetativeTask(
+  private async createRepetativeChildrenTask(
     task: Task & { userId: number },
     tx?: PgTransaction<PgQueryResultHKT, Record<string, unknown>>,
   ) {
@@ -120,6 +143,7 @@ export class TasksService extends BaseService<typeof task, "id", "userId"> {
             startDate: nextStartDate,
             repetitionRule: taskCopy.repetitionRule,
             priority: taskCopy.priority,
+            parentTaskId: taskCopy.id,
           },
           tx,
         );
@@ -186,5 +210,46 @@ export class TasksService extends BaseService<typeof task, "id", "userId"> {
       addDays(dateWithTimezone, repetitionRule.interval - 1),
       "yyyy-MM-dd",
     );
+  }
+
+  private async getChildrenTask(
+    ...args: Parameters<TasksRepository["getChildrenTask"]>
+  ) {
+    return await this.repository.getChildrenTask(...args);
+  }
+
+  private async deleteUndoneChildrenTask(
+    userId: number,
+    parentTaskId: number,
+    tx: PgTransaction<PgQueryResultHKT, Record<string, unknown>>,
+  ) {
+    const childrenTask = await this.getChildrenTask(userId, parentTaskId, tx);
+
+    if (!childrenTask || childrenTask.doneDate) {
+      return;
+    }
+
+    return this.delete(
+      childrenTask.id,
+      {
+        userId,
+      },
+      tx,
+    );
+  }
+
+  private async deleteTaskIfParentTaskUndone(
+    userId: number,
+    parentTaskId: number,
+    taskId: number,
+    tx: PgTransaction<PgQueryResultHKT, Record<string, unknown>>,
+  ) {
+    const parentTask = await this.getOne(parentTaskId, { userId }, tx);
+
+    if (!parentTask.doneDate) {
+      return this.delete(taskId, { userId }, tx);
+    }
+
+    return null;
   }
 }

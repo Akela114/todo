@@ -11,6 +11,7 @@ import {
   validatorCompiler,
 } from "fastify-type-provider-zod";
 import { ValidationError } from "./lib/errors/bad-request-error.js";
+import { ConflictError } from "./lib/errors/conflict-error.js";
 import { NotFoundError } from "./lib/errors/not-found-error.js";
 import modules from "./modules/index.js";
 
@@ -46,6 +47,13 @@ fastify.setErrorHandler((error, _request, reply) => {
   if (error instanceof NotFoundError) {
     return reply.status(404).send({
       statusCode: 404,
+      message: error.message,
+    });
+  }
+
+  if (error instanceof ConflictError) {
+    return reply.status(409).send({
+      statusCode: 409,
       message: error.message,
     });
   }
