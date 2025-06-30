@@ -74,7 +74,10 @@ export const useModifyTask = (
       if (prevData) {
         const newTasks = prevData.map((task) => {
           if (task.id === variables.urlParams) {
-            return { ...task, ...variables.body } satisfies Task;
+            return {
+              ...task,
+              ...variables.body,
+            } satisfies Task;
           }
           return task;
         });

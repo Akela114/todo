@@ -20,6 +20,9 @@ importers:
 
   apps/back:
     dependencies:
+      '@date-fns/tz':
+        specifier: ^1.2.0
+        version: 1.2.0
       '@fastify/cookie':
         specifier: ^11.0.2
         version: 11.0.2
@@ -38,6 +41,9 @@ importers:
       '@tsconfig/node24':
         specifier: ^24.0.1
         version: 24.0.1
+      date-fns:
+        specifier: ^4.1.0
+        version: 4.1.0
       drizzle-orm:
         specifier: ^0.44.2
         version: 0.44.2(@types/pg@8.15.4)(pg@8.16.1)
@@ -81,6 +87,15 @@ importers:
       '@hookform/resolvers':
         specifier: ^5.0.1
         version: 5.1.1(react-hook-form@7.58.1(react@19.1.0))
+      '@maskito/core':
+        specifier: ^3.9.1
+        version: 3.9.1
+      '@maskito/kit':
+        specifier: ^3.9.1
+        version: 3.9.1(@maskito/core@3.9.1)
+      '@maskito/react':
+        specifier: ^3.9.1
+        version: 3.9.1(@maskito/core@3.9.1)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@packages/schemas':
         specifier: workspace:*
         version: link:../../packages/schemas
@@ -819,6 +834,21 @@ packages:
   '@lukeed/ms@2.0.2':
     resolution: {integrity: sha512-9I2Zn6+NJLfaGoz9jN3lpwDgAYvfGeNYdbAIjJOqzs4Tpc+VU3Jqq4IofSUBKajiDS8k9fZIg18/z13mpk1bsA==}
     engines: {node: '>=8'}
+
+  '@maskito/core@3.9.1':
+    resolution: {integrity: sha512-Sa3GFdgWZKRBLAVrrHbT0uI6fI8zMy2/yPvBuhxG5W4a+uYRCb9mpC52yZaUcVa7Gq4OvFIy03c53LntuXStmw==}
+
+  '@maskito/kit@3.9.1':
+    resolution: {integrity: sha512-r9kR4mwKz7jILUknHYpQPMBy7sXsptoOivt8S8ymf7yzTlJpfhfS+C2WiAKR24UyilhKBezC5kFR3nljKnHBCw==}
+    peerDependencies:
+      '@maskito/core': ^3.9.1
+
+  '@maskito/react@3.9.1':
+    resolution: {integrity: sha512-DF125ifk8X8cye9zsPvJScaPo9I/hhVCYcIC2UrBdS3BtVgxk+/tPeA5qQWUHi7xGKNDDniYMFXqVlZaofWw4w==}
+    peerDependencies:
+      '@maskito/core': ^3.9.1
+      react: '>=16.8'
+      react-dom: '>=16.8'
 
   '@radix-ui/number@1.1.1':
     resolution: {integrity: sha512-MkKCwxlXTgz6CFoJx3pCwn07GKp36+aZyu/u2Ln2VrA5DcdyCZkASEDBTd8x5whTQQL5CiYf4prXKLcgQdv29g==}
@@ -3492,6 +3522,18 @@ snapshots:
       '@jridgewell/sourcemap-codec': 1.5.0
 
   '@lukeed/ms@2.0.2': {}
+
+  '@maskito/core@3.9.1': {}
+
+  '@maskito/kit@3.9.1(@maskito/core@3.9.1)':
+    dependencies:
+      '@maskito/core': 3.9.1
+
+  '@maskito/react@3.9.1(@maskito/core@3.9.1)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
+    dependencies:
+      '@maskito/core': 3.9.1
+      react: 19.1.0
+      react-dom: 19.1.0(react@19.1.0)
 
   '@radix-ui/number@1.1.1': {}
 

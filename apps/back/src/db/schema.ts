@@ -1,7 +1,9 @@
+import type { RepetitionRule } from "@packages/schemas/task";
 import { sql } from "drizzle-orm";
 import {
   date,
   integer,
+  jsonb,
   pgTable,
   text,
   timestamp,
@@ -45,6 +47,7 @@ export const task = pgTable("task", {
   startDate: date({ mode: "string" }).notNull(),
   endDate: date({ mode: "string" }),
   doneDate: date({ mode: "string" }),
+  repetitionRule: jsonb().$type<RepetitionRule>(),
   userId: integer()
     .notNull()
     .references(() => user.id, {

@@ -11,7 +11,7 @@ declare module "fastify" {
 
 export default async (instance: FastifyInstance) => {
   const repository = new InboxEntriesRepository(instance.db);
-  const service = new InboxEntriesService(instance, repository);
+  const service = new InboxEntriesService(repository);
 
   instance.decorate("inboxEntryService", service);
   instance.register(routes, { prefix: "/inbox-entries" });

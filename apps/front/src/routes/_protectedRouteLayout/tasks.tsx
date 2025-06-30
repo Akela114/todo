@@ -1,4 +1,7 @@
-import { formatDate, formatTodayDate } from "@/shared/common-helpers";
+import {
+  formatDate,
+  formatTodayDate,
+} from "@/shared/common-helpers-and-constants";
 import { TasksList } from "@/widgets/tasks-list";
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { fallback, zodValidator } from "@tanstack/zod-adapter";
@@ -31,7 +34,7 @@ function TasksPage() {
     <TasksList
       page={page}
       date={new Date(date)}
-      pageSize={10}
+      pageSize={6}
       onPageChange={(page) => navigate({ search: { page, date } })}
       onDateChange={(date) =>
         navigate({

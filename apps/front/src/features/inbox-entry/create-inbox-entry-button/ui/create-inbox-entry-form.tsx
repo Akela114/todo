@@ -31,6 +31,7 @@ export const CreateInboxEntryForm = ({
     onSubmit: (data) => createEntry({ body: data }),
     submitButtonTitle: "Создать запись",
     submitError,
+    withResetOnSubmit: true,
   });
 
   return getFormComponent(

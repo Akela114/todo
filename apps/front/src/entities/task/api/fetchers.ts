@@ -8,8 +8,7 @@ import {
 import { coreApiBasicResponseSchema } from "@packages/schemas/common";
 import {
   type ChangeTaskStatus,
-  type CreateTaskFromInboxEntry,
-  type ModifyTask,
+  type CreateOrModifyTask,
   type PaginatedTasksQueryParams,
   paginatedTasks,
   taskSchema,
@@ -26,7 +25,7 @@ export const getTasks = withValidation(
 
 export const createTaskFromInboxEntry = withHttpErrorParsing(
   withValidation(
-    createFetcherWrapper<number, undefined, CreateTaskFromInboxEntry>(
+    createFetcherWrapper<number, undefined, CreateOrModifyTask>(
       coreApiWithAuth,
       (id: number) => `inbox-entries/${id}/tasks`,
       "post",
@@ -39,7 +38,7 @@ export const createTaskFromInboxEntry = withHttpErrorParsing(
 
 export const modifyTask = withHttpErrorParsing(
   withValidation(
-    createFetcherWrapper<number, undefined, ModifyTask>(
+    createFetcherWrapper<number, undefined, CreateOrModifyTask>(
       coreApiWithAuth,
       (id: number) => `tasks/${id}`,
       "put",

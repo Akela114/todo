@@ -1,9 +1,10 @@
-import { formatDate } from "@/shared/common-helpers";
+import { formatDate } from "@/shared/common-helpers-and-constants";
 import { Rating, TextSkeleton } from "@/shared/ui";
 import type { Task } from "@packages/schemas/task";
 import type { ReactNode } from "react";
 import { twMerge } from "tailwind-merge";
 import { RemainingTime } from "./remaining-time";
+import { Repetition } from "./repetition";
 
 interface TaskCardProps {
   data: Task;
@@ -42,12 +43,11 @@ export const TaskCard = ({ data, children, onStatusChange }: TaskCardProps) => {
           </div>
         </div>
         {children && <div className="card-actions justify-end">{children}</div>}
-        <div className="col-start-2">
-          {!isTaskDone && (
-            <div className="text-xs">
-              <RemainingTime endDate={data.endDate} />
-            </div>
+        <div className="col-start-2 col-span-2 text-xs flex flex-col gap-2">
+          {data.repetitionRule && (
+            <Repetition repetitionRule={data.repetitionRule} />
           )}
+          {!isTaskDone && <RemainingTime endDate={data.endDate} />}
         </div>
       </div>
     </div>

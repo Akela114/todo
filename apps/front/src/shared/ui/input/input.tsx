@@ -1,6 +1,7 @@
 import type { ComponentProps, ReactNode } from "react";
 import { twMerge } from "tailwind-merge";
 import type { getInputValidation } from "../../forms/form-utils";
+import { InputWrapper } from "../input-wrapper";
 
 interface InputProps extends ComponentProps<"input"> {
   label?: string;
@@ -20,29 +21,17 @@ export const Input = ({
   const placeholderToShow = placeholder ?? label;
 
   return (
-    <div className="flex flex-col gap-1">
+    <InputWrapper label={labelToShow} inputValidation={inputValidation}>
       <label
         className={twMerge(
-          "floating-label input w-full",
+          "input w-full",
           inputValidation?.status === "success" && "input-success",
           inputValidation?.status === "error" && "input-error",
         )}
       >
         {icon}
-        {labelToShow && <span>{labelToShow}</span>}
         <input {...props} placeholder={placeholderToShow} />
       </label>
-      {inputValidation?.message && (
-        <div
-          className={twMerge(
-            "text-xs min-h-4",
-            inputValidation.status === "success" && "text-success",
-            inputValidation.status === "error" && "text-error",
-          )}
-        >
-          {inputValidation.message}
-        </div>
-      )}
-    </div>
+    </InputWrapper>
   );
 };

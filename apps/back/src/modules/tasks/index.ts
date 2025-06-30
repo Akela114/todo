@@ -11,7 +11,7 @@ declare module "fastify" {
 
 export default async (instance: FastifyInstance) => {
   const repository = new TasksRepository(instance.db);
-  const service = new TasksService(repository);
+  const service = new TasksService(instance, repository);
 
   instance.decorate("tasksService", service);
   instance.register(routes, { prefix: "/tasks" });

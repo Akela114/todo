@@ -1,4 +1,4 @@
-import { formatDate } from "@/shared/common-helpers";
+import { formatDate } from "@/shared/common-helpers-and-constants";
 import { TextSkeleton } from "@/shared/ui";
 import type { InboxEntry } from "@packages/schemas/inbox-entry";
 import type { ReactNode } from "react";

@@ -1,36 +1,45 @@
-import { TASK_PRIORITIES_OPTIONS, useModifyTask } from "@/entities/task";
+import { TASK_PRIORITIES_OPTIONS } from "@/entities/task";
+import { formatTodayDate } from "@/shared/common-helpers-and-constants";
 import { getInputValidation, useDefaultForm } from "@/shared/forms";
 import { Input, Select } from "@/shared/ui";
-import { type Task, modifyTaskSchema } from "@packages/schemas/task";
+import {
+  type CreateOrModifyTask,
+  type Task,
+  createOrModifyTaskSchema,
+} from "@packages/schemas/task";
 import { Controller, FormProvider } from "react-hook-form";
 import { TaskIntervalDatesInputs } from "./task-interval-dates-inputs";
+import { TaskRepetitionInputs } from "./task-repetition-inputs";
+
 interface ModifyTaskFormProps {
-  data: Task;
-  onSuccess?: () => void;
+  data?: Partial<Task>;
+  onSubmit: (data: CreateOrModifyTask) => void;
+  submitError: {
+    message: string;
+    statusCode: number;
+  } | null;
+  resetSubmit: () => void;
 }
 
-export const ModifyTaskForm = ({ data, onSuccess }: ModifyTaskFormProps) => {
-  const {
-    mutate: modifyEntry,
-    error: submitError,
-    reset: resetSubmit,
-  } = useModifyTask({
-    onSuccess,
-  });
-
+export const CreateOrModifyTaskForm = ({
+  data,
+  onSubmit,
+  submitError,
+  resetSubmit,
+}: ModifyTaskFormProps) => {
   const { form, getFormComponent } = useDefaultForm({
-    schema: modifyTaskSchema,
+    schema: createOrModifyTaskSchema,
     useFormProps: {
       defaultValues: {
-        title: data.title,
-        priority: data.priority,
-        startDate: data.startDate,
-        endDate: data.endDate,
+        title: data?.title,
+        priority: data?.priority ?? Number(TASK_PRIORITIES_OPTIONS[1].value),
+        startDate: data?.startDate ?? formatTodayDate(),
+        endDate: data?.endDate ?? null,
+        repetitionRule: data?.repetitionRule ?? null,
       },
     },
     onResetSubmit: resetSubmit,
-    onSubmit: (submittedData) =>
-      modifyEntry({ urlParams: data.id, body: submittedData }),
+    onSubmit,
     submitButtonTitle: "Изменить задачу",
     submitError,
   });
@@ -63,6 +72,7 @@ export const ModifyTaskForm = ({ data, onSuccess }: ModifyTaskFormProps) => {
         />
       </div>
       <TaskIntervalDatesInputs />
+      <TaskRepetitionInputs />
     </FormProvider>,
   );
 };

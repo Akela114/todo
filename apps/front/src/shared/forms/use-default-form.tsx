@@ -16,6 +16,7 @@ export const useDefaultForm = <
   onSubmit,
   onResetSubmit,
   beforeSubmit,
+  withResetOnSubmit,
 }: {
   schema: T;
   useFormProps: Omit<
@@ -28,6 +29,7 @@ export const useDefaultForm = <
   onResetSubmit: () => void;
   beforeSubmit?: (data: z.infer<T>) => void;
   submitError?: { message: string } | null;
+  withResetOnSubmit?: boolean;
 }) => {
   // biome-ignore lint/suspicious/noExplicitAny: it is any in react-hook-form
   const form = useForm<z.infer<T>, any, z.infer<T>>({
@@ -42,7 +44,7 @@ export const useDefaultForm = <
         onSubmit={handleSubmit(async (data) => {
           beforeSubmit?.(data);
           await onSubmit(data);
-          reset();
+          withResetOnSubmit && reset();
         })}
         onChange={submitError ? () => onResetSubmit() : undefined}
         submitButtonTitle={submitButtonTitle}

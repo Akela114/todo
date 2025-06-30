@@ -1,7 +1,7 @@
 import { SWAGGER_TAGS } from "@/lib/constants/swagger-tags.js";
 import {
   changeTaskStatusSchema,
-  modifyTaskSchema,
+  createOrModifyTaskSchema,
   paginatedTasks,
   paginatedTasksQueryParams,
   taskSchema,
@@ -40,17 +40,15 @@ export default async (instance: FastifyInstance) => {
     schema: {
       tags: [SWAGGER_TAGS.tasks.name],
       params: taskSchema.pick({ id: true }),
-      body: modifyTaskSchema,
+      body: createOrModifyTaskSchema,
       response: {
         200: taskSchema,
       },
     },
     handler: (request) => {
-      return instance.tasksService.update(
+      return instance.tasksService.updateTask(
         request.params.id,
-        {
-          userId: request.user.id,
-        },
+        request.user.id,
         request.body,
       );
     },

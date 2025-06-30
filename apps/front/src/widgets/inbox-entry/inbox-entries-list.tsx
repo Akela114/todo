@@ -102,7 +102,7 @@ export const InboxEntriesList = ({
         pending={() => (
           <SimpleList>
             {Array.from({ length: pageSize }).map((_, idx) => (
-              <SimpleListItem key={idx}>
+              <SimpleListItem key={`skeleton-${idx}`}>
                 <InboxEntryCardSkeleton />
               </SimpleListItem>
             ))}

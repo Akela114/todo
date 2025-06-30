@@ -5,7 +5,7 @@ import {
   useTasks,
 } from "@/entities/task";
 import { DeleteTaskButton, ModifyTaskButton } from "@/features/task";
-import { formatDate } from "@/shared/common-helpers";
+import { formatDate } from "@/shared/common-helpers-and-constants";
 import { useThrottledValue } from "@/shared/common-hooks";
 import {
   DaySelection,
@@ -126,7 +126,7 @@ export const TasksList = ({
         pending={() => (
           <SimpleList>
             {Array.from({ length: pageSize }).map((_, idx) => (
-              <SimpleListItem key={idx}>
+              <SimpleListItem key={`skeleton-${idx}`}>
                 <TaskCardSkeleton />
               </SimpleListItem>
             ))}

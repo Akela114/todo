@@ -1,12 +1,15 @@
-import { formatDate, formatTodayDate } from "@/shared/common-helpers";
+import {
+  formatDate,
+  formatTodayDate,
+} from "@/shared/common-helpers-and-constants";
 import { getInputValidation } from "@/shared/forms";
 import { DayInput } from "@/shared/ui";
-import type { CreateTaskFromInboxEntry } from "@packages/schemas/task";
+import type { CreateOrModifyTask } from "@packages/schemas/task";
 import { compareAsc } from "date-fns";
 import { useController, useFormContext } from "react-hook-form";
 
 export const TaskIntervalDatesInputs = () => {
-  const { control, formState } = useFormContext<CreateTaskFromInboxEntry>();
+  const { control, formState } = useFormContext<CreateOrModifyTask>();
 
   const { field: startDateField } = useController({
     control,
@@ -54,7 +57,9 @@ export const TaskIntervalDatesInputs = () => {
         placeholder="Укажите дату окончания..."
         label="Дата окончания"
         inputValidation={getInputValidation(formState, "endDate")}
-        minDate={new Date(startDateField.value)}
+        minDate={
+          startDateField.value ? new Date(startDateField.value) : undefined
+        }
       />
     </>
   );

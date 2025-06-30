@@ -5,10 +5,7 @@ import {
   inboxEntrySchema,
   paginatedInoxEntries,
 } from "@packages/schemas/inbox-entry";
-import {
-  createTaskFromInboxEntrySchema,
-  taskSchema,
-} from "@packages/schemas/task";
+import { createOrModifyTaskSchema, taskSchema } from "@packages/schemas/task";
 import type { FastifyInstance } from "fastify";
 import type { ZodTypeProvider } from "fastify-type-provider-zod";
 
@@ -112,13 +109,13 @@ export default async (instance: FastifyInstance) => {
     schema: {
       tags: [SWAGGER_TAGS.inboxEntries.name, SWAGGER_TAGS.tasks.name],
       params: inboxEntrySchema.pick({ id: true }),
-      body: createTaskFromInboxEntrySchema,
+      body: createOrModifyTaskSchema,
       response: {
         201: taskSchema,
       },
     },
     handler: async (request, reply) => {
-      const task = await instance.inboxEntryService.convertToTask({
+      const task = await instance.tasksService.convertInboxEntryToTask({
         ...request.body,
         id: request.params.id,
         userId: request.user.id,
