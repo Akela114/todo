@@ -1,13 +1,18 @@
 import { z } from "zod";
 
+export const forceArray = <T extends z.ZodTypeAny>(schema: T) =>
+  z.preprocess((val) => {
+    if (val === undefined) return undefined;
+    if (Array.isArray(val)) return val;
+    return [val];
+  }, schema);
+
 export const coreApiBasicResponseSchema = z.object({
   statusCode: z.number(),
   message: z.string(),
 });
 
-export const getPaginatedResponseSchema = <
-  T extends z.ZodTypeAny | z.ZodArray<z.ZodTypeAny>,
->(
+export const getPaginatedResponseSchema = <T extends z.ZodTypeAny>(
   schema: T,
 ) => {
   return z.object({
@@ -30,3 +35,12 @@ export type CoreApiBasicResponse = z.infer<typeof coreApiBasicResponseSchema>;
 export type BasePaginatedRequestParams = z.infer<
   typeof basePaginatedRequestParams
 >;
+
+export type PaginatedResponse<T> = {
+  data: T[];
+  pagination: {
+    page: number;
+    pageSize: number;
+    totalCount: number;
+  };
+};

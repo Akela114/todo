@@ -1,0 +1,1 @@
+ALTER TABLE "taskTag" ADD CONSTRAINT "taskTag_taskId_tagId_unique" UNIQUE("taskId","tagId");

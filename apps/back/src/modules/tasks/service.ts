@@ -1,10 +1,8 @@
-import type { task } from "@/db/schema.js";
-import { BaseService } from "@/lib/base-classes/base-service.js";
-import { ConflictError } from "@/lib/errors/conflict-error.js";
 import { NotFoundError } from "@/lib/errors/not-found-error.js";
+import { Service, type Transaction } from "@/lib/types.js";
 import { TZDate } from "@date-fns/tz";
 import type {
-  CreateOrModifyTask,
+  CreateOrModifyTaskBack,
   RepetitionRule,
   Task,
 } from "@packages/schemas/task";
@@ -20,130 +18,175 @@ import {
   setDate,
   startOfMonth,
 } from "date-fns";
-import type { PgQueryResultHKT, PgTransaction } from "drizzle-orm/pg-core";
 import type { FastifyInstance } from "fastify";
 import type { TasksRepository } from "./repository.js";
+import type { PrimaryKeyFields, RequiredFields } from "./types.js";
 
-export class TasksService extends BaseService<typeof task, "id", "userId"> {
+export class TasksService extends Service<TasksRepository> {
   constructor(
-    private instance: FastifyInstance,
     protected repository: TasksRepository,
+    private instance: FastifyInstance,
   ) {
-    super(repository, "Task");
+    super(repository);
+  }
+
+  async updateDoneDate(...args: Parameters<TasksRepository["updateDoneDate"]>) {
+    return await this.repository.updateDoneDate(...args);
   }
 
   async convertInboxEntryToTask({
-    id,
+    inboxEntryId,
     userId,
-    ...otherParams
+    ...createTaskData
   }: {
-    id: number;
-    userId: number;
-  } & CreateOrModifyTask) {
-    return await this.instance.db.transaction(async (tx) => {
-      const inboxEntry = await this.instance.inboxEntryService.delete(
-        id,
-        { userId },
-        tx,
-      );
+    inboxEntryId: number;
+  } & RequiredFields &
+    CreateOrModifyTaskBack) {
+    return this.repository.withTransaction(
+      async (tx) => {
+        const inboxEntry = await this.instance.inboxEntryService.delete(
+          { userId, id: inboxEntryId },
+          tx,
+        );
 
-      if (!inboxEntry) {
-        throw new NotFoundError(`${this.entityName} not found`);
-      }
+        if (!inboxEntry) {
+          throw new NotFoundError("Inbox entry not found");
+        }
 
-      const task = await this.create(
-        {
-          userId,
-          ...otherParams,
-        },
-        tx,
-      );
+        const task = await this.create({ userId }, createTaskData, tx);
 
-      return task;
-    });
-  }
-
-  async getFilteredByDayWithPagination(
-    ...args: Parameters<TasksRepository["getFilteredByDayWithPagination"]>
-  ) {
-    return await this.repository.getFilteredByDayWithPagination(...args);
+        return task;
+      },
+      undefined,
+      true,
+    );
   }
 
   async changeStatus(
-    pKColumnValue: number,
-    columnsToCheckAlwaysValues: Record<"userId", number>,
+    columnsToCheck: PrimaryKeyFields & RequiredFields,
     doneDate: string | null,
   ) {
-    return await this.instance.db.transaction(async (tx) => {
-      const updatedTask = await this.update(
-        pKColumnValue,
-        columnsToCheckAlwaysValues,
+    return this.repository.withTransaction(
+      async (tx) => {
+        const updatedTask = await this.updateDoneDate(
+          columnsToCheck,
+          {
+            doneDate,
+          },
+          tx,
+        );
+
+        if (!updatedTask.doneDate) {
+          await this.deleteUndoneChildrenTask(
+            {
+              parentTaskId: updatedTask.id,
+              userId: updatedTask.userId,
+            },
+            tx,
+          );
+          if (updatedTask.parentTaskId) {
+            await this.deleteTaskIfParentTaskUndone(
+              {
+                id: updatedTask.id,
+                userId: updatedTask.userId,
+                parentTaskId: updatedTask.parentTaskId,
+              },
+              tx,
+            );
+          }
+        } else {
+          const childrenTask = await this.getChildrenTask(
+            {
+              userId: updatedTask.userId,
+              parentTaskId: updatedTask.id,
+            },
+            tx,
+          );
+          if (!childrenTask) {
+            await this.createRepetativeChildrenTask(updatedTask, tx);
+          }
+        }
+
+        return updatedTask;
+      },
+      undefined,
+      true,
+    );
+  }
+
+  private async getChildrenTask(
+    filters: RequiredFields & { parentTaskId: number },
+    tx?: Transaction,
+  ) {
+    return await this.getFirst(filters, tx);
+  }
+
+  private async deleteUndoneChildrenTask(
+    data: RequiredFields & { parentTaskId: number },
+    tx?: Transaction,
+  ) {
+    const childrenTask = await this.getChildrenTask(data, tx);
+
+    if (!childrenTask || childrenTask.doneDate) {
+      return;
+    }
+
+    return this.delete({ id: childrenTask.id, userId: data.userId }, tx);
+  }
+
+  private async deleteTaskIfParentTaskUndone(
+    data: RequiredFields & PrimaryKeyFields & { parentTaskId: number },
+    tx: Transaction,
+  ) {
+    const parentTask = await this.getFirst(
+      {
+        userId: data.userId,
+        id: data.parentTaskId,
+      },
+      tx,
+    );
+
+    if (!parentTask?.doneDate) {
+      return this.delete(
         {
-          doneDate,
+          id: data.id,
+          userId: data.userId,
         },
         tx,
       );
+    }
 
-      if (!updatedTask.doneDate) {
-        await this.deleteUndoneChildrenTask(
-          columnsToCheckAlwaysValues.userId,
-          pKColumnValue,
-          tx,
-        );
-        if (updatedTask.parentTaskId) {
-          await this.deleteTaskIfParentTaskUndone(
-            columnsToCheckAlwaysValues.userId,
-            updatedTask.parentTaskId,
-            pKColumnValue,
-            tx,
-          );
-        }
-      } else {
-        const childrenTask = await this.getChildrenTask(
-          columnsToCheckAlwaysValues.userId,
-          pKColumnValue,
-          tx,
-        );
-
-        if (!childrenTask) {
-          await this.createRepetativeChildrenTask(updatedTask, tx);
-        }
-      }
-
-      return updatedTask;
-    });
-  }
-
-  async updateTask(id: number, userId: number, data: CreateOrModifyTask) {
-    return await this.repository.update(id, { userId }, data);
+    return null;
   }
 
   private async createRepetativeChildrenTask(
     task: Task & { userId: number },
-    tx?: PgTransaction<PgQueryResultHKT, Record<string, unknown>>,
+    tx?: Transaction,
   ) {
-    const taskCopy = structuredClone(task);
+    const { userId, tags, title, endDate, priority, repetitionRule, doneDate } =
+      structuredClone(task);
 
-    if (!taskCopy.doneDate) return;
+    if (!doneDate) return;
 
-    if (taskCopy.repetitionRule) {
+    if (repetitionRule) {
       const nextStartDate = this.getNextStartDateOfRepetativeTask({
-        doneDate: taskCopy.doneDate,
-        repetitionRule: taskCopy.repetitionRule,
+        doneDate,
+        repetitionRule,
       });
 
-      if (
-        !taskCopy.endDate ||
-        compareAsc(nextStartDate, taskCopy.endDate) !== 1
-      ) {
+      if (!endDate || compareAsc(nextStartDate, endDate) !== 1) {
         await this.create(
           {
-            title: taskCopy.title,
-            userId: taskCopy.userId,
+            userId,
+          },
+          {
+            title,
+            priority,
             startDate: nextStartDate,
-            repetitionRule: taskCopy.repetitionRule,
-            priority: taskCopy.priority,
-            parentTaskId: taskCopy.id,
+            endDate,
+            repetitionRule,
+            parentTaskId: task.id,
+            tagIds: tags.map((tag) => tag.id),
           },
           tx,
         );
@@ -160,6 +203,7 @@ export class TasksService extends BaseService<typeof task, "id", "userId"> {
   }) {
     if (!repetitionRule) return doneDate;
 
+    // 2019-12-31
     // TODO: брать часовой пояс из профиля
     const dateWithTimezone = addDays(
       new TZDate(doneDate, "Asia/Yekaterinburg"),
@@ -210,46 +254,5 @@ export class TasksService extends BaseService<typeof task, "id", "userId"> {
       addDays(dateWithTimezone, repetitionRule.interval - 1),
       "yyyy-MM-dd",
     );
-  }
-
-  private async getChildrenTask(
-    ...args: Parameters<TasksRepository["getChildrenTask"]>
-  ) {
-    return await this.repository.getChildrenTask(...args);
-  }
-
-  private async deleteUndoneChildrenTask(
-    userId: number,
-    parentTaskId: number,
-    tx: PgTransaction<PgQueryResultHKT, Record<string, unknown>>,
-  ) {
-    const childrenTask = await this.getChildrenTask(userId, parentTaskId, tx);
-
-    if (!childrenTask || childrenTask.doneDate) {
-      return;
-    }
-
-    return this.delete(
-      childrenTask.id,
-      {
-        userId,
-      },
-      tx,
-    );
-  }
-
-  private async deleteTaskIfParentTaskUndone(
-    userId: number,
-    parentTaskId: number,
-    taskId: number,
-    tx: PgTransaction<PgQueryResultHKT, Record<string, unknown>>,
-  ) {
-    const parentTask = await this.getOne(parentTaskId, { userId }, tx);
-
-    if (!parentTask.doneDate) {
-      return this.delete(taskId, { userId }, tx);
-    }
-
-    return null;
   }
 }

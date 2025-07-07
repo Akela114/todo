@@ -1,11 +1,17 @@
 import { SWAGGER_TAGS } from "@/lib/constants/swagger-tags.js";
-import { basePaginatedRequestParams } from "@packages/schemas/common";
+import {
+  basePaginatedRequestParams,
+  coreApiBasicResponseSchema,
+} from "@packages/schemas/common";
 import {
   createOrModifyInboxEntrySchema,
   inboxEntrySchema,
   paginatedInoxEntries,
 } from "@packages/schemas/inbox-entry";
-import { createOrModifyTaskSchema, taskSchema } from "@packages/schemas/task";
+import {
+  createOrModifyTaskSchemaBack,
+  taskSchema,
+} from "@packages/schemas/task";
 import type { FastifyInstance } from "fastify";
 import type { ZodTypeProvider } from "fastify-type-provider-zod";
 
@@ -23,11 +29,9 @@ export default async (instance: FastifyInstance) => {
     },
     handler: async (request) => {
       const res = await instance.inboxEntryService.getAllPaginated(
-        [
-          {
-            userId: request.user.id,
-          },
-        ],
+        {
+          userId: request.user.id,
+        },
         {
           page: request.query.page,
           pageSize: request.query.pageSize,
@@ -50,10 +54,14 @@ export default async (instance: FastifyInstance) => {
       },
     },
     handler: async (request, reply) => {
-      const inboxEntry = await instance.inboxEntryService.create({
-        title: request.body.title,
-        userId: request.user.id,
-      });
+      const inboxEntry = await instance.inboxEntryService.create(
+        {
+          userId: request.user.id,
+        },
+        {
+          title: request.body.title,
+        },
+      );
 
       return reply.status(201).send(inboxEntry);
     },
@@ -73,8 +81,8 @@ export default async (instance: FastifyInstance) => {
     },
     handler: (request) => {
       return instance.inboxEntryService.update(
-        request.params.id,
         {
+          id: request.params.id,
           userId: request.user.id,
         },
         {
@@ -92,13 +100,16 @@ export default async (instance: FastifyInstance) => {
       tags: [SWAGGER_TAGS.inboxEntries.name],
       params: inboxEntrySchema.pick({ id: true }),
       response: {
-        200: inboxEntrySchema,
+        200: coreApiBasicResponseSchema,
       },
     },
-    handler: (request) => {
-      return instance.inboxEntryService.delete(request.params.id, {
+    handler: async (request) => {
+      await instance.inboxEntryService.delete({
+        id: request.params.id,
         userId: request.user.id,
       });
+
+      return { statusCode: 200, message: "OK" };
     },
   });
 
@@ -109,7 +120,7 @@ export default async (instance: FastifyInstance) => {
     schema: {
       tags: [SWAGGER_TAGS.inboxEntries.name, SWAGGER_TAGS.tasks.name],
       params: inboxEntrySchema.pick({ id: true }),
-      body: createOrModifyTaskSchema,
+      body: createOrModifyTaskSchemaBack,
       response: {
         201: taskSchema,
       },
@@ -117,7 +128,7 @@ export default async (instance: FastifyInstance) => {
     handler: async (request, reply) => {
       const task = await instance.tasksService.convertInboxEntryToTask({
         ...request.body,
-        id: request.params.id,
+        inboxEntryId: request.params.id,
         userId: request.user.id,
       });
 

@@ -1,6 +1,7 @@
 import { useLogin } from "@/entities/auth";
 import { getInputValidation, useDefaultForm } from "@/shared/forms";
 import { Input, PasswordInput } from "@/shared/ui";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema } from "@packages/schemas/auth";
 
 interface LoginFormProps {
@@ -20,7 +21,7 @@ export const LoginForm = ({ onSuccess }: LoginFormProps) => {
     form: { register, formState },
     getFormComponent,
   } = useDefaultForm({
-    schema: loginSchema,
+    resolver: zodResolver(loginSchema),
     useFormProps: {
       defaultValues: {
         username: "",

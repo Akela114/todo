@@ -7,31 +7,32 @@ import {
 import { type ComponentProps, type ReactNode, useState } from "react";
 
 interface PopoverProps {
-  className?: string;
   children: ReactNode;
   renderTarget: (onClose: () => void) => ReactNode;
   side?: ComponentProps<typeof PopoverContent>["side"];
   align?: ComponentProps<typeof PopoverContent>["align"];
+  sideOffset?: number;
 }
 
 export const Popover = ({
   children,
-  className,
   renderTarget,
   side = "bottom",
   align = "start",
+  sideOffset = 5,
 }: PopoverProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
     <PopoverRoot open={isOpen} onOpenChange={setIsOpen}>
-      <PopoverTrigger asChild>
-        <button type="button" className={className}>
-          {children}
-        </button>
-      </PopoverTrigger>
+      <PopoverTrigger asChild>{children}</PopoverTrigger>
       <PopoverPortal>
-        <PopoverContent sideOffset={5} side={side} align={align}>
+        <PopoverContent
+          sideOffset={sideOffset}
+          side={side}
+          align={align}
+          className="w-(--radix-popover-trigger-width) max-h-(--radix-popper-available-height) overflow-y-auto"
+        >
           {renderTarget(() => setIsOpen(false))}
         </PopoverContent>
       </PopoverPortal>

@@ -29,12 +29,6 @@ export const DayInput = ({
     <InputWrapper label={label} inputValidation={inputValidation}>
       <Popover
         {...otherProps}
-        className={twMerge(
-          "w-full border-1 border-base-content/20 rounded-sm text-sm bg-base-100 px-4 py-2 flex items-center justify-between gap-2 outline-base-content focus-within:outline-2 focus-within:outline-offset-2",
-          inputValidation?.status === "success" &&
-            "border-success outline-success",
-          inputValidation?.status === "error" && "border-error outline-error",
-        )}
         renderTarget={(onClose) => (
           <DayPicker
             selected={value}
@@ -47,11 +41,21 @@ export const DayInput = ({
           />
         )}
       >
-        {value ? (
-          formatDate(value, "date")
-        ) : (
-          <span className="text-base-content/50">{placeholder}</span>
-        )}
+        <button
+          type="button"
+          className={twMerge(
+            "w-full border-1 border-base-content/20 rounded-sm text-sm bg-base-100 px-4 py-2 flex items-center justify-between gap-2 outline-base-content focus-within:outline-2 focus-within:outline-offset-2",
+            inputValidation?.status === "success" &&
+              "border-success outline-success",
+            inputValidation?.status === "error" && "border-error outline-error",
+          )}
+        >
+          {value ? (
+            formatDate(value, "date")
+          ) : (
+            <span className="text-base-content/50">{placeholder}</span>
+          )}
+        </button>
       </Popover>
     </InputWrapper>
   );

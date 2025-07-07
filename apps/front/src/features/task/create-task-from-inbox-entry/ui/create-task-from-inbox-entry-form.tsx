@@ -1,11 +1,13 @@
-import { useCreateTaskFromInboxEntry } from "@/entities/task";
-import { CreateOrModifyTaskForm } from "@/entities/task/ui/create-or-modify-task-form";
+import {
+  CreateOrModifyTaskForm,
+  useCreateTaskFromInboxEntry,
+} from "@/entities/task";
 import type { InboxEntry } from "@packages/schemas/inbox-entry";
-import type { CreateOrModifyTask } from "@packages/schemas/task";
+import type { CreateOrModifyTaskFrontSubmit } from "@packages/schemas/task";
 
 interface CreateTaskFromInboxEntryFormProps {
   inboxEntry: InboxEntry;
-  beforeSubmit?: (data: CreateOrModifyTask) => void;
+  beforeSubmit?: (data: CreateOrModifyTaskFrontSubmit) => void;
   afterSubmit?: () => void;
 }
 export const CreateTaskFromInboxEntryForm = ({

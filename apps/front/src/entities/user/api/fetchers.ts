@@ -6,11 +6,11 @@ import {
   withValidation,
 } from "@/shared/api";
 import { coreApiBasicResponseSchema } from "@packages/schemas/common";
-import { type CreateUser, userSchema } from "@packages/schemas/user";
+import { type CreateOrModifyUser, userSchema } from "@packages/schemas/user";
 
 export const createUser = withHttpErrorParsing(
   withValidation(
-    createFetcherWrapper<undefined, undefined, CreateUser>(
+    createFetcherWrapper<undefined, undefined, CreateOrModifyUser>(
       coreApi,
       () => "users",
       "post",

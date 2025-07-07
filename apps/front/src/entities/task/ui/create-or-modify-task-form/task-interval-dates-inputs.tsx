@@ -4,12 +4,12 @@ import {
 } from "@/shared/common-helpers-and-constants";
 import { getInputValidation } from "@/shared/forms";
 import { DayInput } from "@/shared/ui";
-import type { CreateOrModifyTask } from "@packages/schemas/task";
+import type { CreateOrModifyTaskFrontForm } from "@packages/schemas/task";
 import { compareAsc } from "date-fns";
 import { useController, useFormContext } from "react-hook-form";
 
 export const TaskIntervalDatesInputs = () => {
-  const { control, formState } = useFormContext<CreateOrModifyTask>();
+  const { control, formState } = useFormContext<CreateOrModifyTaskFrontForm>();
 
   const { field: startDateField } = useController({
     control,

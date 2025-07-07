@@ -1,7 +1,8 @@
 import { SWAGGER_TAGS } from "@/lib/constants/swagger-tags.js";
+import { coreApiBasicResponseSchema } from "@packages/schemas/common";
 import {
   changeTaskStatusSchema,
-  createOrModifyTaskSchema,
+  createOrModifyTaskSchemaBack,
   paginatedTasks,
   paginatedTasksQueryParams,
   taskSchema,
@@ -22,9 +23,12 @@ export default async (instance: FastifyInstance) => {
       },
     },
     handler: (request) => {
-      return instance.tasksService.getFilteredByDayWithPagination(
-        request.user.id,
-        request.query.startFrom,
+      return instance.tasksService.getAllPaginated(
+        {
+          userId: request.user.id,
+          date: request.query.startFrom,
+          tagIds: request.query.tagIds,
+        },
         {
           page: request.query.page,
           pageSize: request.query.pageSize,
@@ -40,15 +44,17 @@ export default async (instance: FastifyInstance) => {
     schema: {
       tags: [SWAGGER_TAGS.tasks.name],
       params: taskSchema.pick({ id: true }),
-      body: createOrModifyTaskSchema,
+      body: createOrModifyTaskSchemaBack,
       response: {
         200: taskSchema,
       },
     },
     handler: (request) => {
-      return instance.tasksService.updateTask(
-        request.params.id,
-        request.user.id,
+      return instance.tasksService.update(
+        {
+          id: request.params.id,
+          userId: request.user.id,
+        },
         request.body,
       );
     },
@@ -68,8 +74,8 @@ export default async (instance: FastifyInstance) => {
     },
     handler: (request) => {
       return instance.tasksService.changeStatus(
-        request.params.id,
         {
+          id: request.params.id,
           userId: request.user.id,
         },
         request.body.doneDate,
@@ -85,13 +91,16 @@ export default async (instance: FastifyInstance) => {
       tags: [SWAGGER_TAGS.tasks.name],
       params: taskSchema.pick({ id: true }),
       response: {
-        200: taskSchema,
+        200: coreApiBasicResponseSchema,
       },
     },
-    handler: (request) => {
-      return instance.tasksService.delete(request.params.id, {
+    handler: async (request) => {
+      await instance.tasksService.delete({
+        id: request.params.id,
         userId: request.user.id,
       });
+
+      return { statusCode: 200, message: "OK" };
     },
   });
 };

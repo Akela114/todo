@@ -34,10 +34,6 @@ export const DaySelection = ({
         <ArrowLeftIcon />
       </button>
       <Popover
-        className={twMerge(
-          "btn btn-sm sm:btn-md btn-soft sm:min-w-62",
-          dayPickerTriggerClassName,
-        )}
         renderTarget={(onClose) => (
           <DayPicker
             selected={date}
@@ -48,7 +44,15 @@ export const DaySelection = ({
           />
         )}
       >
-        {formatDate(date, "weekdayDate")}
+        <button
+          type="button"
+          className={twMerge(
+            "btn btn-sm sm:btn-md btn-soft sm:min-w-62",
+            dayPickerTriggerClassName,
+          )}
+        >
+          {formatDate(date, "weekdayDate")}
+        </button>
       </Popover>
       <button
         className="btn btn-sm sm:btn-md btn-soft btn-square"

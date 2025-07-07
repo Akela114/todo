@@ -6,7 +6,7 @@ export class AuthService {
   constructor(private instance: FastifyInstance) {}
 
   async getAuthenticatedUser(username: string, password: string) {
-    const user = await this.instance.usersService.getOneByUsername(username);
+    const user = await this.instance.usersService.getFirst({ username });
 
     if (!user) {
       throw new ValidationError("Invalid credentials");

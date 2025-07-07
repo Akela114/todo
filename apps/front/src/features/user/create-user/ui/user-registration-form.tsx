@@ -1,7 +1,11 @@
 import { useCreateUser } from "@/entities/user";
 import { getInputValidation, useDefaultForm } from "@/shared/forms";
 import { Input, PasswordInput } from "@/shared/ui";
-import { createUserSchema } from "@packages/schemas/user";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  type CreateOrModifyUser,
+  createOrModifyUserSchema,
+} from "@packages/schemas/user";
 
 interface UserRegistrationFormProps {
   onSuccess?: () => void;
@@ -21,8 +25,8 @@ export const UserRegistrationForm = ({
   const {
     form: { register, formState },
     getFormComponent,
-  } = useDefaultForm({
-    schema: createUserSchema,
+  } = useDefaultForm<CreateOrModifyUser>({
+    resolver: zodResolver(createOrModifyUserSchema),
     useFormProps: {},
     onResetSubmit: resetSubmit,
     onSubmit: (data) => createUser({ body: data }),

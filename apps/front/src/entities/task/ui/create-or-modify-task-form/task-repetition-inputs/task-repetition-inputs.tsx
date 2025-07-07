@@ -8,11 +8,12 @@ import {
   Select,
   WeekdaysPicker,
 } from "@/shared/ui";
-import type { CreateOrModifyTask } from "@packages/schemas/task";
+import type { CreateOrModifyTaskFrontForm } from "@packages/schemas/task";
 import { Controller, useController, useFormContext } from "react-hook-form";
 
 export const TaskRepetitionInputs = () => {
-  const { control, formState, register } = useFormContext<CreateOrModifyTask>();
+  const { control, formState, register } =
+    useFormContext<CreateOrModifyTaskFrontForm>();
 
   const { field: repetitionRuleField } = useController({
     name: "repetitionRule",
@@ -20,8 +21,6 @@ export const TaskRepetitionInputs = () => {
   });
 
   const onRepetitionRuleTypeChange = (value?: string) => {
-    console.log(value);
-
     switch (value) {
       case "weekDays":
         repetitionRuleField.onChange({

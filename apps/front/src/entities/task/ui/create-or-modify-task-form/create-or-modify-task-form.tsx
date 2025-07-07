@@ -1,11 +1,14 @@
 import { TASK_PRIORITIES_OPTIONS } from "@/entities/task";
+import { TagsSelect } from "@/features/tag/select-tags";
 import { formatTodayDate } from "@/shared/common-helpers-and-constants";
 import { getInputValidation, useDefaultForm } from "@/shared/forms";
 import { Input, Select } from "@/shared/ui";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  type CreateOrModifyTask,
+  type CreateOrModifyTaskFrontForm,
+  type CreateOrModifyTaskFrontSubmit,
   type Task,
-  createOrModifyTaskSchema,
+  createOrModifyTaskSchemaFront,
 } from "@packages/schemas/task";
 import { Controller, FormProvider } from "react-hook-form";
 import { TaskIntervalDatesInputs } from "./task-interval-dates-inputs";
@@ -13,7 +16,7 @@ import { TaskRepetitionInputs } from "./task-repetition-inputs";
 
 interface ModifyTaskFormProps {
   data?: Partial<Task>;
-  onSubmit: (data: CreateOrModifyTask) => void;
+  onSubmit: (data: CreateOrModifyTaskFrontSubmit) => void;
   submitError: {
     message: string;
     statusCode: number;
@@ -27,8 +30,11 @@ export const CreateOrModifyTaskForm = ({
   submitError,
   resetSubmit,
 }: ModifyTaskFormProps) => {
-  const { form, getFormComponent } = useDefaultForm({
-    schema: createOrModifyTaskSchema,
+  const { form, getFormComponent } = useDefaultForm<
+    CreateOrModifyTaskFrontForm,
+    CreateOrModifyTaskFrontSubmit
+  >({
+    resolver: zodResolver(createOrModifyTaskSchemaFront),
     useFormProps: {
       defaultValues: {
         title: data?.title,
@@ -36,6 +42,7 @@ export const CreateOrModifyTaskForm = ({
         startDate: data?.startDate ?? formatTodayDate(),
         endDate: data?.endDate ?? null,
         repetitionRule: data?.repetitionRule ?? null,
+        tags: data?.tags ?? [],
       },
     },
     onResetSubmit: resetSubmit,
@@ -71,6 +78,27 @@ export const CreateOrModifyTaskForm = ({
           )}
         />
       </div>
+      <Controller
+        control={control}
+        name="tags"
+        render={({ field: { value, onChange, ref } }) => (
+          <TagsSelect
+            label="Теги"
+            placeholder="Выберите теги..."
+            selectedTags={value.map(({ id, name }) => ({
+              value: id,
+              label: name,
+            }))}
+            onChange={(tags) =>
+              onChange(
+                tags.map(({ value, label }) => ({ id: value, name: label })),
+              )
+            }
+            ref={ref}
+            inputValidation={getInputValidation(formState, "tags")}
+          />
+        )}
+      />
       <TaskIntervalDatesInputs />
       <TaskRepetitionInputs />
     </FormProvider>,

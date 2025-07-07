@@ -5,7 +5,7 @@ export const createFetcherWrapper =
   <
     UrlParams = undefined,
     SearchParams extends
-      | Record<string, string | number>
+      | Record<string, string | number | Array<string | number> | undefined>
       | undefined = undefined,
     Body = undefined,
     Response = unknown,
@@ -40,7 +40,14 @@ export const createFetcherWrapper =
       {
         searchParams:
           options && "searchParams" in options
-            ? options.searchParams
+            ? Object.entries(options.searchParams).flatMap(([key, value]) => {
+                if (value === undefined) return [];
+
+                if (Array.isArray(value)) {
+                  return value.map((v) => [key, v]);
+                }
+                return [[key, value]];
+              })
             : undefined,
         json: options && "body" in options ? options.body : undefined,
       },

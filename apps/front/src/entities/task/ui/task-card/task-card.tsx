@@ -17,7 +17,7 @@ export const TaskCard = ({ data, children, onStatusChange }: TaskCardProps) => {
 
   return (
     <div className="p-4">
-      <div className="grid grid-cols-[auto_1fr_auto] items-center gap-x-4 gap-y-2">
+      <div className="grid grid-cols-[auto_1fr_minmax(min-content,20%)] items-center gap-x-4 gap-y-2">
         <div className="flex-1 grid grid-cols-subgrid col-span-2 items-center">
           <input
             type="checkbox"
@@ -49,6 +49,15 @@ export const TaskCard = ({ data, children, onStatusChange }: TaskCardProps) => {
           )}
           {!isTaskDone && <RemainingTime endDate={data.endDate} />}
         </div>
+        {data.tags.length > 0 && (
+          <div className="col-start-2 col-span-2 flex flex-wrap gap-1 mt-3">
+            {data.tags.map(({ id, name }) => (
+              <div key={id} className="badge badge-soft badge-sm">
+                {name}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

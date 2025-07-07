@@ -26,7 +26,7 @@ export const RemainingTime = ({ endDate }: RemainingTimeProps) => {
     const isEndDateAfterTomorrow = differenceBetweenEndDateAndNow > 0;
 
     return isEndDateAfterTomorrow ? (
-      <div className="tooltip" data-tip="Оставшееся время">
+      <div className="tooltip w-fit" data-tip="Оставшееся время">
         <div
           className={twMerge(
             "flex items-center gap-1",

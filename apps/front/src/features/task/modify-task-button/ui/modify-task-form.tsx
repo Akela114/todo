@@ -1,5 +1,4 @@
-import { useModifyTask } from "@/entities/task";
-import { CreateOrModifyTaskForm } from "@/entities/task/ui/create-or-modify-task-form";
+import { CreateOrModifyTaskForm, useModifyTask } from "@/entities/task";
 import type { Task } from "@packages/schemas/task";
 
 interface ModifyTaskFormProps {

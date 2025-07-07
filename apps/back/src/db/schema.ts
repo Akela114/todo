@@ -8,6 +8,7 @@ import {
   pgTable,
   text,
   timestamp,
+  unique,
   varchar,
 } from "drizzle-orm/pg-core";
 
@@ -65,4 +66,36 @@ export const task = pgTable(
       name: "task_parent_task_id_fkey",
     }),
   ],
+);
+
+export const tag = pgTable(
+  "tag",
+  {
+    id: integer().primaryKey().generatedAlwaysAsIdentity(),
+    name: varchar({ length: 255 }).notNull(),
+    userId: integer()
+      .notNull()
+      .references(() => user.id, {
+        onDelete: "cascade",
+      }),
+  },
+  (table) => [unique().on(table.userId, table.name)],
+);
+
+export const taskTag = pgTable(
+  "taskTag",
+  {
+    id: integer().primaryKey().generatedAlwaysAsIdentity(),
+    taskId: integer()
+      .notNull()
+      .references(() => task.id, {
+        onDelete: "cascade",
+      }),
+    tagId: integer()
+      .notNull()
+      .references(() => tag.id, {
+        onDelete: "cascade",
+      }),
+  },
+  (table) => [unique().on(table.taskId, table.tagId)],
 );

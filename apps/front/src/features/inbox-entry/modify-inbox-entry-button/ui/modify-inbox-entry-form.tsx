@@ -1,7 +1,9 @@
 import { useModifyInboxEntry } from "@/entities/inbox-entry";
 import { getInputValidation, useDefaultForm } from "@/shared/forms";
 import { Input } from "@/shared/ui";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
+  type CreateOrModifyInboxEntry,
   type InboxEntry,
   createOrModifyInboxEntrySchema,
 } from "@packages/schemas/inbox-entry";
@@ -26,8 +28,8 @@ export const ModifyInboxEntryForm = ({
   const {
     form: { register, formState },
     getFormComponent,
-  } = useDefaultForm({
-    schema: createOrModifyInboxEntrySchema,
+  } = useDefaultForm<CreateOrModifyInboxEntry>({
+    resolver: zodResolver(createOrModifyInboxEntrySchema),
     useFormProps: {},
     onResetSubmit: resetSubmit,
     onSubmit: (submitData) =>

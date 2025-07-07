@@ -1,22 +1,11 @@
-import type { user } from "@/db/schema.js";
-import { BaseService } from "@/lib/base-classes/base-service.js";
 import { ValidationError } from "@/lib/errors/bad-request-error.js";
+import { Service } from "@/lib/types.js";
 import { generateSalt, getHash } from "@/lib/utils/hash-utils.js";
 import type { UsersRepository } from "./repository.js";
 
-export class UsersService extends BaseService<typeof user, "id"> {
+export class UsersService extends Service<UsersRepository> {
   constructor(protected repository: UsersRepository) {
-    super(repository, "User");
-  }
-
-  async getOneByEmail(...args: Parameters<UsersRepository["getOneByEmail"]>) {
-    return this.repository.getOneByEmail(...args);
-  }
-
-  async getOneByUsername(
-    ...args: Parameters<UsersRepository["getOneByUsername"]>
-  ) {
-    return this.repository.getOneByUsername(...args);
+    super(repository);
   }
 
   async createWithPasswordGeneration({
@@ -34,18 +23,21 @@ export class UsersService extends BaseService<typeof user, "id"> {
     });
 
     if (isUserExists) {
-      throw new ValidationError(`${this.entityName} already exists`);
+      throw new ValidationError("User already exists");
     }
 
     const passwordSalt = generateSalt();
     const passwordHash = await getHash(password, passwordSalt);
 
-    return this.create({
-      username,
-      email,
-      passwordSalt,
-      passwordHash,
-    });
+    return this.create(
+      {},
+      {
+        username,
+        email,
+        passwordSalt,
+        passwordHash,
+      },
+    );
   }
 
   private async checkIfExistsWithEmailOrUsername({
@@ -56,8 +48,8 @@ export class UsersService extends BaseService<typeof user, "id"> {
     username: string;
   }) {
     const [userWithEmail, userWithUsername] = await Promise.all([
-      this.getOneByEmail(email),
-      this.getOneByUsername(username),
+      this.getFirst({ email }),
+      this.getFirst({ username }),
     ]);
 
     return Boolean(userWithEmail || userWithUsername);

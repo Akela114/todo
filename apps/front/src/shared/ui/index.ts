@@ -18,3 +18,4 @@ export * from "./input-group-wrapper";
 export * from "./monthdays-picker";
 export * from "./weekdays-picker";
 export * from "./checkbox-input";
+export * from "./multiselect";

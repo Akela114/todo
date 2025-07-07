@@ -20,13 +20,16 @@ import {
 import { min } from "date-fns";
 import type { ReactNode } from "react";
 import { twMerge } from "tailwind-merge";
+import { TagsList } from "./tags-list";
 
 interface TasksListProps {
   page: number;
   pageSize: number;
   date: Date;
+  tagIds?: number[];
   onPageChange: (page: number) => void;
   onDateChange: (date?: Date) => void;
+  onTagIdsChange: (tagIds: number[]) => void;
   renderPageLink: (page: number, className?: string) => ReactNode;
   children?: ReactNode;
   className?: string;
@@ -37,8 +40,10 @@ export const TasksList = ({
   page,
   pageSize,
   date,
+  tagIds,
   onPageChange,
   onDateChange,
+  onTagIdsChange,
   renderPageLink,
 }: TasksListProps) => {
   const {
@@ -46,7 +51,7 @@ export const TasksList = ({
     status,
     refetch,
   } = useTasks(
-    { page, pageSize, startFrom: formatDate(date) },
+    { page, pageSize, tagIds: tagIds, startFrom: formatDate(date) },
     (tasks) => {
       if (tasks.pagination.page > 1 && !tasks.data.length) {
         onPageChange(1);
@@ -91,48 +96,55 @@ export const TasksList = ({
           pending={() => <PaginationSkeleton />}
         />
       </div>
-      <Match
-        value={throttledStatus}
-        success={() =>
-          tasks?.data.length ? (
+      <TagsList
+        activeTagIds={tagIds}
+        onActiveTagIdsChange={onTagIdsChange}
+        date={date}
+      />
+      <div className="flex-1">
+        <Match
+          value={throttledStatus}
+          success={() =>
+            tasks?.data.length ? (
+              <SimpleList>
+                {tasks.data.map((task) => (
+                  <SimpleListItem key={task.id}>
+                    <TaskCard
+                      data={task}
+                      onStatusChange={(isDone) =>
+                        handleTaskStatusChange(task.id, isDone)
+                      }
+                    >
+                      {!task.doneDate && (
+                        <>
+                          <ModifyTaskButton data={task} />
+                          <DeleteTaskButton data={task} />
+                        </>
+                      )}
+                    </TaskCard>
+                  </SimpleListItem>
+                ))}
+              </SimpleList>
+            ) : (
+              <FetchEmpty>Список задач пуст</FetchEmpty>
+            )
+          }
+          error={() => (
+            <FetchError onRetry={() => refetch()}>
+              Произошла ошибка при загрузке задач!
+            </FetchError>
+          )}
+          pending={() => (
             <SimpleList>
-              {tasks.data.map((task) => (
-                <SimpleListItem key={task.id}>
-                  <TaskCard
-                    data={task}
-                    onStatusChange={(isDone) =>
-                      handleTaskStatusChange(task.id, isDone)
-                    }
-                  >
-                    {!task.doneDate && (
-                      <>
-                        <ModifyTaskButton data={task} />
-                        <DeleteTaskButton data={task} />
-                      </>
-                    )}
-                  </TaskCard>
+              {Array.from({ length: pageSize }).map((_, idx) => (
+                <SimpleListItem key={`skeleton-${idx}`}>
+                  <TaskCardSkeleton />
                 </SimpleListItem>
               ))}
             </SimpleList>
-          ) : (
-            <FetchEmpty>Список задач пуст</FetchEmpty>
-          )
-        }
-        error={() => (
-          <FetchError onRetry={() => refetch()}>
-            Произошла ошибка при загрузке задач!
-          </FetchError>
-        )}
-        pending={() => (
-          <SimpleList>
-            {Array.from({ length: pageSize }).map((_, idx) => (
-              <SimpleListItem key={`skeleton-${idx}`}>
-                <TaskCardSkeleton />
-              </SimpleListItem>
-            ))}
-          </SimpleList>
-        )}
-      />
+          )}
+        />
+      </div>
     </div>
   );
 };

@@ -1,15 +1,12 @@
-import { zodResolver } from "@hookform/resolvers/zod";
 import type { ReactNode } from "@tanstack/react-router";
-import { type UseFormProps, useForm } from "react-hook-form";
-import type { z } from "zod";
+import { type Resolver, type UseFormProps, useForm } from "react-hook-form";
 import { FormWrapper } from "../ui";
 
 export const useDefaultForm = <
-  T extends
-    | z.ZodObject<z.ZodRawShape>
-    | z.ZodEffects<z.ZodObject<z.ZodRawShape>>,
+  T extends Record<string, unknown>,
+  TTransformed = T,
 >({
-  schema,
+  resolver,
   useFormProps,
   submitButtonTitle,
   submitError,
@@ -18,23 +15,24 @@ export const useDefaultForm = <
   beforeSubmit,
   withResetOnSubmit,
 }: {
-  schema: T;
+  // biome-ignore lint/suspicious/noExplicitAny: it is any in react-hook-form
+  resolver: Resolver<T, any, TTransformed>;
   useFormProps: Omit<
     // biome-ignore lint/suspicious/noExplicitAny: it is any in react-hook-form
-    UseFormProps<z.infer<T>, any, z.infer<T>>,
+    UseFormProps<T, any, TTransformed>,
     "resolver"
   >;
   submitButtonTitle: string;
-  onSubmit: (data: z.infer<T>) => Promise<unknown> | unknown;
+  onSubmit: (data: TTransformed) => Promise<unknown> | unknown;
   onResetSubmit: () => void;
-  beforeSubmit?: (data: z.infer<T>) => void;
+  beforeSubmit?: (data: TTransformed) => void;
   submitError?: { message: string } | null;
   withResetOnSubmit?: boolean;
 }) => {
   // biome-ignore lint/suspicious/noExplicitAny: it is any in react-hook-form
-  const form = useForm<z.infer<T>, any, z.infer<T>>({
+  const form = useForm<T, any, TTransformed>({
     ...useFormProps,
-    resolver: zodResolver(schema),
+    resolver,
   });
   const { handleSubmit, reset, formState } = form;
 
